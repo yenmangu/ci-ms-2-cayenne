@@ -10,3 +10,6 @@ cloudinary_python.txt
 **/._*
 ./._*
 ._*
+.env
+/.env
+**/*.env
