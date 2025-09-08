@@ -41,6 +41,9 @@
 
 ### MoSCoW Prioritisation
 
+> [!NOTE]
+> See [Complex Search](COMPLEX_SEARCH.md) for MoSCoW prioritisation of the full [complexSearch](https://spoonacular.com/food-api/docs#Search-Recipes-Complex) endpoint
+
 ## Testing
 
 > [!NOTE]
