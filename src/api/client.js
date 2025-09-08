@@ -19,31 +19,22 @@ export class SpoonacularClient {
 		this.apiKey = ENV.API_KEY;
 		this.baseUrl = ENV.API_BASE_URL;
 	}
-
-	async searchRecipes(query) {}
-
-	async searchIngredients(query) {}
-
 	/**
 	 *
-	 * @param {string} endpoint - Spoonacular path, e.g. "/recipes/complexSearch"
-	 * @param {Object} params - Query Params as key-value pairs
-	 * @returns {Promise<any>}
+	 * @param {string[]} searchTerms
+	 * @param {Object} params
 	 */
-	async _fetch(endpoint, params = {}) {
-		const url = this._buildUrl(endpoint, params);
-
-		try {
-			const response = await fetch(url);
-			if (!response.ok) {
-				const message = `[API ERROR] ${response.status} ${response.statusText}`;
-				throw new Error(message);
-			}
-			return await response.json();
-		} catch (error) {
-			console.error(`[FETCH FAIL] ${url}`, error);
-			throw error;
-		}
+	async searchRecipes(searchTerms, params = {}) {
+		// const urlParams =
+		const searchTermStr = searchTerms.join(',');
+		const queryParams = {
+			query: searchTermStr,
+			...params
+		};
+		const key = /** @type {EndpointKey} */ ('searchRecipes');
+		const endpoint = this._buildEndpointWithParameters(key);
+		const responseJson = await this._fetch(endpoint, queryParams);
+		return responseJson;
 	}
 
 	/**
@@ -54,15 +45,54 @@ export class SpoonacularClient {
 	 */
 	async findByIngredients(ingredients, recipes, ignorePantry = true) {
 		const searchString = this._buildSearchString(ingredients);
-		const query = {
+		const queryParams = {
 			ingredients: searchString,
 			number: recipes.toString()
 		};
 		const key = /** @type {EndpointKey} */ ('searchRecipesByIngredients');
-		const endpoint = this._buildEndpoint(key);
+		const endpoint = this._buildEndpointWithParameters(key);
 
-		const responseJson = await this._fetch(endpoint, query);
+		const responseJson = await this._fetch(endpoint, queryParams);
 		return responseJson;
+	}
+
+	async searchIngredients(query) {}
+	/**
+	 *
+	 * @param {string} endpoint - Spoonacular path, e.g. "/recipes/complexSearch"
+	 * @param {Object} params - Query Params as key-value pairs
+	 * @param {number} [retries=0]
+	 * @returns {Promise<any>}
+	 */
+	async _fetch(endpoint, params = {}, retries = 0) {
+		const url = this._buildUrl(endpoint, params);
+
+		try {
+			const response = await fetch(url);
+			if (!response.ok) {
+				if (retries > 0) {
+					console.warn(`[RETRYING] ${url} (${retries} retries remaining)`);
+					await this._delay();
+					return await this._fetch(endpoint, retries - 1, params);
+				}
+				const message = `[API ERROR] ${response.status} ${response.statusText}`;
+				throw new Error(message);
+			}
+
+			return await response.json();
+		} catch (error) {
+			console.error(`[FETCH FAIL] ${url}`, error);
+			throw error;
+		}
+	}
+
+	/**
+	 * @private
+	 * @param {number} [ms=500] - Milliseconds to wait (Half a second default)
+	 * @returns
+	 */
+	_delay(ms = 500) {
+		return new Promise(resolve => setTimeout(resolve, ms));
 	}
 
 	/**
@@ -78,7 +108,7 @@ export class SpoonacularClient {
 	 * @param {Record<string, string | number>} [params={}] - Path replacements
 	 * @returns {string} Full endpoint path with injected values
 	 */
-	_buildEndpoint(path, params = {}) {
+	_buildEndpointWithParameters(path, params = {}) {
 		const foundPath = SPOONACULAR_ENDPOINTS[path];
 		if (foundPath) {
 			return buildEndpoint(foundPath, params);
