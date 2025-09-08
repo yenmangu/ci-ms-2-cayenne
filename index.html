@@ -1,6 +1,17 @@
 <!doctype html>
 <html lang="en">
 	<head>
+		<!-- No cache during dev -->
+		<meta http-equiv="Cache-Control"
+					content="no-cache, no-store, must-revalidate">
+		<meta http-equiv="Pragma"
+					content="no-cache" />
+		<meta http-equiv="Expires"
+					content="0" />
+		<!-- End dev headers -->
+		<meta charset="UTF-8">
+		<meta name="viewport"
+					content="width=device-width, initial-scale=1.0">
 		<link rel="shortcut icon"
 					href="./assets/images/favicon/favicon.ico"
 					type="image/x-icon" />
@@ -25,6 +36,8 @@
 					rel="stylesheet"
 					integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB"
 					crossorigin="anonymous" />
+		<link rel="stylesheet"
+					href="./assets/css/style.css">
 	</head>
 	<body>
 		<header class="bg-dark text-white py-4">
@@ -33,6 +46,43 @@
 				<p class="lead">Your flavour-first recipe discovery app</p>
 			</div>
 		</header>
+		<nav class="navbar navbar-expand-lg bg-body-tertiary">
+			<div class="container-fluid">
+				<a class="navbar-brand"
+					 href="#">Navbar</a>
+				<button class="navbar-toggler"
+								type="button"
+								data-bs-toggle="collapse"
+								data-bs-target="#navbarNav"
+								aria-controls="navbarNav"
+								aria-expanded="false"
+								aria-label="Toggle navigation">
+					<span class="navbar-toggler-icon"></span>
+				</button>
+				<div class="collapse navbar-collapse"
+						 id="navbarNav">
+					<ul class="navbar-nav">
+						<li class="nav-item">
+							<a class="nav-link active"
+								 aria-current="page"
+								 href="./index.html">Home</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link"
+								 href="./features.html">Features</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link"
+								 href="./about.html">About</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link disabled"
+								 aria-disabled="true">Disabled</a>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</nav>
 		<main class="container py-5">
 			<!-- About Section -->
 			<section class="mb-5">
@@ -54,35 +104,43 @@
 			</section>
 			<!-- Features Section -->
 			<section class="mb-5">
-				<h2 class="text-center mb-4">Features</h2>
+				<a href="features.html">
+					<h2 class="text-center mb-4">Features</h2>
+				</a>
 				<div class="row g-4">
 					<div class="col-md-4">
-						<div class="card h-100 shadow-sm">
-							<div class="card-body">
-								<h5 class="card-title">Search by Ingredient</h5>
-								<p class="card-text"> Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam sit amet convallis
-									erat, vitae pharetra mi. </p>
+						<a href="features.html#search">
+							<div class="card h-100 shadow-sm">
+								<div class="card-body">
+									<h5 class="card-title">Search by Ingredient</h5>
+									<p class="card-text"> Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam sit amet
+										convallis erat, vitae pharetra mi. </p>
+								</div>
 							</div>
-						</div>
+						</a>
 					</div>
 					<div class="col-md-4">
-						<div class="card h-100 shadow-sm">
-							<div class="card-body">
-								<h5 class="card-title">Save Your Favourites</h5>
-								<p class="card-text"> Sed cursus ante dapibus diam. Donec facilisis tortor ut augue lacinia, at viverra
-									est semper. </p>
+						<a href="features.html#favourites">
+							<div class="card h-100 shadow-sm">
+								<div class="card-body">
+									<h5 class="card-title">Save Your Favourites</h5>
+									<p class="card-text"> Sed cursus ante dapibus diam. Donec facilisis tortor ut augue lacinia, at
+										viverra est semper. </p>
+								</div>
 							</div>
-						</div>
+						</a>
 					</div>
 					<div class="col-md-4">
-						<div class="card h-100 shadow-sm">
-							<div class="card-body">
-								<h5 class="card-title">Build a Shopping List</h5>
-								<p class="card-text"> Mauris massa. Vestibulum lacinia arcu eget nulla. Nulla metus metus, ullamcorper
-									vel, tincidunt sed. </p>
+						<a href="features.html#shopping-list">
+							<div class="card h-100 shadow-sm">
+								<div class="card-body">
+									<h5 class="card-title">Build a Shopping List</h5>
+									<p class="card-text"> Mauris massa. Vestibulum lacinia arcu eget nulla. Nulla metus metus, ullamcorper
+										vel, tincidunt sed. </p>
+								</div>
 							</div>
-						</div>
 					</div>
+					</a>
 				</div>
 			</section>
 		</main>

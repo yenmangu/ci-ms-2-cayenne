@@ -1,0 +1,44 @@
+/* Fonts Import */
+
+/* CSS Variables */
+
+/* Global styles */
+
+*.hidden {
+	display: none;
+}
+
+/* Remove default styles applied by browser */
+* {
+	padding: 0;
+	margin: 0;
+	box-sizing: border-box;
+}
+
+html,
+body {
+	height: 100%;
+	overflow: hidden;
+	/* iOS 100vh bug fix */
+	block-size: 100dvb;
+}
+
+body {
+	min-height: 100vh;
+	width: 100%;
+	display: flex;
+	flex-direction: column;
+}
+
+main {
+	display: flex;
+	flex-direction: column;
+	flex: 1 1 auto;
+	min-height: 0;
+	overflow-y: auto;
+	justify-content: space-between;
+	align-items: center;
+	padding-top: 56px;
+}
+
+/* Bootstrap Override */
