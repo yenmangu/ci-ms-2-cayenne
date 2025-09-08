@@ -13,6 +13,7 @@
 	padding: 0;
 	margin: 0;
 	box-sizing: border-box;
+	background: #000;
 }
 
 html,
@@ -39,6 +40,11 @@ main {
 	justify-content: space-between;
 	align-items: center;
 	padding-top: 56px;
+}
+
+a div {
+	text-decoration: none;
+	color: inherit;
 }
 
 /* Bootstrap Override */
