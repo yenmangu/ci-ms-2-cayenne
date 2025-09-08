@@ -40,49 +40,13 @@
 					href="./assets/css/style.css">
 	</head>
 	<body>
-		<header class="bg-dark text-white py-4">
+		<header id="header"
+						class="bg-dark text-white py-4">
 			<div class="container text-center">
 				<h1 class="display-4">Cayenne</h1>
 				<p class="lead">Your flavour-first recipe discovery app</p>
 			</div>
 		</header>
-		<nav class="navbar navbar-expand-lg bg-body-tertiary">
-			<div class="container-fluid">
-				<a class="navbar-brand"
-					 href="#">Navbar</a>
-				<button class="navbar-toggler"
-								type="button"
-								data-bs-toggle="collapse"
-								data-bs-target="#navbarNav"
-								aria-controls="navbarNav"
-								aria-expanded="false"
-								aria-label="Toggle navigation">
-					<span class="navbar-toggler-icon"></span>
-				</button>
-				<div class="collapse navbar-collapse"
-						 id="navbarNav">
-					<ul class="navbar-nav">
-						<li class="nav-item">
-							<a class="nav-link active"
-								 aria-current="page"
-								 href="./index.html">Home</a>
-						</li>
-						<li class="nav-item">
-							<a class="nav-link"
-								 href="./features.html">Features</a>
-						</li>
-						<li class="nav-item">
-							<a class="nav-link"
-								 href="./about.html">About</a>
-						</li>
-						<li class="nav-item">
-							<a class="nav-link disabled"
-								 aria-disabled="true">Disabled</a>
-						</li>
-					</ul>
-				</div>
-			</div>
-		</nav>
 		<main class="container py-5">
 			<!-- About Section -->
 			<section class="mb-5">
@@ -150,6 +114,8 @@
 				<small>Powered by Spoonacular API & Bootstrap 5</small>
 			</div>
 		</footer>
+		<script type="module"
+						src="./src/init.js"></script>
 		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
 						integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
 						crossorigin="anonymous"></script>
