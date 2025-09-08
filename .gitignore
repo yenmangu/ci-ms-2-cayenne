@@ -16,3 +16,4 @@ cloudinary_python.txt
 **/*.dev/
 /.dev/
 .dev/
+/src/config/env.js
