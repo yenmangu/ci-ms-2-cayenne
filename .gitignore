@@ -13,3 +13,6 @@ cloudinary_python.txt
 .env
 /.env
 **/*.env
+**/*.dev/
+/.dev/
+.dev/
