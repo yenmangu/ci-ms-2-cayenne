@@ -1,0 +1,22 @@
+{
+  "name": "ci-ms-2-cayenne",
+  "version": "1.0.0",
+  "description": "## Overview",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "jest",
+    "test:debug": "node --inspect-brk ./node_modules/.bin/jest --runInBand"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yenmangu/ci-ms-2-cayenne.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/yenmangu/ci-ms-2-cayenne/issues"
+  },
+  "homepage": "https://github.com/yenmangu/ci-ms-2-cayenne#readme"
+}
