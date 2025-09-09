@@ -19,5 +19,6 @@
 	"typescript.disableAutomaticTypeAcquisition": true,
 	"editor.fontFamily": "SF Mono",
 	"javascript.preferences.importModuleSpecifier": "relative",
-	"javascript.preferences.importModuleSpecifierEnding": "js"
+	"javascript.preferences.importModuleSpecifierEnding": "js",
+	"postman.settings.dotenv-detection-notification-visibility": false
 }

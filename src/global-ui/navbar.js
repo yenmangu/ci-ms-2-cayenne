@@ -1,7 +1,7 @@
 import { createNavbar } from '../templates/header.js';
 import { navConfig } from './navbarConfig.js';
 
-import { getActivePageLink } from '../domain.js';
+import { getActivePageLink } from '../navigation.js';
 
 export function initNavbar() {
 	const currentPageLink = getActivePageLink(navConfig.links);

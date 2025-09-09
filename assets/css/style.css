@@ -52,3 +52,14 @@ a div {
 .card p {
 	/* text-decoration: none; */
 }
+
+/* Queries */
+
+@media screen and (max-width: 480px) {
+	/* Mobile First */
+}
+
+@media (prefers-color-scheme: dark) {
+	body {
+	}
+}
