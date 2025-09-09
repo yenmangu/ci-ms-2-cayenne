@@ -1,13 +1,17 @@
-import { renderRecipeCard } from '../../templates/recipeCard.js';
+/**
+ * @typedef {import("../../types/recipeTypes.js").RecipeCard} RecipeCardObject
+ */
+
+import { renderRecipeCard } from './view.js';
 
 export class RecipeCard {
 	/**
 	 *
-	 * @param {Object} recipe
+	 * @param {RecipeCardObject} recipe
 	 * @param {HTMLElement} parentElement
 	 */
 	constructor(recipe, parentElement) {
-		/** @type {Object} */ this.recipe = recipe;
+		/** @type {RecipeCardObject} */ this.recipe = recipe;
 		/** @type {HTMLElement} */ this.parent = parentElement;
 	}
 
