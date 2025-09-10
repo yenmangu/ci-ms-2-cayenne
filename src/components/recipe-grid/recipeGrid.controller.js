@@ -2,12 +2,12 @@
  * @typedef {import("../../types/recipeTypes.js").RecipeCard} RecipeCardObject
  */
 
-import { RecipeCard } from '../recipe-card/controller.js';
+import { RecipeCard } from '../recipe-card/recipeCard.controller.js';
 import {
 	getCardWrapperClass as getCardWrapperClassName,
 	renderGridContainer,
 	renderSkeletonCard
-} from './view.js';
+} from './recipeGrid.view.js';
 // import { RecipeCard } from "../recipe-card/controller.js";
 
 export class RecipeGrid {

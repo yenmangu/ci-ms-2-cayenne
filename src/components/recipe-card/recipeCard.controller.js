@@ -2,7 +2,7 @@
  * @typedef {import("../../types/recipeTypes.js").RecipeCard} RecipeCardObject
  */
 
-import { renderRecipeCard } from './view.js';
+import { renderRecipeCard } from './recipeCard.view.js';
 
 export class RecipeCard {
 	/**
