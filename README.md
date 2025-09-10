@@ -136,6 +136,11 @@ Other colours used
 
 ## Development & Code Style
 
+### GIT
+
+We follow the [Conventional Commits](COMMIT_CONVENTIONS.md) specification.
+This ensures all commits are consistent, scoped, and easy to scan.
+
 ### JavaScript
 
 ### CSS
