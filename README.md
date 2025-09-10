@@ -141,6 +141,8 @@ Other colours used
 We follow the [Conventional Commits](COMMIT_CONVENTIONS.md) specification.
 This ensures all commits are consistent, scoped, and easy to scan.
 
+> Note: Conventional Commits were adopted from 10 September 2025. Earlier commit messages may not follow this format.
+
 ### JavaScript
 
 ### CSS
