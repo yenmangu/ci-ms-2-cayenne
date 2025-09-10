@@ -5,15 +5,34 @@ function fakeFetchRecipes() {
 	return new Promise(resolve => {
 		setTimeout(() => {
 			resolve(multipleRecipes);
-		}, 200); // Simulate Network Delay
+		}, 100); // Simulate Network Delay
 	});
 }
 
 async function initCayenneApp() {
-	// TODO Implement live API calls
-	const recipes = await fakeFetchRecipes();
-	const grid = new RecipeGrid(recipes);
+	const grid = new RecipeGrid([]);
+	grid.setLoading(true);
 	grid.render();
+
+	// Dev - uncomment below to only show skeletons
+	// return;
+
+	// TODO Implement live API calls
+	try {
+		const recipes = await fakeFetchRecipes();
+
+		// Executed after promise resolves
+		grid.setLoading(false);
+		grid.updateCards(recipes);
+		grid.render();
+	} catch (error) {
+		grid.setLoading(false);
+		showErrorMessage(error);
+	}
 }
 
 initCayenneApp();
+
+function showErrorMessage(err) {
+	console.warn('ShowErrorMessage not yet implemented', err);
+}

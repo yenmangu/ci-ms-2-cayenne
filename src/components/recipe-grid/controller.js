@@ -3,7 +3,11 @@
  */
 
 import { RecipeCard } from '../recipe-card/controller.js';
-import { renderGridContainer } from './view.js';
+import {
+	getCardWrapperClass as getCardWrapperClassName,
+	renderGridContainer,
+	renderSkeletonCard
+} from './view.js';
 // import { RecipeCard } from "../recipe-card/controller.js";
 
 export class RecipeGrid {
@@ -15,6 +19,7 @@ export class RecipeGrid {
 	constructor(recipes, opts = {}) {
 		/** @type {RecipeCardObject[]} */
 		this.recipes = recipes;
+		this.loading = false;
 
 		/** @type {Object} */
 		this.opts = opts;
@@ -26,6 +31,22 @@ export class RecipeGrid {
 		this.grid = null;
 	}
 
+	/**
+	 * Set the loading state
+	 *
+	 * @param {boolean} isLoading
+	 */
+	setLoading(isLoading) {
+		this.loading = isLoading;
+	}
+
+	/**
+	 * Renders the grid and
+	 * either skeletons if loading === true,
+	 * or live recipe cards if loading === false
+	 *
+	 * @returns {void}
+	 */
 	render() {
 		this.container.innerHTML = renderGridContainer();
 		this.grid = document.getElementById('recipeGrid');
@@ -33,13 +54,12 @@ export class RecipeGrid {
 			throw new Error(`[Recipe Grid Controller] Recipe grid not found`);
 		}
 
-		this.cardInstances = this.recipes.map(recipe => {
-			const wrapper = document.createElement('div');
-			const card = new RecipeCard(recipe, wrapper);
-			card.render();
-			this.grid.appendChild(wrapper);
-			return card;
-		});
+		if (this.loading) {
+			this._renderSkeletons();
+			return;
+		} else {
+			this._renderRecipeCards();
+		}
 	}
 
 	/**
@@ -116,6 +136,36 @@ export class RecipeGrid {
 	 */
 	getCardById(id) {
 		return this.cardInstances.find(card => card.recipe.id === id);
+	}
+
+	/**
+	 * Renders the individual recipe cards
+	 *
+	 * @private
+	 */
+	_renderRecipeCards() {
+		this.cardInstances = this.recipes.map(recipe => {
+			const wrapper = document.createElement('div');
+			wrapper.className = getCardWrapperClassName();
+			const card = new RecipeCard(recipe, wrapper);
+			card.render();
+			this.grid.appendChild(wrapper);
+			return card;
+		});
+	}
+
+	/**
+	 * Render skeleton placeholders whilst loading
+	 */
+	_renderSkeletons() {
+		const skeletonCount = 6;
+
+		for (let i = 0; i < skeletonCount; i++) {
+			const wrapper = document.createElement('div');
+			wrapper.className = getCardWrapperClassName();
+			wrapper.innerHTML = renderSkeletonCard();
+			this.grid.appendChild(wrapper);
+		}
 	}
 
 	destroy() {

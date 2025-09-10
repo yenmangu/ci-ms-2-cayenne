@@ -49,8 +49,43 @@ a div {
 
 /* Bootstrap Override */
 
-.card p {
-	/* text-decoration: none; */
+/* Cards - Recipe Cards, Ingredient Cards etc */
+
+.card-img-top {
+	width: 100%;
+	object-fit: cover;
+}
+
+/* Placeholder shimmer effect */
+
+.placeholder-shimmer .placeholder {
+	position: relative;
+	overflow: hidden;
+}
+
+.placeholder-shimmer .placeholder::after {
+	content: '';
+	position: absolute;
+	top: 0;
+	left: -150px;
+	height: 100%;
+	width: 150px;
+	background: linear-gradient(
+		to right,
+		transparent 0%,
+		rgba(255, 255, 255, 0.2) 50%,
+		transparent 100%
+	);
+	animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+	0% {
+		left: -150px;
+	}
+	100% {
+		left: 100%;
+	}
 }
 
 /* Queries */
