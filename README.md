@@ -114,7 +114,24 @@ Other colours used
 
 ## Architecture
 
-> Note:
+## Navigation
+
+### Active Link Resolution
+
+The function `getActivePageLink()` (defined in [`src/navigation.js`](./src/navigation.js)) is responsible for determining which navigation link should be marked as active, based on the current `window.location.pathname`.
+
+It uses a robust matching strategy:
+
+- Normalises `/` and `''` to `/index.html` to support local development (Live Server) and GitHub Pages
+- Matches each link using `pathname.endsWith(linkPath)`, where `linkPath` is the trailing segment of the link's href (e.g. `/features.html`)
+
+This ensures correct behaviour when the site is served from:
+
+- A root `/` path locally
+- A `.html` filename (e.g. `/features.html`)
+- GitHub Pages (`/cayenne/features.html`)
+
+The link config is defined in `navbarConfig.js`, and used by `initNavbar()` to render the active `<nav>` state.
 
 ### Folder Structure
 
