@@ -12,12 +12,12 @@ import {
 
 export class RecipeGrid {
 	/**
-	 * @param {HTMLElement} app
+	 * @param {HTMLElement} appRoot
 	 * @param {RecipeCardObject[]} recipes
 	 * @param {Object} opts
 	 */
-	constructor(app, recipes, opts = {}) {
-		this.app = app;
+	constructor(appRoot, recipes, opts = {}) {
+		this.appRoot = appRoot;
 		/** @type {RecipeCardObject[]} */
 		this.recipes = recipes;
 		this.loading = false;
@@ -48,7 +48,7 @@ export class RecipeGrid {
 	 * @returns {void}
 	 */
 	render() {
-		this.app.innerHTML = renderGridContainer();
+		this.appRoot.innerHTML = renderGridContainer();
 		this.grid = document.getElementById('recipeGrid');
 		if (!this.grid) {
 			throw new Error(`[Recipe Grid Controller] Recipe grid not found`);
@@ -169,7 +169,7 @@ export class RecipeGrid {
 	}
 
 	destroy() {
-		this.app.innerHTML = '';
+		this.appRoot.innerHTML = '';
 		this.cardInstances = [];
 		this.grid = null;
 	}

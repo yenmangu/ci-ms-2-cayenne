@@ -16,11 +16,11 @@ function fakeFetchRecipes() {
 
 /**
  *
- * @param {HTMLElement} appEl
+ * @param {HTMLElement} appRoot
  */
-export async function initCayenneApp(appEl) {
+export async function initCayenneApp(appRoot) {
 	// This function currently
-	const grid = new RecipeGrid(appEl, []);
+	const grid = new RecipeGrid(appRoot, []);
 	grid.setLoading(true);
 	grid.render();
 
@@ -37,18 +37,18 @@ export async function initCayenneApp(appEl) {
 		grid.render();
 	} catch (error) {
 		grid.setLoading(false);
-		showErrorMessage(appEl, error);
+		showErrorMessage(appRoot, error);
 	}
 }
 
 /**
  *
- * @param {HTMLElement} appEl
+ * @param {HTMLElement} appRoot
  * @param {any} err // 'any' for now
  */
-function showErrorMessage(appEl, err) {
+function showErrorMessage(appRoot, err) {
 	const config = /** @type {ErrorConfig} */ ({});
-	config.container = appEl;
+	config.container = appRoot;
 	const error = new ErrorMessage(config);
 	error.render();
 }
