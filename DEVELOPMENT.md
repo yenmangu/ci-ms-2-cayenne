@@ -1,5 +1,30 @@
 # Development Notes
 
+## Development Scripts
+
+### Generate a Vertical Slice
+
+You can scaffold a full vertical slice using the built-in CLI tool:
+
+```bash
+npm run slice -- <slice-name>
+```
+
+Example:
+
+```
+npm run create-slice -- recipe-detail
+```
+
+This creates:
+
+```
+src/components/recipe-detail/
+  recipeDetail.controller.js
+  recipeDetail.service.js
+  recipeDetail.view.js
+```
+
 ## Browser Compatibility
 
 Cayenne is written in modern JavaScript using ES modules. No build tools or transpilation are used, so the code runs directly in the browser. As such, supported features depend on the user’s browser version.
@@ -32,3 +57,7 @@ The project is configured with `target: "ES2020"` in `jsconfig.json`, which ensu
 - **Avoid unless necessary**: ES2022 features. These will not run on older browsers without polyfills or transpilation.
 
 For coursework and GitHub Pages deployment, ES2020 is the baseline.
+
+```
+
+```
