@@ -8,7 +8,12 @@
  * @returns {string | null}
  */
 export function getActivePageLink(links) {
-	const pathname = window.location.pathname;
+	let pathname = window.location.pathname;
+
+	// Normalise root to index.html for local dev and GitHub Pages
+	if (pathname == '/' || pathname === '') {
+		pathname = 'index.html';
+	}
 	const currentPath = pathname.slice(pathname.lastIndexOf('/'));
 
 	for (const link of links) {
