@@ -242,6 +242,11 @@ The BEM (Block, Element, Modifier) naming convention has been adopted for all cu
 
 ### Local VS Deployment
 
+## Browser Compatibility
+
+Cayenne is written in modern JavaScript (ES modules) without build tools or transpilation.
+Browser support details and feature compatibility are documented in [DEVELOPMENT.md](./DEVELOPMENT.md#browser-compatibility).
+
 ## Credits
 
 ### Credits For Specific Features
