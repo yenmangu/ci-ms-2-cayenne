@@ -1,5 +1,10 @@
+/**
+ * @typedef {import('../components/error-message/errorMessage.controller.js').ErrorMessageConfig} ErrorConfig
+ */
+
 import { multipleRecipes } from '../data/multipleRecipes.js';
 import { RecipeGrid } from '../components/recipe-grid/recipeGrid.controller.js';
+import { ErrorMessage } from '../components/error-message/errorMessage.controller.js';
 
 function fakeFetchRecipes() {
 	return new Promise(resolve => {
@@ -9,8 +14,13 @@ function fakeFetchRecipes() {
 	});
 }
 
-async function initCayenneApp() {
-	const grid = new RecipeGrid([]);
+/**
+ *
+ * @param {HTMLElement} appEl
+ */
+export async function initCayenneApp(appEl) {
+	// This function currently
+	const grid = new RecipeGrid(appEl, []);
 	grid.setLoading(true);
 	grid.render();
 
@@ -27,12 +37,18 @@ async function initCayenneApp() {
 		grid.render();
 	} catch (error) {
 		grid.setLoading(false);
-		showErrorMessage(error);
+		showErrorMessage(appEl, error);
 	}
 }
 
-initCayenneApp();
-
-function showErrorMessage(err) {
-	console.warn('ShowErrorMessage not yet implemented', err);
+/**
+ *
+ * @param {HTMLElement} appEl
+ * @param {any} err // 'any' for now
+ */
+function showErrorMessage(appEl, err) {
+	const config = /** @type {ErrorConfig} */ ({});
+	config.container = appEl;
+	const error = new ErrorMessage(config);
+	error.render();
 }

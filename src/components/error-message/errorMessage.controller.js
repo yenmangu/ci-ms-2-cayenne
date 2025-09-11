@@ -1,5 +1,5 @@
 /**
- * @typedef {Object} ErrorMEssageConfig
+ * @typedef {Object} ErrorMessageConfig
  * @property {'network'|'not-found'|'generic'} type
  * @property {string|Error} error
  * @property {HTMLElement} container
@@ -13,7 +13,7 @@ import { renderErrorMessage } from './errorMessage.view.js';
 
 export class ErrorMessage {
 	/**
-	 * @param {ErrorMEssageConfig} config
+	 * @param {ErrorMessageConfig} config
 	 */
 	constructor(config) {
 		this.type = config.type;
