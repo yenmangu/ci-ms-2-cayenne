@@ -12,7 +12,7 @@ export function getActivePageLink(links) {
 
 	// Normalise root to index.html for local dev and GitHub Pages
 	if (pathname == '/' || pathname === '') {
-		pathname = 'index.html';
+		pathname = '/index.html';
 	}
 	const currentPath = pathname.slice(pathname.lastIndexOf('/'));
 
