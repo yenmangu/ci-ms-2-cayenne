@@ -6,7 +6,8 @@
   "type": "module",
   "scripts": {
     "test": "jest",
-    "test:debug": "node --inspect-brk ./node_modules/.bin/jest --runInBand"
+    "test:debug": "node --inspect-brk ./node_modules/.bin/jest --runInBand",
+    "slice": "node ./scripts/createSlice.js"
   },
   "repository": {
     "type": "git",
