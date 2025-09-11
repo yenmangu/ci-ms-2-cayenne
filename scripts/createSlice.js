@@ -30,7 +30,9 @@ const serviceFile = `${camelName}.service.js`;
 
 const className = camelName.charAt(0).toUpperCase() + camelName.slice(1);
 
-const controllerContent = `export class ${className} {
+const controllerContent = `import * as service from './${serviceFile}'
+
+export class ${className} {
 
 constructor() {}
 
@@ -48,7 +50,7 @@ export function render${className}() {
 	// TODO: implment view logic
 }`;
 
-const serviceContent = `// Service logic for ${camelName} goes here.`;
+const serviceContent = `export {};`;
 
 const files = [
 	{ name: controllerFile, content: controllerContent },
