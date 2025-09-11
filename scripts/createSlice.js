@@ -30,26 +30,25 @@ const serviceFile = `${camelName}.service.js`;
 
 const className = camelName.charAt(0).toUpperCase() + camelName.slice(1);
 
-const controllerContent = `export class ${className}
-		constructor() {}
+const controllerContent = `export class ${className} {
 
-		render() {
-			console.warn('function not implemented yet')
-		}
-	`;
+constructor() {}
 
-const viewContent = `
-/**
+	render() {
+		console.warn('Function render() not yet implemented.')
+	}
+}`;
+
+const viewContent = `/**
  * Renders the ${camelName} component to the DOM
  *
  */
 
-export function render${className} {
+export function render${className}() {
 	// TODO: implment view logic
-}
-`;
+}`;
 
-const serviceContent = `// Service logic for ${camelName} gos here.`;
+const serviceContent = `// Service logic for ${camelName} goes here.`;
 
 const files = [
 	{ name: controllerFile, content: controllerContent },
