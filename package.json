@@ -18,5 +18,8 @@
   "bugs": {
     "url": "https://github.com/yenmangu/ci-ms-2-cayenne/issues"
   },
-  "homepage": "https://github.com/yenmangu/ci-ms-2-cayenne#readme"
+  "homepage": "https://github.com/yenmangu/ci-ms-2-cayenne#readme",
+  "devDependencies": {
+    "@types/node": "^24.3.1"
+  }
 }
