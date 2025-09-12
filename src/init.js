@@ -2,6 +2,8 @@ import { SpoonacularClient } from './api/client.js';
 import { initNavbar } from './global-ui/navbar.js';
 
 export async function initPages() {
+	console.log('initPages()');
+
 	try {
 		initNavbar();
 	} catch (error) {
