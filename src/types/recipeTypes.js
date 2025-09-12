@@ -1,7 +1,7 @@
 export {};
 
 /**
- * @typedef {Object} RecipeCard
+ * @typedef {object} RecipeCard
  * @property {number} id
  * @property {string} title
  * @property {string} image
@@ -9,20 +9,20 @@ export {};
  */
 
 /**
- * @typedef {Object} MeasureObject
+ * @typedef {object} Measureobject
  * @property {number} amount
  * @property {string} unitLong
  * @property {string} unitShort
  */
 
 /**
- * @typedef {Object} Measures
- * @property {MeasureObject} [metric]
- * @property {MeasureObject} [us]
+ * @typedef {object} Measures
+ * @property {Measureobject} [metric]
+ * @property {Measureobject} [us]
  */
 
 /**
- * @typedef {Object} ExtendedIngredient
+ * @typedef {object} ExtendedIngredient
  * @property {number} [id]
  * @property {string} [image]
  * @property {string} [consistency]
@@ -39,36 +39,36 @@ export {};
  */
 
 /**
- * @typedef {Object} WinePairing
+ * @typedef {object} WinePairing
  * @property {string[]} pairedWines
  * @property {string} pairingText
  */
 
 /**
- * @typedef {Object} RecipeSummary
+ * @typedef {object} RecipeSummary
  * @property {number} id
  * @property {string} summary
  * @property {string} title
  */
 
 /**
- * @typedef {Object} TemperatureObject
+ * @typedef {object} Temperatureobject
  * @property {number} number
  * @property {string} unit
  */
 
 /**
- * @typedef {Object} EquipmentInstance
+ * @typedef {object} EquipmentInstance
  * @property {number} id
  * @property {string} image
  * @property {string} name
- * @property {TemperatureObject} [temperature]
+ * @property {Temperatureobject} [temperature]
  * @property {string} [localizedName]
  */
 
 /**
  * Lean ingredient used in RecipeStep object
- * @typedef {Object} RecipeStepIngredient
+ * @typedef {object} RecipeStepIngredient
  * @property {number} id
  * @property {string} image
  * @property {string} name
@@ -76,13 +76,13 @@ export {};
  */
 
 /**
- * @typedef {Object} StepLength
+ * @typedef {object} StepLength
  * @property {number} [number]
  * @property {string} [unit]
  */
 
 /**
- * @typedef {Object} RecipeStep
+ * @typedef {object} RecipeStep
  * @property {EquipmentInstance[]} equipment
  * @property {RecipeStepIngredient[]} ingredients
  * @property {number} number
@@ -92,7 +92,7 @@ export {};
  */
 
 /**
- * @typedef {Object} InstructionIngredient
+ * @typedef {object} InstructionIngredient
  * @property {number} [id]
  * @property {string} [name]
  * @property {string} [localizedName]
@@ -100,13 +100,13 @@ export {};
  */
 
 /**
- * @typedef {Object} AnalyzedInstructions
+ * @typedef {object} AnalyzedInstructions
  * @property {string} name
  * @property {RecipeStep[]} steps
  */
 
 /**
- * @typedef {Object} RecipeFull
+ * @typedef {object} RecipeFull
  * @property {number} id
  * @property {string} title
  * @property {string} [image]

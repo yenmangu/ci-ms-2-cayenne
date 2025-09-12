@@ -1,20 +1,20 @@
 export {};
 
 /**
- * @typedef {Object} LinkObject
+ * @typedef {object} Linkobject
  * @property {string} href
  * @property {string}	title
  */
 
 /**
- * @typedef {Object} NavBar
+ * @typedef {object} NavBar
  * @property {string | null} activeLink
- * @property {LinkObject[]} links
+ * @property {Linkobject[]} links
  *
  */
 
 /**
- * @typedef {Object} CreateNavConfig
+ * @typedef {object} CreateNavConfig
  * @property {string} pageLink
  * @property {string} pageTitle
  */
