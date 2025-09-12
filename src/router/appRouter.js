@@ -27,10 +27,10 @@ export const AppRouter = {
 		const routeHandler = route?.handler;
 
 		if (typeof routeHandler === 'function') {
-			routeHandler(this.appRoot, params);
+			routeHandler(this.appRoot, path, params);
 		} else {
 			const fallbackRoute = '404';
-			routeMap[fallbackRoute].handler(this.appRoot, {});
+			routeMap[fallbackRoute].handler(this.appRoot, '/404', {});
 		}
 	}
 };

@@ -5,15 +5,21 @@
 /** @type {RouteMap} */
 export const routeMap = {
 	'/': {
-		handler: () => {},
+		handler: (appRoot, pathName, params) => {
+			console.log('Route handler triggered with: ', pathName);
+		},
 		title: 'Home'
 	},
 	'/recipe': {
-		handler: () => {},
+		handler: (appRoot, pathName, params) => {
+			console.log('Route handler triggered with: ', pathName);
+		},
 		title: 'Recipe Detail'
 	},
 	'/404': {
-		handler: () => {},
+		handler: (appRoot, pathName, params) => {
+			console.log('Route handler triggered with: ', pathName);
+		},
 		title: 'Not Found'
 	}
 };
