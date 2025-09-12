@@ -35,3 +35,20 @@ export const AppRouter = {
 		}
 	}
 };
+
+/**
+ *
+ * @param {(
+ * 	appRoot: HTMLElement,
+ * 	params: Record<string,string> |{},
+ * 	pathName: string,
+ * 	)=> void
+ * } ComponentClass
+ * @returns {import('../types/routerTypes.js').RouteHandler}
+ */
+export function withComponent(ComponentClass) {
+	return (appRoot, pathName, params = {}) => {
+		const instance = new ComponentClass(appRoot, params, pathName);
+		instance.render();
+	};
+}
