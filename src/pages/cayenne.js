@@ -5,6 +5,7 @@
 import { multipleRecipes } from '../data/multipleRecipes.js';
 import { RecipeGrid } from '../components/recipe-grid/recipeGrid.controller.js';
 import { ErrorMessage } from '../components/error-message/errorMessage.controller.js';
+import { RecipeDetail } from '../components/recipe-detail/recipeDetail.controller.js';
 
 function fakeFetchRecipes() {
 	return new Promise(resolve => {
@@ -19,7 +20,11 @@ function fakeFetchRecipes() {
  * @param {HTMLElement} appRoot
  */
 export async function initCayenneApp(appRoot) {
-	// This function currently
+	// CURRENTLY TESTING
+	const testId = 716429;
+	const detail = new RecipeDetail(appRoot, testId);
+	detail.publicTest();
+
 	const grid = new RecipeGrid(appRoot, []);
 	grid.setLoading(true);
 	grid.render();
