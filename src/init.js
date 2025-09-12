@@ -1,7 +1,7 @@
 import { initNavbar } from './global-ui/navbar.js';
 
 export async function initPages() {
-	console.log('initPages()');
+	// console.log('initPages()');
 
 	try {
 		initNavbar();
@@ -11,7 +11,7 @@ export async function initPages() {
 }
 
 document.addEventListener('DOMContentLoaded', async () => {
-	console.log('awaiting init pages');
+	// console.log('awaiting init pages');
 
 	await initPages();
 });
