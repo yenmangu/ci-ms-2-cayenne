@@ -7,6 +7,17 @@ import { RecipeGrid } from '../components/recipe-grid/recipeGrid.controller.js';
 import { ErrorMessage } from '../components/error-message/errorMessage.controller.js';
 import { RecipeDetail } from '../components/recipe-detail/recipeDetail.controller.js';
 
+/**
+ * The public '/' route handler
+ *
+ * @param {HTMLElement} appRoot
+ * @param {string} pathName
+ * @param {Record<string, string>} [params]
+ */
+export function loadHome(appRoot, pathName, params) {
+	initCayenneApp(appRoot, pathName, params);
+}
+
 function fakeFetchRecipes() {
 	return new Promise(resolve => {
 		setTimeout(() => {
@@ -18,12 +29,15 @@ function fakeFetchRecipes() {
 /**
  *
  * @param {HTMLElement} appRoot
+ * @param {string} pathName
+ * @param {Record<string, string>} [params]
  */
-export async function initCayenneApp(appRoot) {
+export async function initCayenneApp(appRoot, pathName, params) {
+	appRoot.innerHTML = '';
 	// CURRENTLY TESTING
 	const testId = 716429;
-	const detail = new RecipeDetail(appRoot, testId);
-	detail.publicTest();
+	// const detail = new RecipeDetail(appRoot, testId);
+	// detail.publicTest();
 
 	const grid = new RecipeGrid(appRoot, []);
 	grid.setLoading(true);

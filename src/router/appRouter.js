@@ -7,30 +7,31 @@ export function startRouter(appRoot) {
 
 export const AppRouter = {
 	init(appRoot) {
-		this.appRoot = appRoot;
+		// Handle first render
+		this.handleRouteChange(appRoot);
 
-		window.addEventListener('hashchange', () => this.handleRouteChange());
+		// Handle future hash changes
+		window.addEventListener('hashchange', () =>
+			this.handleRouteChange(appRoot)
+		);
 
-		this.handleRouteChange();
+		this.handleRouteChange(appRoot);
 	},
 
 	/**
 	 * Handle hash changes
+	 * @param {HTMLElement} appRoot
 	 */
 
-	handleRouteChange() {
+	handleRouteChange(appRoot) {
 		const hash = window.location.hash;
 		/** @type {{path: string, params: Record<string,string> | {}}} */
 		const { path, params } = parseHashRoute(hash);
+		const entry = routeMap[path] || routeMap['/404'];
 
-		const route = routeMap[path];
-		const routeHandler = route?.handler;
-
-		if (typeof routeHandler === 'function') {
-			routeHandler(this.appRoot, path, params);
-		} else {
-			const fallbackRoute = '404';
-			routeMap[fallbackRoute].handler(this.appRoot, '/404', {});
+		entry.handler(appRoot, path, params);
+		if (entry.title) {
+			document.title = entry.title;
 		}
 	}
 };

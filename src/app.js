@@ -12,7 +12,7 @@ import { startRouter } from './router/appRouter.js';
  */
 async function initCayenne() {
 	const appRoot = document.getElementById('app');
-	await initCayenneApp(appRoot);
+	// await initCayenneApp(appRoot);
 
 	// Start the client-side routing
 	startRouter(appRoot);

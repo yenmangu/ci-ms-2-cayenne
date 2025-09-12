@@ -2,12 +2,12 @@
  * @typedef {import("../types/routerTypes.js").RouteMap} RouteMap
  */
 
+import { loadHome } from '../pages/cayenne.js';
+
 /** @type {RouteMap} */
 export const routeMap = {
 	'/': {
-		handler: (appRoot, pathName, params) => {
-			console.log('Route handler triggered with: ', pathName);
-		},
+		handler: loadHome,
 		title: 'Home'
 	},
 	'/recipe': {
