@@ -147,6 +147,10 @@ The link config is defined in `navbarConfig.js`, and used by `initNavbar()` to r
 
 #### User Facing Features
 
+| Feature                      | Notes                                                                                                                                                                                                                   | Image |
+| ---------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----- |
+| SPA style hash-based routing | Client-side navigation using `#/path` fragments. Works seamlessly on GitHub Pages without server configuration. URLs are functional but less SEO-friendly and considered a legacy fallback compared to the History API. |       |
+
 #### Development Features
 
 ### Future Features
@@ -268,8 +272,9 @@ Browser support details and feature compatibility are documented in [DEVELOPMENT
 
 ### Credits For Specific Features
 
-| Feature | Source | Notes |
-| ------- | ------ | ----- |
+| Feature      | Source                                                                                                                              | Notes                                                                                                                                                        |
+| ------------ | ----------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Hash routing | [Medium - Hash routing](https://thedevdrawer.medium.com/single-page-application-routing-using-hash-or-url-d6d1e2adcde/Hash_routing) | Inspiration for using `hashchange` because GitHub pages does not support History API [GitHub Community](https://github.com/orgs/community/discussions/64096) |
 
 ### Other Credits
 
