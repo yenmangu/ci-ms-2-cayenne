@@ -1,3 +1,97 @@
+/**
+ * @typedef {'searchRecipes'|
+ * 'searchRecipesByIngredients'|
+ * 'searchRecipesByNutrients'|
+ * 'getRecipeInformation'|
+ * 'getRecipeInformationBulk'|
+ * 'getSimilarRecipes'|
+ * 'getRandomRecipes'|
+ * 'autocompleteRecipeSearch'|
+ * 'analyzeRecipeSearchQuery'|
+ * 'analyzeRecipeInstructions'|
+ * 'analyzeRecipe'|
+ * 'classifyCuisine'|
+ * 'guessNutritionByDishName'|
+ * 'summarizeRecipe'|
+ * 'convertAmounts'|
+ * 'quickAnswer'|
+ * 'extractRecipeFromWebsite'|
+ * 'recipeNutritionWidgetJson'|
+ * 'recipeNutritionWidgetHtml'|
+ * 'recipeNutritionLabelPng'|
+ * 'recipeNutritionLabelHtml'|
+ * 'recipeIngredientsWidgetJson'|
+ * 'recipeIngredientsWidgetHtml'|
+ * 'recipeIngredientsImagePng'|
+ * 'recipeEquipmentWidgetJson'|
+ * 'recipeEquipmentWidgetHtml'|
+ * 'recipeEquipmentImagePng'|
+ * 'recipePriceBreakdownJson'|
+ * 'recipePriceBreakdownHtml'|
+ * 'recipePriceBreakdownPng'|
+ * 'recipeTasteJson'|
+ * 'recipeTasteHtml'|
+ * 'recipeTastePng'|
+ * 'createRecipeCard'|
+ * 'visualizeRecipeNutrition'|
+ * 'visualizeEquipment'|
+ * 'visualizePriceBreakdown'|
+ * 'createRecipeCardById'|
+ * 'autocompleteIngredientSearch'|
+ * 'ingredientSearch'|
+ * 'getIngredientInformation'|
+ * 'computeIngredientAmount'|
+ * 'getIngredientSubstitutes'|
+ * 'getIngredientSubstitutesById'|
+ * 'mapIngredientsToProducts'|
+ * 'computeGlycemicLoad'|
+ * 'autocompleteProductSearch'|
+ * 'searchGroceryProducts'|
+ * 'searchGroceryProductsByUpc'|
+ * 'getProductInformation'|
+ * 'getComparableProductsByUpc'|
+ * 'productNutritionWidgetHtml'|
+ * 'productNutritionWidgetPng'|
+ * 'productNutritionLabelPng'|
+ * 'productNutritionLabelHtml'|
+ * 'searchMenuItems'|
+ * 'autocompleteMenuItemSearch'|
+ * 'getMenuItemInformation'|
+ * 'menuItemNutritionWidgetHtml'|
+ * 'menuItemNutritionWidgetPng'|
+ * 'menuItemNutritionLabelPng'|
+ * 'menuItemNutritionLabelHtml'|
+ * 'searchAllFood'|
+ * 'searchSiteContent'|
+ * 'searchFoodVideos'|
+ * 'imageAnalysisByUrl'|
+ * 'imageClassificationByUrl'|
+ * 'detectFoodInText'|
+ * 'randomFoodJoke'|
+ * 'randomFoodTrivia'|
+ * 'conversationSuggests'|
+ * 'talkToChatbot'|
+ * 'searchCustomFoods'|
+ * 'connectUser'|
+ * 'generateMealPlan'|
+ * 'getMealPlanWeek'|
+ * 'clearMealPlanDay'|
+ * 'addToMealPlan'|
+ * 'deleteFromMealPlan'|
+ * 'getMealPlanTemplates'|
+ * 'getMealPlanTemplate'|
+ * 'addMealPlanTemplate'|
+ * 'getShoppingList'|
+ * 'addToShoppingList'|
+ * 'deleteFromShoppingList'|
+ * 'generateShoppingList'|
+ * 'searchRestaurants'|
+ * 'getDishPairingForWine'|
+ * 'getWinePairing'|
+ * 'getWineDescription'|
+ * 'getWineRecommendation'} EndpointKeys
+ */
+
 export const SPOONACULAR_ENDPOINTS = {
 	// Recipes
 	searchRecipes: '/recipes/complexSearch',
