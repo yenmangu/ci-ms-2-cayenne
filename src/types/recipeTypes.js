@@ -23,6 +23,10 @@ export {};
 
 /**
  * @typedef {Object} ExtendedIngredient
+ * @property {number} [id]
+ * @property {string} [image]
+ * @property {string} [consistency]
+ * @property {string} [nameClean]
  * @property {string} aisle
  * @property {number}amount
  * @property {Measures} measures
@@ -41,29 +45,10 @@ export {};
  */
 
 /**
- * @typedef {Object} RecipeFull
+ * @typedef {Object} RecipeSummary
  * @property {number} id
+ * @property {string} summary
  * @property {string} title
- * @property {string} image
- * @property {string} imageType
- * @property {number} servings
- * @property {string} readyInMinutes
- * @property {string} cookingMinutes
- * @property {string} preparationMinutes
- * @property {string} sourceName
- * @property {string} sourceUrl
- * @property {string} spoonacularSourceUrl
- * @property {string} spoonacularScore
- * @property {boolean} cheap
- * @property {string[]} cuisines
- * @property {boolean} dairyFree
- * @property {string[]} diets
- * @property {string} instructions
- * @property {string[]} dishTypes
- * @property {ExtendedIngredient[]} extendedIngredients
- * @property {string} spoonacularSourceUrl
- * @property {number} [healthScore]
- * @property {WinePairing} [winePairing]
  */
 
 /**
@@ -77,7 +62,8 @@ export {};
  * @property {number} id
  * @property {string} image
  * @property {string} name
- * @property {TemperatureObject} temperature
+ * @property {TemperatureObject} [temperature]
+ * @property {string} [localizedName]
  */
 
 /**
@@ -86,6 +72,13 @@ export {};
  * @property {number} id
  * @property {string} image
  * @property {string} name
+ * @property {string} [localizedName]
+ */
+
+/**
+ * @typedef {Object} StepLength
+ * @property {number} [number]
+ * @property {string} [unit]
  */
 
 /**
@@ -93,11 +86,63 @@ export {};
  * @property {EquipmentInstance[]} equipment
  * @property {RecipeStepIngredient[]} ingredients
  * @property {number} number
+ * @property {StepLength} [length]
  * @property {string}	step
+
+ */
+
+/**
+ * @typedef {Object} InstructionIngredient
+ * @property {number} [id]
+ * @property {string} [name]
+ * @property {string} [localizedName]
+ * @property {string} [image]
  */
 
 /**
  * @typedef {Object} AnalyzedInstructions
  * @property {string} name
  * @property {RecipeStep[]} steps
+ */
+
+/**
+ * @typedef {Object} RecipeFull
+ * @property {number} id
+ * @property {string} title
+ * @property {string} [image]
+ * @property {string} [imageType]
+ * @property {number} [servings]
+ * @property {number} [readyInMinutes]
+ * @property {number} [cookingMinutes]
+ * @property {number} [preparationMinutes]
+ * @property {string} [sourceName]
+ * @property {string} [sourceUrl]
+ * @property {string} [spoonacularSourceUrl]
+ * @property {number} [spoonacularScore]
+ * @property {boolean} [cheap]
+ * @property {string[]} [cuisines]
+ * @property {boolean} [dairyFree]
+ * @property {boolean} [vegetarian]
+ * @property {boolean} [vegan]
+ * @property {boolean} [glutenFree]
+ * @property {boolean} [veryHealthy]
+ * @property {boolean} [veryPopular]
+ * @property {boolean} [sustainable]
+ * @property {boolean} [lowFodmap]
+ * @property {number} [weightWatcherSmartPoints]
+ * @property {string} [gaps]
+ * @property {number} [aggregateLikes]
+ * @property {string}	[creditsText]
+ * @property {any} [license]
+ * @property {number} [pricePerServing]
+ * @property {string[]} diets
+ * @property {string} [instructions]
+ * @property {AnalyzedInstructions[]} [analyzedInstructions]
+ * @property {string[]} [dishTypes]
+ * @property {ExtendedIngredient[]} [extendedIngredients]
+ * @property {string} [summary]
+ * @property {string[]} [occasions]
+ * @property {string} [spoonacularSourceUrl]
+ * @property {number} [healthScore]
+ * @property {WinePairing} [winePairing]
  */
