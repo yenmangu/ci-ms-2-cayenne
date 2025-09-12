@@ -56,6 +56,30 @@ export class SpoonacularClient {
 		return responseJson;
 	}
 
+	/**
+	 *
+	 * @param {number} id
+	 */
+	async getRecipeInformation(id) {
+		const endpoint = this._buildEndpointWithParameters('getRecipeInformation', {
+			id
+		});
+
+		console.log('Endpoint for testing: ', endpoint);
+		// return;
+
+		const responseJson = await this._fetch(endpoint);
+		return responseJson;
+	}
+
+	async getRecipeSummary(id) {
+		const endpoint = this._buildEndpointWithParameters('summarizeRecipe', {
+			id
+		});
+		const responseJson = await this._fetch(endpoint);
+		return responseJson;
+	}
+
 	async searchIngredients(query) {}
 	/**
 	 *
