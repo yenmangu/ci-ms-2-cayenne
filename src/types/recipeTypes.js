@@ -9,7 +9,7 @@ export {};
  */
 
 /**
- * @typedef {object} Measureobject
+ * @typedef {object} MeasureObject
  * @property {number} amount
  * @property {string} unitLong
  * @property {string} unitShort
@@ -17,8 +17,8 @@ export {};
 
 /**
  * @typedef {object} Measures
- * @property {Measureobject} [metric]
- * @property {Measureobject} [us]
+ * @property {MeasureObject} [metric]
+ * @property {MeasureObject} [us]
  */
 
 /**
@@ -52,7 +52,7 @@ export {};
  */
 
 /**
- * @typedef {object} Temperatureobject
+ * @typedef {object} TemperatureObject
  * @property {number} number
  * @property {string} unit
  */
@@ -62,7 +62,7 @@ export {};
  * @property {number} id
  * @property {string} image
  * @property {string} name
- * @property {Temperatureobject} [temperature]
+ * @property {TemperatureObject} [temperature]
  * @property {string} [localizedName]
  */
 

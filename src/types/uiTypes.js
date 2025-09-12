@@ -1,7 +1,7 @@
 export {};
 
 /**
- * @typedef {object} Linkobject
+ * @typedef {object} LinkObject
  * @property {string} href
  * @property {string}	title
  */
@@ -9,7 +9,7 @@ export {};
 /**
  * @typedef {object} NavBar
  * @property {string | null} activeLink
- * @property {Linkobject[]} links
+ * @property {LinkObject[]} links
  *
  */
 
