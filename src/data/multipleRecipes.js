@@ -1,9 +1,9 @@
 /** @type {import('../../src/types/recipeTypes.js').RecipeCard[]} */
 export const multipleRecipes = [
 	{
-		id: 716429,
-		title: 'Pasta with Garlic, Scallions, Cauliflower & Breadcrumbs',
-		image: 'https://img.spoonacular.com/recipes/716429-312x231.jpg',
+		id: 663150,
+		title: 'Thai Savory Brown Fried Rice',
+		image: 'https://img.spoonacular.com/recipes/663150-556x370.jpg',
 		imageType: 'jpg'
 	},
 	{
@@ -13,9 +13,9 @@ export const multipleRecipes = [
 		imageType: 'jpg'
 	},
 	{
-		id: 716429,
-		title: 'Pasta with Garlic, Scallions, Cauliflower & Breadcrumbs',
-		image: 'https://img.spoonacular.com/recipes/716429-312x231.jpg',
+		id: 663150,
+		title: 'Thai Savory Brown Fried Rice',
+		image: 'https://img.spoonacular.com/recipes/663150-556x370.jpg',
 		imageType: 'jpg'
 	},
 	{

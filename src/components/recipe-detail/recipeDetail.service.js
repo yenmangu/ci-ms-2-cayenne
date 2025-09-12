@@ -6,10 +6,7 @@
 // Service logic for recipeDetail goes here.
 
 import { SpoonacularClient } from '../../api/client.js';
-import {
-	testRecipe,
-	testRecipeSummary
-} from '../../../.dev/recipes/testRecipe.js';
+import { testRecipe, testRecipeSummary } from '../../data/testRecipe.js';
 
 /**
  *
