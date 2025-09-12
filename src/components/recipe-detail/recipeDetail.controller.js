@@ -1,20 +1,27 @@
 /**
  * @typedef {import('../../types/recipeTypes.js').RecipeFull} Recipe
  * @typedef {import('../../types/recipeTypes.js').RecipeSummary} Summary
+ * @typedef {import('../../types/componentTypes.js').RecipeDetailParams} RecipeDetailParams
  */
 
 import * as service from './recipeDetail.service.js';
 import { renderRecipeDetail } from './recipeDetail.view.js';
 
+/**
+ * @component
+ * @domain
+ *
+ * Top level routed component for '/recipe/
+ */
 export class RecipeDetail {
 	/**
 	 * Usually #app
 	 * @param {HTMLElement} appRoot
-	 * @param {number} recipeId
+	 * @param {RecipeDetailParams} detailParams
 	 */
-	constructor(appRoot, recipeId) {
+	constructor(appRoot, detailParams) {
 		this.appRoot = appRoot;
-		this.recipeId = recipeId;
+		this.recipeId = detailParams.RecipeId;
 		/** @type {Recipe} */ this.fetchedRecipe = null;
 		/** @type {Summary} */ this.summary = null;
 		this.noSummaryPlaceholder = {

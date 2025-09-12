@@ -147,7 +147,7 @@ export class RecipeGrid {
 		this.cardInstances = this.recipes.map(recipe => {
 			const wrapper = document.createElement('div');
 			wrapper.className = getCardWrapperClassName();
-			const card = new RecipeCard(recipe, wrapper);
+			const card = new RecipeCard(wrapper, recipe);
 			card.render();
 			this.grid.appendChild(wrapper);
 			return card;
