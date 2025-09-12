@@ -4,6 +4,7 @@
 import { initCayenneApp } from './pages/cayenne.js';
 import { ErrorMessage } from './components/error-message/errorMessage.controller.js';
 import { startRouter } from './router/appRouter.js';
+import { initNavbar } from './global-ui/navbar.js';
 
 /**
  * Single point of logic for collecting 'appRoot' element.
@@ -11,6 +12,7 @@ import { startRouter } from './router/appRouter.js';
  *
  */
 async function initCayenne() {
+	initNavbar();
 	const appRoot = document.getElementById('app');
 	// await initCayenneApp(appRoot);
 
