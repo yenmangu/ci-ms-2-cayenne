@@ -7,12 +7,12 @@ import { renderRecipeCard } from './recipeCard.view.js';
 export class RecipeCard {
 	/**
 	 *
-	 * @param {RecipeCardObject} recipe
 	 * @param {HTMLElement} parentElement
+	 * @param {RecipeCardObject} recipe
 	 */
-	constructor(recipe, parentElement) {
-		/** @type {RecipeCardObject} */ this.recipe = recipe;
+	constructor(parentElement, recipe) {
 		/** @type {HTMLElement} */ this.parent = parentElement;
+		/** @type {RecipeCardObject} */ this.recipe = recipe;
 	}
 
 	render() {
