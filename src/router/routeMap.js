@@ -8,18 +8,29 @@ import { loadHome } from '../pages/cayenne.js';
 export const routeMap = {
 	'/': {
 		handler: loadHome,
-		title: 'Home'
+		title: 'Home',
+		domain: true
 	},
+
+	'/recipe-grid': {
+		handler: (appRoot, pathName, params) => {
+			console.log('Route handler triggered with: ', pathName);
+		}
+	},
+
 	'/recipe': {
 		handler: (appRoot, pathName, params) => {
 			console.log('Route handler triggered with: ', pathName);
 		},
-		title: 'Recipe Detail'
+		title: 'Recipe Detail',
+		domain: true
 	},
+
 	'/404': {
 		handler: (appRoot, pathName, params) => {
 			console.log('Route handler triggered with: ', pathName);
 		},
-		title: 'Not Found'
+		title: 'Not Found',
+		domain: true
 	}
 };
