@@ -250,12 +250,59 @@ The BEM (Block, Element, Modifier) naming convention has been adopted for all cu
 
 ## Deployment
 
+## API Proxy
+
+The Cayenne app uses a lightweight Node.js API proxy (deployed on Vercel) to safely access the Spoonacular API.
+This proxy is used to:
+
+- Keep all API keys secure and out of the public frontend
+- Apply minimal validation and request shaping
+- Simplify and standardise communication with Spoonacular
+
+All client-side requests from the Cayenne frontend go through this proxy (no direct calls to Spoonacular).
+
+See also: [ci-cayenne-proxy](https://github.com/yenmangu/ci-cayenne-proxy) for the full backend proxy source code.
+
+---
+
+### Security: Why No JWT/Auth?
+
+The Cayenne API proxy **does not implement JWT or other authentication methods**.
+This is an intentional design decision based on the following:
+
+- **No user accounts or sensitive data:**
+  The API never handles personal data, logins, or user-specific information.
+  All requests are read-only (fetching recipes, ingredients, etc.).
+
+- **Purpose is solely to protect the Spoonacular API key:**
+  The only reason for the proxy is to avoid exposing the secret key in client-side code.
+
+- **Minimal attack surface:**
+  There are no endpoints that mutate state, manage sessions, or store user data.
+
+- **Simplicity and performance:**
+  Removing JWT/auth logic reduces complexity, avoids extra network overhead, and ensures smooth user experience.
+
+If the project ever evolves to handle user logins, saved favourites, or custom data,
+robust authentication (such as JWT) would be implemented as a future phase.
+
+---
+
 ### GitHub Pages
 
 ### Local Development
 
 > [!IMPORTANT]
-> While all of the code is open source, API keys are restricted. You may clone and run this project locally using your own Spoonacular developer key.
+> While all of the code is open source, the Node.js API proxy enforces CORS with an allowed origin list for security.
+>
+> - If you wish to use the official Node.js proxy, please contact the author to request your origin be added.
+> - Alternatively, you are welcome to fork this repo and deploy your own proxy.
+> - To connect directly to Spoonacular, you’ll need your own (free) API key:
+>   [Spoonacular API Portal](https://spoonacular.com/food-api/)
+
+**Note:**
+By default, the Cayenne front-end app expects the proxy to be available at the configured API base URL.
+You can override this in your environment if running your own version.
 
 #### Cloning
 
