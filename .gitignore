@@ -17,3 +17,4 @@ cloudinary_python.txt
 /.dev/
 .dev/
 /src/config/env.js
+/.well-known

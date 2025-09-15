@@ -20,5 +20,6 @@
 	"editor.fontFamily": "SF Mono",
 	"javascript.preferences.importModuleSpecifier": "relative",
 	"javascript.preferences.importModuleSpecifierEnding": "js",
-	"postman.settings.dotenv-detection-notification-visibility": false
+	"postman.settings.dotenv-detection-notification-visibility": false,
+	"editor.hover.sticky": true
 }
