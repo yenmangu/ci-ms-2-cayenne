@@ -2,7 +2,8 @@
  * @typedef {import('../config/endpoints.js').EndpointKey} EndpointKey
  */
 
-import { ENV } from '../config/env.js';
+// import { ENV } from '../config/env.js';
+import { ENV } from '../env.js';
 import { SPOONACULAR_ENDPOINTS, buildEndpoint } from '../config/endpoints.js';
 
 /**
@@ -11,13 +12,12 @@ import { SPOONACULAR_ENDPOINTS, buildEndpoint } from '../config/endpoints.js';
  */
 export class SpoonacularClient {
 	constructor() {
-		if (!ENV.API_BASE_URL || !ENV.API_KEY) {
+		if (!ENV.API_URL) {
 			throw new Error(
 				'[MISSING ENV] - Missing API config please consult README "Troubleshooting" section.'
 			);
 		}
-		this.apiKey = ENV.API_KEY;
-		this.baseUrl = ENV.API_BASE_URL;
+		this.apiUrl = ENV.API_URL;
 	}
 	/**
 	 *
@@ -149,10 +149,9 @@ export class SpoonacularClient {
 	 */
 	_buildUrl(endpoint, params = {}) {
 		const query = new URLSearchParams({
-			apiKey: this.apiKey,
 			...params
 		}).toString();
 
-		return `${this.baseUrl}${endpoint}?${query}`;
+		return `${this.apiUrl}${endpoint}?${query}`;
 	}
 }
