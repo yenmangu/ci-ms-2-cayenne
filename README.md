@@ -250,7 +250,7 @@ The BEM (Block, Element, Modifier) naming convention has been adopted for all cu
 
 ## Deployment
 
-## API Proxy
+### API Proxy
 
 The Cayenne app uses a lightweight Node.js API proxy (deployed on Vercel) to safely access the Spoonacular API.
 This proxy is used to:
@@ -264,6 +264,19 @@ All client-side requests from the Cayenne frontend go through this proxy (no dir
 See also: [ci-cayenne-proxy](https://github.com/yenmangu/ci-cayenne-proxy) for the full backend proxy source code.
 
 ---
+
+#### Test Recipe API Route
+
+To support rapid development and testing without using up the live Spoonacular API quota, the backend proxy includes a dedicated test route:
+
+- **Endpoint:** `/api/test?test=true`
+- **Returns:** A set of stored recipe data in exactly the same format as the live Spoonacular API response.
+
+This allows the Cayenne frontend to develop and test all recipe features using realistic, predictable data—without requiring live API access or risking quota exhaustion.
+The frontend can be easily switched to use either the live API or the test route as needed.
+
+**Note:**
+All test data is kept in sync with the expected live API format for seamless integration and code parity.
 
 ### Security: Why No JWT/Auth?
 
