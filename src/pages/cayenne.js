@@ -18,6 +18,11 @@ export function loadHome(appRoot, pathName, params) {
 	initCayenneApp(appRoot, pathName, params);
 }
 
+/**
+ * Use local data to test the recipeGrid
+ *
+ * @returns
+ */
 function fakeFetchRecipes() {
 	return new Promise(resolve => {
 		setTimeout(() => {
@@ -48,7 +53,8 @@ export async function initCayenneApp(appRoot, pathName, params) {
 
 	// TODO Implement live API calls
 	try {
-		const recipes = await fakeFetchRecipes();
+		const recipes = await grid.service.getTestRecipes();
+		// const recipes = await fakeFetchRecipes();
 
 		// Executed after promise resolves
 		grid.setLoading(false);
