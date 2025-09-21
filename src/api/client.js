@@ -1,5 +1,6 @@
 /**
  * @typedef {import('../config/endpoints.js').EndpointKey} EndpointKey
+ * @typedef {import('../types/recipeTypes.js').RecipeFull} RecipeFull
  */
 
 // import { ENV } from '../config/env.js';
@@ -19,6 +20,22 @@ export class SpoonacularClient {
 		}
 		this.apiUrl = ENV.API_URL;
 	}
+
+	/**
+	 *
+	 * @returns
+	 */
+	async getTestApiRecipes() {
+		const queryParams = { test: true };
+		const endpoint = '/test';
+		try {
+			const responseJson = await this._fetch(endpoint, queryParams);
+			return responseJson;
+		} catch (error) {
+			throw error;
+		}
+	}
+
 	/**
 	 *
 	 * @param {string[]} searchTerms
@@ -59,6 +76,7 @@ export class SpoonacularClient {
 	/**
 	 *
 	 * @param {number} id
+	 * @returns {Promise<RecipeFull>}
 	 */
 	async getRecipeInformation(id) {
 		const endpoint = this._buildEndpointWithParameters('getRecipeInformation', {
@@ -128,7 +146,7 @@ export class SpoonacularClient {
 	}
 
 	/**
-	 * @param {keyof typeof SPOONACULAR_ENDPOINTS} path - Endpoint key
+	 * @param {keyof typeof SPOONACULAR_ENDPOINTS | 'test'} path - Endpoint key
 	 * @param {Record<string, string | number>} [params={}] - Path replacements
 	 * @returns {string} Full endpoint path with injected values
 	 */
