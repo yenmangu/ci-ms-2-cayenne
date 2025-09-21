@@ -17,6 +17,8 @@ async function initCayenne() {
 	// await initCayenneApp(appRoot);
 
 	// Start the client-side routing
+	console.log('Starting router');
+
 	startRouter(appRoot);
 }
 
