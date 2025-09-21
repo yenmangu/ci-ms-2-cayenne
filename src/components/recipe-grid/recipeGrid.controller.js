@@ -3,6 +3,7 @@
  */
 
 import { RecipeCard } from '../recipe-card/recipeCard.controller.js';
+import * as service from './recipeGrid.service.js';
 import {
 	getCardWrapperClass as getCardWrapperClassName,
 	renderGridContainer,
@@ -18,6 +19,7 @@ export class RecipeGrid {
 	 */
 	constructor(appRoot, recipes, opts = {}) {
 		this.appRoot = appRoot;
+		this.service = service.createGridService();
 		/** @type {RecipeCardObject[]} */
 		this.recipes = recipes;
 		this.loading = false;
