@@ -8,7 +8,7 @@
  *
  * @typedef {object} ComponentProps
  * @property {import("./recipeTypes.js").RecipeCard[]} [recipes]
- * @property {string} [recipeId]
+ * @property {number} [recipeId]
  * @property {Record<string, string> | {}} [filters]
  * @property {Record<string, string> | {}} [queryParams]
  */
@@ -40,7 +40,7 @@
 
 /**
  * @typedef {object} RecipeDetailParams
- * @property {string} RecipeId
+ * @property {number} recipeId
  */
 
 /**

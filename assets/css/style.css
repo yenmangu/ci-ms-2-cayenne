@@ -88,6 +88,16 @@ a div {
 	}
 }
 
+/* Recipe Detail */
+
+main.recipe-detail {
+	padding-top: 1rem;
+}
+
+.accordion {
+	width: 100%;
+}
+
 /* Queries */
 
 @media screen and (max-width: 480px) {

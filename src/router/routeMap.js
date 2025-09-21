@@ -3,6 +3,7 @@
  */
 
 import { loadHome } from '../pages/cayenne.js';
+import { handleRecipeDetail } from '../pages/recipe.js';
 
 /** @type {RouteMap} */
 export const routeMap = {
@@ -14,14 +15,12 @@ export const routeMap = {
 
 	'/recipe-grid': {
 		handler: (appRoot, pathName, params) => {
-			console.log('Route handler triggered with: ', pathName);
+			console.log('Route handler triggered with: ', pathName, params);
 		}
 	},
 
 	'/recipe': {
-		handler: (appRoot, pathName, params) => {
-			console.log('Route handler triggered with: ', pathName);
-		},
+		handler: handleRecipeDetail,
 		title: 'Recipe Detail',
 		domain: true
 	},

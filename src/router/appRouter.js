@@ -2,11 +2,15 @@ import { parseHashRoute } from './parseHashRoute.js';
 import { routeMap } from './routeMap.js';
 
 export function startRouter(appRoot) {
+	console.log('Init appRouter');
+
 	AppRouter.init(appRoot);
 }
 
 export const AppRouter = {
 	init(appRoot) {
+		console.log('inside init(appRouter)');
+
 		// Handle first render
 		this.handleRouteChange(appRoot);
 
@@ -14,8 +18,6 @@ export const AppRouter = {
 		window.addEventListener('hashchange', () =>
 			this.handleRouteChange(appRoot)
 		);
-
-		this.handleRouteChange(appRoot);
 	},
 
 	/**
@@ -24,9 +26,13 @@ export const AppRouter = {
 	 */
 
 	handleRouteChange(appRoot) {
+		console.log('Handling route change');
+
 		const hash = window.location.hash;
 		/** @type {{path: string, params: Record<string,string> | {}}} */
 		const { path, params } = parseHashRoute(hash);
+		console.log('Params: ', params);
+
 		const entry = routeMap[path] || routeMap['/404'];
 
 		entry.handler(appRoot, path, params);

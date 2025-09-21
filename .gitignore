@@ -18,3 +18,4 @@ cloudinary_python.txt
 .dev/
 /src/config/env.js
 /.well-known
+.devlog*

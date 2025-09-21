@@ -1,16 +1,50 @@
 /**
  * @typedef {import("../../types/recipeTypes.js").RecipeFull} Recipe
  * @typedef {import("../../types/recipeTypes.js").RecipeSummary} Summary
+ * @typedef {import("../../types/recipeTypes.js").ExtendedIngredient} Ingredient
  */
+
+/**
+ *
+ * @param {Ingredient} item
+ * @param {'metric' | 'us' } [system='metric']
+ * @param {'unitShort' | 'unitLong' } [unitType='unitShort']
+ */
+function ingredientMiniCard(item, system = 'metric', unitType = 'unitShort') {
+	const { measures } = item;
+	const measure = measures && measures[system] ? measures[system] : null;
+	const measureAmount = measure ? measure.amount : item.amount ?? '';
+	const measureUnit = measure ? measure[unitType] : item.unit ?? '';
+
+	const imgHtml = item.image
+		? `<img class="ingredient-image rounded me-2" width="32" height="32" src="https://spoonacular.com/cdn/ingredients_100x100/${item.image}" alt="${item.name}" />`
+		: '';
+
+	return `
+		<div class="ingredient-mini-card d-flex align-items-center mb-2 p-1 border rounded shadow-sm">
+      ${imgHtml}
+      <div>
+        <span class="fw-bold">${item.nameClean || item.name}</span>
+        <span class="text-muted small ms-2">${measureAmount} ${measureUnit}</span>
+      </div>
+    </div>
+	`;
+}
 
 /**
  * Renders the recipeDetail component to the DOM
  *
  * @param {Recipe} recipe
  * @param {Summary} summaryObj
+ * @param {{
+ * 	system: 'metric' | 'us';
+ * 	unitType: 'unitShort' | 'unitLong';
+ * 	}} [opts]
  */
-export function renderRecipeDetail(recipe, summaryObj) {
-	// TODO: implment view logic
+export function renderRecipeDetail(recipe, summaryObj, opts) {
+	console.log('Recipe passed to view: ', recipe);
+	const { system = 'metric', unitType = 'unitShort' } = opts || {};
+
 	const {
 		title,
 		image,
@@ -57,10 +91,12 @@ export function renderRecipeDetail(recipe, summaryObj) {
 
 	if (Array.isArray(extendedIngredients)) {
 		for (const item of extendedIngredients) {
-			const ingredientInsert = ``;
-			ingredientsInsertsArray.push(item);
+			const card = ingredientMiniCard(item, system, unitType);
+			ingredientsInsertsArray.push(card);
 		}
 	}
+
+	const ingredientsHtml = ingredientsInsertsArray.join('');
 
 	// const summaryBlock = Array.isArray(summary) ? summary : summary.split('.');
 	// for (let el of summaryBlock) {
@@ -68,9 +104,9 @@ export function renderRecipeDetail(recipe, summaryObj) {
 	// 	summaryInsertsArray.push(summaryInsert);
 	// }
 
-	const recipeTemplate = `<main class="recipe-detail container my-4">
+	const recipeTemplate = `<main class="recipe-detail container my-2">
   <header class="mb-4 text-center">
-    <h2 class="recipe-title"${title}</h2>
+    <h2 class="recipe-title">${title}</h2>
     <img class="img-fluid recipe-image rounded" src="${image}" />
   </header>
 
@@ -89,7 +125,7 @@ export function renderRecipeDetail(recipe, summaryObj) {
       <div id="collapseIngredients" class="accordion-collapse collapse show" data-bs-parent="#recipeAccordion">
         <div class="accordion-body recipe-ingredients">
           <!-- ingredients list goes here -->
-					${ingredientsInsertsArray}
+					${ingredientsHtml}
         </div>
       </div>
     </div>
