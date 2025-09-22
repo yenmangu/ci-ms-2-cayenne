@@ -33,6 +33,16 @@ export function createStateStore(initialState = {}) {
 	function subscribe(listener, emitCurrent = false) {
 		if (emitCurrent) listener({ ...state });
 		const sub = emitter.subscribe('state:change', listener);
+
+		// Add logic for multiple event types
+
+		const chain = {
+			immediate: () => {
+				listener({ ...state });
+				return chain;
+			},
+			unsubscribe: () => emitter.subscribe
+		};
 		return sub;
 	}
 
