@@ -104,10 +104,12 @@ export function renderRecipeDetail(recipe, summaryObj, opts) {
 	// 	summaryInsertsArray.push(summaryInsert);
 	// }
 
-	const recipeTemplate = `<main class="recipe-detail container my-2">
+	const recipeTemplate = `<main class="recipe-detail container my-2" id="recipeDetail">
+
   <header class="mb-4 text-center">
     <h2 class="recipe-title">${title}</h2>
     <img class="img-fluid recipe-image rounded" src="${image}" />
+		<div class="toggle-container" id="toggleContainer"></div>
   </header>
 
   <section class="recipe-summary mb-4">

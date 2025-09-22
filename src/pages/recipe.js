@@ -27,9 +27,13 @@ export async function handleRecipeDetail(container, pathName, params = {}) {
 	const recipeDetail = new RecipeDetail(container, recipeDetailParams);
 	try {
 		await recipeDetail.publicTest();
-		recipeDetail.render();
+		if (!recipeDetail.measureToggle || !recipeDetail.unitLengthToggle) {
+			recipeDetail.render(true);
+		} else {
+			recipeDetail.render();
+		}
 	} catch (err) {
-		console.log('error: ', err);
+		console.error('error: ', err);
 	}
 	// recipeDetail.fetchRecipe();
 }
