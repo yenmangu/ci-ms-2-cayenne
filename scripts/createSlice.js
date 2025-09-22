@@ -44,6 +44,10 @@ export class ${className} {
 	render() {
 		console.warn('Function render() not yet implemented.');
 	}
+
+	destroy(){
+		console.warn('Function destroy() not yet implemented.');
+	}
 }
 `;
 
