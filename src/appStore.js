@@ -7,7 +7,7 @@ import { createStateStore } from './event/store.js';
 /** @type {AppState} */
 const initialState = {
 	measureSystem: 'metric',
-	unitType: 'unitShort',
+	unitLength: 'unitShort',
 	recipeResults: [],
 	currentRecipe: null
 };
