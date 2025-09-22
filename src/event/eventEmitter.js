@@ -12,7 +12,7 @@
  *
  */
 
-export default class EventEmitter {
+export default class CayenneEventEmitter {
 	constructor() {
 		/** @type {Record<string, Listener[]>} */
 		this.events = {};
