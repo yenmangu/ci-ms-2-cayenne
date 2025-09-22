@@ -12,6 +12,10 @@
  *
  */
 
+/**
+ * @typedef {'state:change'|'state:reset'} StateModes
+ */
+
 export default class CayenneEventEmitter {
 	constructor() {
 		/** @type {Record<string, Listener[]>} */
