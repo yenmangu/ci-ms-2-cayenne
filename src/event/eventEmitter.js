@@ -14,7 +14,7 @@
 
 export default class EventEmitter {
 	constructor() {
-		/** @type {Record<*, Listener[]>} */
+		/** @type {Record<string, Listener[]>} */
 		this.events = {};
 
 		/** @type {Listener[]} */
