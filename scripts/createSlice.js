@@ -33,13 +33,19 @@ const className = camelName.charAt(0).toUpperCase() + camelName.slice(1);
 const controllerContent = `import * as service from './${serviceFile}'
 
 export class ${className} {
-
-constructor() {}
+	/**
+	 * @param {HTMLElement} container
+	 */
+	constructor(container) {
+		/** @type {HTMLElement} */
+		this.container = container;
+	}
 
 	render() {
-		console.warn('Function render() not yet implemented.')
+		console.warn('Function render() not yet implemented.');
 	}
-}`;
+}
+`;
 
 const viewContent = `/**
  * Renders the ${camelName} component to the DOM
