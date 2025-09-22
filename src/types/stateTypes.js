@@ -11,13 +11,13 @@ export {};
 
 /**
  * @typedef {'us'|'metric'} MeasureSystem
- * @typedef {'unitShort'|'unitLong'} UnitType
+ * @typedef {'unitShort'|'unitLong'} UnitLength
  */
 
 /**
  * @typedef {object} AppState
  * @property {MeasureSystem} measureSystem - User's preferred units
- * @property {UnitType} unitType - User's preferred unit-type
+ * @property {UnitLength} unitLength - User's preferred unit length
  * @property {RecipeCard[]} recipeResults - Results from last recipe search
  * @property {RecipeFull | null} currentRecipe - Currently selected/loaded recipe
  * @property {string} [searchQuery] - Current search query
