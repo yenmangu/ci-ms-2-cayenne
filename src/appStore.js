@@ -1,7 +1,17 @@
+/**
+ * @typedef {import('./types/stateTypes.js').AppState} AppState
+ */
+
 import { createStateStore } from './event/store.js';
 
-const cayenneStateStore = createStateStore({
-	measureSystem: 'metric'
-});
+/** @type {AppState} */
+const initialState = {
+	measureSystem: 'metric',
+	unitType: 'unitShort',
+	recipeResults: [],
+	currentRecipe: null
+};
+
+const cayenneStateStore = createStateStore(initialState);
 
 export { cayenneStateStore as appStore };
