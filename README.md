@@ -33,21 +33,9 @@ Users can directly contact Momentum if they wish to work with us as we are alway
 
 ##### Purpose
 
-- Advertise and introduce the App to new Users
-- Provide a sign up service to new Users for the App
-- Provide information to Users about the App and the services it provides.
-
 ##### Business Goals
 
-- New Users signing up to the Momentum App
-- Return business from User Subscription to the Momentum App
-
 ##### Primary User Needs
-
-- Registration forms
-- Details of the services the Momentum platform will provide
-- Information on how to start getting into fitness
-- Links to fitness articles (this could provide SEO opportunities with back linking)
 
 #### 2. Scope Plane
 
@@ -56,11 +44,6 @@ Users can directly contact Momentum if they wish to work with us as we are alway
 - A full list of [Features](#features-1) can be viewed in detail below.
 
 ##### Content Requirements
-
-- Clear, motivational text about the Momentum platform's mission.
-- Photos showcasing the platform
-- Descriptions of platform features.
-- Forms for User sign-up.
 
 #### 3. Structure Plane
 
@@ -74,9 +57,9 @@ Users can directly contact Momentum if they wish to work with us as we are alway
 
 ##### User Flow
 
-1. User lands on the home page → learns about the Momentum platform's mission.
-2. Navigates to the fitness user page → learns about the Momentum plaform's features.
-3. Signs up via the sign-up page.
+1.
+2.
+3.
 
 #### 4. Skeleton Plane
 
@@ -95,11 +78,11 @@ Users can directly contact Momentum if they wish to work with us as we are alway
 
 I used [coolors.co](https://coolors.co/6a0dad-ff3b30-1e1e1e-f2f2f2-ff9500) to generate my color palette.
 
-- `rgb(224,131,0)` / `#FF9500` Primary.
-- `rgb(106, 13, 173)` / `#6A0DAD` Primary highlights & secondary text.
-- `rgb(30,30,30)` / `#1E1E1E` Primary text.
-- `rgb(235,235,235)` / `#F2F2f2` Background and tertiary.
-- `rgb(255,59,48)` / `#FF3B30` Secondary highlights.
+-
+-
+-
+-
+-
 
 Other colours used
 -``/`#`
@@ -108,8 +91,6 @@ Other colours used
 
 ### Typography
 
-- [Chakra Petch](https://fonts.google.com/specimen/Chakra+Petch) Was used for the logo typeface, and main header.
-- [Montserrat](https://fonts.google.com/specimen/Montserrat) was used for the secondary headers and text body.
 - [Font Awesome](https://fontawesome.com) icons were used throughout the site, such as the social media icons in the footer.
 
 ## Architecture
