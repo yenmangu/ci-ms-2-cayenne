@@ -25,19 +25,20 @@ export class ToggleComponent {
 		this.key = options.key;
 		this.toggleText = '';
 		this.latestState = null;
-		this.subscription = appStore.subscribe(
-			/** @param {AppState} state */ state => {
-				console.log('State: ', state);
+		this.subscription = appStore
+			.subscribe(
+				/** @param {AppState} state */ state => {
+					console.log('State: ', state);
 
-				this.latestState = state;
-				this.toggleText = config[this.latestState[this.key]];
+					this.latestState = state;
+					this.toggleText = config[this.latestState[this.key]];
 
-				if (this.toggle) {
-					this.hydrate();
+					if (this.toggle) {
+						this.hydrate();
+					}
 				}
-			},
-			true
-		);
+			)
+			.immediate();
 
 		this.init();
 	}
@@ -71,9 +72,9 @@ export class ToggleComponent {
 
 	hydrate() {
 		console.log(this.toggle.id);
-		if (this.toggle.id !== 'measureSystem') {
-			debugger;
-		}
+		// if (this.toggle.id !== 'measureSystem') {
+		// 	debugger;
+		// }
 		this.toggle.checked =
 			this.latestState[this.key] === this.toggleConfig.onValue;
 		this.#_updateToggleText();

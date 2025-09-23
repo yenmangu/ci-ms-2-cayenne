@@ -9,7 +9,6 @@
  * @property {function(): void} unsubscribe
  * @property {function(): ChainableReturnType} once
  * @property {function(Listener): ChainableReturnType} tap
- *
  */
 
 /**
