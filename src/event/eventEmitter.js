@@ -1,6 +1,15 @@
 /**
+ * @typedef {object} ListenerArgs
+ * @property {string} label
+ * @property {*} [data]
+ * @property {any[]} [args]
+ */
+
+/**
  * @callback Listener
- * @param {...*} args
+ * @param {string} event
+ * @param {*} [data]
+ * @param {...*} [args]
  * @returns {*}
  */
 
@@ -36,6 +45,7 @@ export default class CayenneEventEmitter {
 	subscribe(event, listener) {
 		if (event === '*') {
 			this.wildcardListeners.push(listener);
+			return this.#_makeChain(event, listener);
 		}
 		if (!this.events[event]) {
 			this.events[event] = [];
@@ -64,12 +74,18 @@ export default class CayenneEventEmitter {
 	/**
 	 *
 	 * @param {string} event
-	 * @param {*} data
+	 * @param {*} [data]
+	 * @param {...*} [args]
 	 * @returns
 	 */
-	publish(event, data) {
-		(this.events[event] || []).forEach(callback => callback(data));
-		this.wildcardListeners.forEach(cb => cb(event, data));
+	publish(event, data, ...args) {
+		if (this.debug) {
+			console.log('Publishing: ', event, 'with: ', data);
+		}
+		(this.events[event] || []).forEach(callback =>
+			callback(event, data, ...args)
+		);
+		this.wildcardListeners.forEach(cb => cb(event, data, ...args));
 	}
 
 	// Private Methods
@@ -84,9 +100,9 @@ export default class CayenneEventEmitter {
 	 * @returns {ChainableReturnType}
 	 */
 	#_tap(event, listener, fn) {
-		const tappedListener = (...args) => {
-			fn(...args);
-			listener(...args);
+		const tappedListener = (event, data, ...args) => {
+			fn(event, data, ...args);
+			listener(event, data, ...args);
 		};
 		this.subscribe(event, tappedListener);
 		// Ensure the correct listener is returned to the makeChain
@@ -103,9 +119,9 @@ export default class CayenneEventEmitter {
 	 * @returns {ChainableReturnType}
 	 */
 	#_once(event, listener) {
-		this.unsubscribe(event, listener);
-		const onceListener = (...args) => {
-			listener(...args);
+		// this.unsubscribe(event, listener);
+		const onceListener = (event, data, ...args) => {
+			listener(event, data, ...args);
 			this.unsubscribe(event, onceListener);
 		};
 		this.subscribe(event, onceListener);

@@ -5,11 +5,21 @@
  */
 
 /**
+ * @callback StoreListener
+ * @param {PartialAppState} state
+ * @param {...*} [args]
+ * @returns {*}
+ */
+
+/**
  * @typedef {Object} StoreChainApi
  * @property {function(): StoreChainApi} unsubscribe
  * @property {function(): StoreChainApi} once
  * @property {function(): StoreChainApi} immediate
+ * *Immediately* receive current state
  * @property {function(Listener): StoreChainApi} tap
+ * *Tap* into the subscription pipeline
+ * - Returns a new subscription pipeline
  */
 
 import CayenneEventEmitter from './eventEmitter.js';
@@ -19,43 +29,70 @@ export function createStateStore(initialState = {}) {
 	const emitter = new CayenneEventEmitter();
 
 	/** @type {PartialAppState} */
-	let state = { ...initialState };
+	let state = { ...initialState, isInitial: true };
 
 	/**
 	 *
 	 * @param {PartialAppState} updates
+	 * @param {Object} opts
+	 * @param {boolean} [opts.global=true]
 	 */
-	function setState(updates) {
+	function setState(updates, opts = {}) {
 		state = { ...state, ...updates };
+
+		if (opts.global) {
+			emitter.publish(STATE_CHANGE, { ...updates });
+			return;
+		}
+
+		// debugger;
+
+		// emitter.publish(STATE_CHANGE, { ...updates });
+		// return;
 
 		// Emit granular events for single-key updates; fallback to state:change
 		const keys = Object.keys(updates);
 		if (keys.length === 1) {
 			const key = keys[0];
+
 			switch (key) {
-				case 'measureSystem':
-					emitter.publish('state:measureSystem', state.measureSystem);
+				case 'unitLocale':
+					emitter.publish('state:unitLocale', {
+						[key]: state.unitLocale
+					});
 					break;
 				case 'unitLength':
-					emitter.publish('state:unitLength', state.unitLength);
+					emitter.publish('state:unitLength', {
+						[key]: state.unitLength
+					});
 					break;
 				case 'recipeResults':
-					emitter.publish('state:recipeResults', state.recipeResults);
+					emitter.publish('state:recipeResults', {
+						[key]: state.recipeResults
+					});
 					break;
 				case 'currentRecipe':
-					emitter.publish('state:currentRecipe', state.currentRecipe);
+					emitter.publish('state:currentRecipe', {
+						[key]: state.currentRecipe
+					});
 					break;
 				case 'searchQuery':
-					emitter.publish('state:searchQuery', state.searchQuery);
+					emitter.publish('state:searchQuery', {
+						[key]: state.searchQuery
+					});
 					break;
 				case 'activeFilters':
-					emitter.publish('state:activeFilters', state.activeFilters);
+					emitter.publish('state:activeFilters', {
+						[key]: state.activeFilters
+					});
 					break;
 				case 'loading':
-					emitter.publish('state:loading', state.loading);
+					emitter.publish('state:loading', {
+						[key]: state.loading
+					});
 					break;
 				case 'error':
-					emitter.publish('state:error', state.error);
+					emitter.publish('state:error', { [key]: state.error });
 					break;
 				default:
 					emitter.publish('state:change', { ...state });
@@ -76,38 +113,43 @@ export function createStateStore(initialState = {}) {
 		if (!key) return { ...state };
 		const val = state[key];
 		if (typeof val === 'object' && val !== null) {
-			return { ...val };
+			return { ...{ [key]: val } };
 		}
-		return val;
+		return { [key]: val };
 	}
 
 	/**
 	 *
-	 * @param {Listener} listener
+	 * @param {StoreListener} listener
 	 * @param {string} [key=null]
-	 * @param {boolean} [emitCurrent=false]
 	 * @returns {StoreChainApi}
 	 */
-	function subscribe(listener, key = null, emitCurrent = false) {
+	function subscribe(listener, key = null) {
+		console.log('Subscribing with: ', key);
+
+		// debugger;
 		const event = key ? `state:${key}` : STATE_CHANGE;
 
-		const emitterChain = emitter.subscribe(event, () => {
-			listener(getListenerArg(state, key));
-		});
+		const emitterChain = emitter.subscribe(
+			event,
+			(eventName, data, ...args) => {
+				listener(getListenerArg(state, key));
+			}
+		);
 		return makeStoreApi(emitterChain, listener, key);
 	}
 
 	/**
 	 *
 	 * @param {EmitterChain} emitterChain
-	 * @param {Listener} listener
+	 * @param {StoreListener} listener
 	 * @param {string|null} key
 	 * @returns {StoreChainApi}
 	 */
 	function makeStoreApi(emitterChain, listener, key) {
 		const chain = {
-			immediate: () => {
-				listener(getListenerArg(state, key));
+			immediate: (data, ...args) => {
+				listener(data, ...args);
 				return chain;
 			},
 			unsubscribe: () => {
@@ -116,7 +158,7 @@ export function createStateStore(initialState = {}) {
 			},
 			/**
 			 *
-			 * @param {function()} fn
+			 * @param {Listener} fn
 			 * @returns
 			 */
 			tap: fn => makeStoreApi(emitterChain.tap(fn), listener, key),
