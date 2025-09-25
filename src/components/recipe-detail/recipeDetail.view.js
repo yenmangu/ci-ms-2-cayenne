@@ -155,7 +155,11 @@ export function renderRecipeDetail(recipe, summaryObj, opts) {
       <div id="collapseInstructions" class="accordion-collapse collapse" data-bs-parent="#recipeAccordion">
         <div class="accordion-body recipe-instructions">
           <!-- instructions list goes here -->
-					${instructionsInsertsArray}
+					${
+						instructionsInsertsArray.length
+							? instructionsInsertsArray
+							: instructions ?? 'Instructions not available'
+					}
         </div>
       </div>
     </div>

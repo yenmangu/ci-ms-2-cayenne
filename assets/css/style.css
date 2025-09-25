@@ -47,6 +47,106 @@ a div {
 	color: inherit;
 }
 
+/* App */
+
+.app-container {
+	padding-left: 0;
+	padding-right: 0;
+}
+#app {
+	width: 100%;
+}
+
+/* App Header */
+
+.app-header {
+	min-height: 44px; /* About as slim as iOS top bars */
+	width: 100%;
+	max-width: 100%;
+	background: #fff;
+	border-bottom: 1px solid #eee;
+	/* Optional: stick to top */
+	position: sticky;
+	top: 0;
+	z-index: 100;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 0;
+}
+
+.app-header__left {
+	padding-left: 1rem;
+}
+.app-header__logo {
+	height: 28px;
+	width: auto;
+	object-fit: contain;
+}
+.app-header__title {
+	font-size: 1.1rem;
+	letter-spacing: 0.03em;
+}
+
+.app-header__toggles {
+	width: max-content;
+	/* position: relative;
+	right: 1rem; */
+}
+.app-header__toggles > div {
+	/* Toggle containers auto-size, but this gives space if empty */
+	min-width: 40px;
+	display: flex;
+	flex-direction: row;
+	justify-content: flex-start;
+	gap: 1rem;
+	align-items: center;
+}
+
+.toggle-container {
+	align-items: center;
+	width: 10rem;
+}
+
+.toggle-container > p {
+	margin-bottom: 0;
+}
+
+.toggle-container > .form-check {
+	width: max-content;
+	padding-left: 2rem;
+}
+
+/* Custom styles for measure system toggle */
+.unit-slider-toggle .form-check-input {
+	background-color: #e55353;
+	border-color: #e55353;
+	transition: background-color 0.2s, border-color 0.2s;
+}
+.unit-slider-toggle .form-check-input:checked {
+	background-color: #28a745 !important;
+	border-color: #28a745 !important;
+}
+
+.unit-slider-toggle .form-check-input:focus {
+	/* box-shadow: 0 0 0 0.1rem rgba(40, 167, 69, 0.25); */
+	outline: none !important;
+	box-shadow: none !important;
+}
+
+.unit-slider-toggle .form-check-input:focus:hover {
+	outline: none !important;
+	box-shadow: none !important;
+}
+@media (max-width: 480px) {
+	.app-header__title {
+		font-size: 1rem;
+	}
+	.app-header__logo {
+		height: 24px;
+	}
+}
+
 /* Bootstrap Override */
 
 /* Cards - Recipe Cards, Ingredient Cards etc */
@@ -93,6 +193,11 @@ a div {
 main.recipe-detail {
 	padding-top: 1rem;
 }
+
+/* .ingredient-mini-card .ingredient-units-amounts{
+	display:flex;
+	flex-direction: row;
+} */
 
 .accordion {
 	width: 100%;

@@ -50,7 +50,7 @@ export class ToggleComponent {
 	}
 
 	render() {
-		this.container.prepend(this.toggleWithWrapper);
+		this.container.append(this.toggleWithWrapper);
 		this.toggle = /** @type {HTMLInputElement} */ (
 			document.getElementById(this.key)
 		);

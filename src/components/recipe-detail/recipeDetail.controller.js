@@ -157,7 +157,7 @@ export class RecipeDetail {
 	}
 
 	#_hydrate(state) {
-		this.#_updateToggleLabels();
+		// this.#_updateToggleLabels();
 		this.#_handleIngredientUpdate();
 	}
 
@@ -172,10 +172,10 @@ export class RecipeDetail {
 		}
 	}
 
-	#_updateToggleLabels() {
-		this.unitLocaleToggle.toggleText = this.unitLocale;
-		this.unitLengthToggle.toggleText = this.unitLength;
-	}
+	// #_updateToggleLabels() {
+	// 	this.unitLocaleToggle.toggleText = this.unitLocale;
+	// 	this.unitLengthToggle.toggleText = this.unitLength;
+	// }
 
 	#_handleIngredientUpdate() {
 		const cards = this.#_getIngredientCards();
@@ -223,41 +223,41 @@ export class RecipeDetail {
 		if (this.toggleContainer) {
 			console.log('Found toggleContainer');
 
-			this.#_renderUnitLocaleToggle();
-			this.#_renderUnitLengthToggle();
+			// this.#_renderUnitLocaleToggle();
+			// this.#_renderUnitLengthToggle();
 		} else {
 			console.warn('recipeContainer not found: toggles not rendered');
 		}
 	}
 
-	#_renderUnitLocaleToggle() {
-		if (this.unitLocaleToggle) {
-			console.log('measure toggle exists');
-			this.unitLocale = null;
-		}
-		this.unitLocaleToggle = new ToggleComponent(this.toggleContainer, {
-			key: 'unitLocale',
-			onValue: 'us',
-			offValue: 'metric',
-			initialValue: this.unitLocale ?? 'metric'
-		});
-		this.unitLocaleToggle.render();
-	}
+	// #_renderUnitLocaleToggle() {
+	// 	if (this.unitLocaleToggle) {
+	// 		console.log('measure toggle exists');
+	// 		this.unitLocale = null;
+	// 	}
+	// 	this.unitLocaleToggle = new ToggleComponent(this.toggleContainer, {
+	// 		key: 'unitLocale',
+	// 		onValue: 'us',
+	// 		offValue: 'metric',
+	// 		initialValue: this.unitLocale ?? 'metric'
+	// 	});
+	// 	this.unitLocaleToggle.render();
+	// }
 
-	#_renderUnitLengthToggle() {
-		if (this.unitLengthToggle) {
-			console.log('unit length toggle exists');
-			this.unitLengthToggle = null;
-		}
-		this.unitLengthToggle = new ToggleComponent(this.toggleContainer, {
-			key: 'unitLength',
-			onValue: 'unitLong',
-			offValue: 'unitShort',
-			initialValue: this.unitLength ?? 'unitShort'
-		});
-		if (this.unitLengthToggle.toggleConfig.label)
-			this.unitLengthToggle.render();
-	}
+	// #_renderUnitLengthToggle() {
+	// 	if (this.unitLengthToggle) {
+	// 		console.log('unit length toggle exists');
+	// 		this.unitLengthToggle = null;
+	// 	}
+	// 	this.unitLengthToggle = new ToggleComponent(this.toggleContainer, {
+	// 		key: 'unitLength',
+	// 		onValue: 'unitLong',
+	// 		offValue: 'unitShort',
+	// 		initialValue: this.unitLength ?? 'unitShort'
+	// 	});
+	// 	if (this.unitLengthToggle.toggleConfig.label)
+	// 		this.unitLengthToggle.render();
+	// }
 
 	destroy() {
 		if (this.subscription) {
