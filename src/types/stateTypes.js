@@ -10,13 +10,16 @@ export {};
  */
 
 /**
- * @typedef {'us'|'metric'} MeasureSystem
+ * @typedef {'us'|'metric'} UnitLocale
  * @typedef {'unitShort'|'unitLong'} UnitLength
+ * @typedef {'US / Imperial'|'Metric'} UserLocale
+ * @typedef {'Short'|'Full'} UserLength
+ *
  */
 
 /**
  * @typedef {object} AppState
- * @property {MeasureSystem} measureSystem - User's preferred units
+ * @property {UnitLocale} unitLocale - User's preferred units
  * @property {UnitLength} unitLength - User's preferred unit length
  * @property {RecipeCard[]} recipeResults - Results from last recipe search
  * @property {RecipeFull | null} currentRecipe - Currently selected/loaded recipe
@@ -28,7 +31,8 @@ export {};
  */
 /**
  * @typedef {object} PartialAppState
- * @property {MeasureSystem} [measureSystem] - User's preferred units
+ * @property {boolean} [isInitial]
+ * @property {UnitLocale} [unitLocale] - User's preferred units
  * @property {UnitLength} [unitLength] - User's preferred unit length
  * @property {RecipeCard[]} [recipeResults] - Results from last recipe search
  * @property {RecipeFull | null} [currentRecipe] - Currently selected/loaded recipe

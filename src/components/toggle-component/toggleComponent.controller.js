@@ -1,5 +1,6 @@
 /**
  * @typedef {import('../../types/stateTypes.js').AppState} AppState
+ * @typedef {import('../../types/stateTypes.js').PartialAppState} PartialAppState
  * @typedef {import('./toggleComponent.view.js').ToggleConfig} ToggleConfig
  */
 
@@ -25,32 +26,30 @@ export class ToggleComponent {
 		this.key = options.key;
 		this.toggleText = '';
 		this.latestState = null;
-		this.subscription = appStore
-			.subscribe(
-				/** @param {AppState} state */ state => {
-					console.log('State: ', state);
-
-					this.latestState = state;
-					this.toggleText = config[this.latestState[this.key]];
-
-					if (this.toggle) {
-						this.hydrate();
-					}
-				}
-			)
-			.immediate();
-
+		this.subscription = null;
 		this.init();
 	}
 
 	init() {
 		console.debug(`ToggleComponent: ${this.toggleConfig.key}`);
+		this.toggleConfig.label =
+			config[this.toggleConfig.initialValue] ??
+			`No value found for ${this.toggleConfig.initialValue}`;
+		console.log(
+			'[SANITY CHECK]: ToggleConfig label: ',
+			this.toggleConfig.label
+		);
 		this.toggleWithWrapper = stringToHtml(
 			renderToggleComponent(this.toggleConfig)
 		);
+
+		this.subscription = appStore.subscribe(state => {
+			this.latestState = state;
+			this.#_hydrateToggle();
+		});
 	}
 
-	render(refresh = false) {
+	render() {
 		this.container.prepend(this.toggleWithWrapper);
 		this.toggle = /** @type {HTMLInputElement} */ (
 			document.getElementById(this.key)
@@ -67,16 +66,15 @@ export class ToggleComponent {
 
 			this.setStateProp(this.key, newVal);
 		});
-		this.hydrate();
 	}
 
-	hydrate() {
-		console.log(this.toggle.id);
-		// if (this.toggle.id !== 'measureSystem') {
-		// 	debugger;
-		// }
+	#_updateToggleState() {
 		this.toggle.checked =
 			this.latestState[this.key] === this.toggleConfig.onValue;
+	}
+
+	#_hydrateToggle() {
+		this.#_updateToggleState();
 		this.#_updateToggleText();
 	}
 
@@ -86,27 +84,21 @@ export class ToggleComponent {
 	 * @param {*} val
 	 */
 	setStateProp(key, val) {
-		appStore.setState({ [key]: val });
+		appStore.setState({ [key]: val }, { global: true });
 	}
 
 	#_updateToggleText() {
+		console.log(this.toggle.id);
+
 		const label = document.querySelector(
 			`label[for="${this.toggleConfig.key}"]`
 		);
 		if (!label) {
 			throw new Error(`Label for toggle: ${this.key} not found`);
 		}
-		if (
-			!this.toggleText ||
-			this.toggleText === '' ||
-			this.toggleText == undefined
-		) {
-			throw new Error(`ToggleText for toggle: ${this.key} not found`);
-		}
-		label.textContent = this.toggleText;
+
+		label.textContent = config[this.latestState[this.key]];
 	}
 
-	destroy() {
-		if (this.subscription) this.subscription.unsubscribe();
-	}
+	destroy() {}
 }

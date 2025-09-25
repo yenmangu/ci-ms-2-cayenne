@@ -1,12 +1,20 @@
 /**
+ * @typedef {import("../../types/stateTypes.js").UnitLocale} UnitLocale
+ * @typedef {import("../../types/stateTypes.js").UnitLength} UnitLength
+ */
+
+/**
  * @typedef {object} ToggleConfig
  * @property {string} key
  * @property {string} onValue
  * @property {string} offValue
+ * @property {UnitLocale | UnitLength} initialValue
  * @property {string}	[className] - Outer div class name
  * @property {string} [id] - Input Id
  * @property {string} [label] - Label text
  */
+
+import { config as stateConfig } from '../../config/stateConfigs.js';
 
 /**
  * Renders the ToggleComponent component to the DOM
@@ -14,7 +22,6 @@
  * @param {ToggleConfig} config
  *
  */
-
 export function renderToggleComponent(config) {
 	// TODO: implment view logic
 	if (!config || config == undefined) {

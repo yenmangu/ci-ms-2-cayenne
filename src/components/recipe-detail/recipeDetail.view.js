@@ -8,24 +8,36 @@
  *
  * @param {Ingredient} item
  * @param {'metric' | 'us' } [system='metric']
- * @param {'unitShort' | 'unitLong' } [unitType='unitShort']
+ * @param {'unitShort' | 'unitLong' } [unitLength='unitShort']
  */
-function ingredientMiniCard(item, system = 'metric', unitType = 'unitShort') {
+function ingredientMiniCard(item, system = 'metric', unitLength = 'unitShort') {
 	const { measures } = item;
 	const measure = measures && measures[system] ? measures[system] : null;
 	const measureAmount = measure ? measure.amount : item.amount ?? '';
-	const measureUnit = measure ? measure[unitType] : item.unit ?? '';
+	const measureUnit = measure ? measure[unitLength] : item.unit ?? '';
 
 	const imgHtml = item.image
 		? `<img class="ingredient-image rounded me-2" width="32" height="32" src="https://spoonacular.com/cdn/ingredients_100x100/${item.image}" alt="${item.name}" />`
 		: '';
 
 	return `
-		<div class="ingredient-mini-card d-flex align-items-center mb-2 p-1 border rounded shadow-sm">
+		<div
+			class="ingredient-mini-card d-flex align-items-center mb-2 p-1 border rounded shadow-sm"
+			data-ingredient-id="${item.id}"
+			data-card-type="ingredientCard"
+		>
       ${imgHtml}
       <div>
         <span class="fw-bold">${item.nameClean || item.name}</span>
-        <span class="text-muted small ms-2">${measureAmount} ${measureUnit}</span>
+				<div class="ingredient-units-amounts">
+					<span class="text-muted small"
+						data-label="amounts">${measureAmount}
+					</span>
+					<span class="text-muted small"
+						data-label="units">${measureUnit}
+					</span>
+				</div>
+
       </div>
     </div>
 	`;
@@ -44,6 +56,8 @@ function ingredientMiniCard(item, system = 'metric', unitType = 'unitShort') {
 export function renderRecipeDetail(recipe, summaryObj, opts) {
 	console.log('Recipe passed to view: ', recipe);
 	const { system = 'metric', unitType = 'unitShort' } = opts || {};
+
+	console.log('Opts passed to view: ', opts);
 
 	const {
 		title,

@@ -26,10 +26,9 @@ export async function handleRecipeDetail(container, pathName, params = {}) {
 
 	const recipeDetail = new RecipeDetail(container, recipeDetailParams);
 	try {
+		// TODO: Implement live data
 		await recipeDetail.publicTest();
-		if (!recipeDetail.measureToggle || !recipeDetail.unitLengthToggle) {
-			recipeDetail.render(true);
-		} else {
+		if (recipeDetail.componentReady) {
 			recipeDetail.render();
 		}
 	} catch (err) {
