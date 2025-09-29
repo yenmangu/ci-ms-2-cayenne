@@ -1,7 +1,9 @@
 /**
  * @typedef {import('../../types/recipeTypes.js').RecipeCard} RecipeCardObject
+ * @typedef {import('./landingPage.service.js').LandingService} LandingService
  */
 
+import { appStore } from '../../appStore.js';
 import { stringToHtml } from '../../util/htmlToElement.js';
 import { RecipeCard } from '../recipe-card/recipeCard.controller.js';
 import { SearchBar } from '../search-bar/searchBar.controller.js';
@@ -17,6 +19,8 @@ export class LandingPage {
 		this.container = container;
 
 		this.landingPageComponent = null;
+
+		/** @type {LandingService} */
 		this.service = service.createLandingService();
 
 		/** @type {HTMLElement} */
@@ -28,26 +32,30 @@ export class LandingPage {
 		/** @type {RecipeCardObject}*/
 		this.randomRecipe = null;
 		this.randomRecipeCard = null;
+
+		/** @type {HTMLButtonElement} */
+		this.randomButton = null;
+
+		this.subscription = appStore.subscribe(state => {
+			if (state.currentRandom) {
+				console.log('New random: ', state.currentRandom);
+
+				this.randomRecipe = this.service.extractCard(state.currentRandom);
+				this.#_renderRandomRecipe();
+			}
+		});
+		this.randomBtnWired = false;
 	}
 
 	async init() {
 		this.landingPageComponent = stringToHtml(renderLandingPage());
 
 		this.#_collectContainers();
-		this.randomRecipe = await this.service.getRandomRecipe();
-
-		console.log(this.randomRecipe ? this.randomRecipe : 'No recipe found');
+		this.service.updateStoreRandomRecipe();
 
 		this.landingSearch = new SearchBar(this.searchBarContainer);
 		this.randomRecipeContainer =
 			this.landingPageComponent.querySelector('#random-recipe');
-		if (this.randomRecipeContainer)
-			console.log('Random container found: ', this.randomRecipeContainer);
-
-		this.randomRecipeCard = new RecipeCard(
-			this.randomRecipeContainer,
-			this.randomRecipe
-		);
 	}
 
 	#_collectContainers() {
@@ -75,7 +83,7 @@ export class LandingPage {
 		if (!this.landingSearch) throw new Error('Search Bar not initialised');
 
 		this.#_renderSearch();
-		this.#_renderRandomRecipe();
+		this.#_renderTitle();
 	}
 
 	#_renderSearch() {
@@ -87,17 +95,53 @@ export class LandingPage {
 	}
 
 	#_renderRandomRecipe() {
-		this.#_renderTitle();
-		this.randomRecipeCard.render();
+		if (!this.randomRecipeCard) {
+			this.randomRecipeCard = new RecipeCard(
+				this.randomRecipeContainer,
+				this.randomRecipe
+			);
+			this.randomRecipeCard.cardEl.classList.add('recipe-card__landing');
+			this.randomRecipeCard.render();
+		} else {
+			this.randomRecipeCard.update(this.randomRecipe);
+		}
 	}
 
 	#_renderTitle() {
+		const titleWrapper = document.createElement('div');
+		titleWrapper.classList = 'container container__landing-title';
 		const titleEl = document.createElement('h3');
+		const fetchNewRandomBtn = document.createElement('button');
+		this.randomButton = fetchNewRandomBtn;
+		fetchNewRandomBtn.classList = 'btn btn-primary btn__random';
+		fetchNewRandomBtn.innerText = 'New Random';
 		titleEl.innerText = 'Get Inspired';
-		this.randomRecipeContainer.appendChild(titleEl);
+		titleWrapper.appendChild(titleEl);
+		const buttonWrapper = document.createElement('div');
+		buttonWrapper.classList = 'wrapper wrapper__random-button';
+		const notFeelingIt = document.createElement('p');
+		notFeelingIt.innerText = 'Not feeling it?';
+		buttonWrapper.appendChild(notFeelingIt);
+		buttonWrapper.appendChild(fetchNewRandomBtn);
+		titleWrapper.appendChild(buttonWrapper);
+		this.searchBarContainer.insertAdjacentElement('afterend', titleWrapper);
+		this.#_wireEvents();
+	}
+
+	#_wireEvents() {
+		if (this.randomButton && !this.randomBtnWired) {
+			this.randomButton.addEventListener('click', () => {
+				this.#_onFetchNewRandom();
+			});
+			this.randomBtnWired = true;
+		}
+	}
+
+	#_onFetchNewRandom() {
+		this.service.updateStoreRandomRecipe();
 	}
 
 	destroy() {
-		console.warn('Function destroy() not yet implemented.');
+		if (this.subscription) this.subscription.unsubscribe();
 	}
 }

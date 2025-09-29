@@ -24,7 +24,28 @@ export class RecipeCard {
 	}
 
 	render() {
+		this.parent.innerHTML = '';
 		this.parent.appendChild(this.cardEl);
+	}
+
+	/**
+	 *
+	 * @param {RecipeCardObject} newRecipeCardData
+	 */
+	update(newRecipeCardData) {
+		if (this.cardEl) {
+			const title = this.cardEl.querySelector('h5.card-title');
+			const image = this.cardEl.querySelector('img');
+			// const anchor = /** @type {HTMLAnchorElement} */ (
+			// 	stringToHtml(this.cardEl.outerHTML)
+			// );
+			const cardAsAnchor = /** @type {HTMLAnchorElement} */ (this.cardEl);
+			cardAsAnchor.href = `#recipe?id=${newRecipeCardData.id}`;
+			image.src = newRecipeCardData.image;
+			image.alt = newRecipeCardData.title;
+			title.innerHTML = newRecipeCardData.title;
+		}
+		this.recipe = newRecipeCardData;
 	}
 
 	destroy() {

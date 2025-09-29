@@ -23,6 +23,7 @@ export {};
  * @property {UnitLength} unitLength - User's preferred unit length
  * @property {RecipeCard[]} recipeResults - Results from last recipe search
  * @property {RecipeFull | null} currentRecipe - Currently selected/loaded recipe
+ * @property {RecipeFull | null} [currentRandom] - Currently selected/loaded recipe
  * @property {string} [searchQuery] - Current search query
  * @property {object} [activeFilters] - Structured object for filters (diets, cook time etc)
  * @property {boolean} [loading] - Loading flag
@@ -36,6 +37,7 @@ export {};
  * @property {UnitLength} [unitLength] - User's preferred unit length
  * @property {RecipeCard[]} [recipeResults] - Results from last recipe search
  * @property {RecipeFull | null} [currentRecipe] - Currently selected/loaded recipe
+ * @property {RecipeFull | null} [currentRandom] - Currently selected/loaded recipe
  * @property {string} [searchQuery] - Current search query
  * @property {object} [activeFilters] - Structured object for filters (diets, cook time etc)
  * @property {boolean} [loading] - Loading flag

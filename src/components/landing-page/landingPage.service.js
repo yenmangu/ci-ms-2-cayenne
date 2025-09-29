@@ -9,12 +9,12 @@
  * @property {RecipeFull} fetchedRecipe
  * @property {number} recipeId
  * @property {RecipeCardObject} recipeCard
- * @property {function(): Promise<RecipeCardObject>} getRandomRecipe
- * @property {function(): Promise<RecipeFull>} fetchRandomRecipe
+ * @property {function(): void} updateStoreRandomRecipe
  * @property {function(RecipeFull): RecipeCardObject} extractCard
  *
  */
 import { SpoonacularClient } from '../../api/client.js';
+import { appStore } from '../../appStore.js';
 
 /**
  *
@@ -30,11 +30,7 @@ export const createLandingService = opts => {
 		/** @type {RecipeFull} */ fetchedRecipe: null,
 		recipeId: null,
 		recipeCard: null,
-		getRandomRecipe: async () => {
-			await service.fetchRandomRecipe();
-			service.recipeCard = service.extractCard(service.fetchedRecipe);
-			return service.recipeCard;
-		},
+
 		/**
 		 *
 		 * @param {RecipeFull} recipe
@@ -49,11 +45,9 @@ export const createLandingService = opts => {
 				title: recipe.title
 			};
 		},
-		fetchRandomRecipe: async () => {
-			const recipe = await service.client.getRandomRecipe();
-			service.fetchedRecipe = recipe;
-			service.recipeId = service.fetchedRecipe.id;
-			return recipe;
+		updateStoreRandomRecipe: async () => {
+			const recipe = await client.getRandomRecipe();
+			appStore.setState({ currentRandom: recipe });
 		}
 	};
 
