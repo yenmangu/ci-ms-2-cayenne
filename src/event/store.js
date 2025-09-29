@@ -120,7 +120,7 @@ export function createStateStore(initialState = {}) {
 
 	/**
 	 *
-	 * @param {StoreListener} listener
+	 * @param {StoreListener} [listener]
 	 * @param {string} [key=null]
 	 * @returns {StoreChainApi}
 	 */

@@ -1,6 +1,6 @@
 const toggleValToUserText = {
 	metric: 'Metric',
-	us: 'US / Imperial',
+	us: 'US',
 	unitLong: 'Full',
 	unitShort: 'Short'
 };
