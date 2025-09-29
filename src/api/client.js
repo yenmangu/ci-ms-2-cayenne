@@ -25,9 +25,9 @@ export class SpoonacularClient {
 	 *
 	 * @returns
 	 */
-	async getTestApiRecipes() {
+	async getTestApiRecipes(single = false) {
 		const queryParams = { test: true };
-		const endpoint = '/test';
+		const endpoint = single ? '/test-random' : '/test';
 		try {
 			const responseJson = await this._fetch(endpoint, queryParams);
 			return responseJson;
@@ -40,7 +40,7 @@ export class SpoonacularClient {
 	 * @returns {Promise<RecipeFull>}
 	 */
 	async getRandomRecipe() {
-		return await this.getTestApiRecipes();
+		return await this.getTestApiRecipes(true);
 		const key = /** @type {EndpointKey} */ ('getRandomRecipes');
 		const endpoint = this._buildEndpointWithParameters(key);
 		const responseJson = await this._fetch(endpoint);
