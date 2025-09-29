@@ -147,6 +147,36 @@ a div {
 	}
 }
 
+/* Landing Page */
+
+.container.container__landing-title {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-bottom: 1rem;
+}
+.wrapper.wrapper__random-button {
+	display: flex;
+	flex-direction: row;
+	justify-content: end;
+	align-items: center;
+	gap: 1rem;
+}
+
+.wrapper.wrapper__random-recipe {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	padding: 1rem;
+}
+
+.recipe-card__landing {
+	width: 80%;
+}
+
+.wrapper.wrapper__random-button p {
+	margin: 0;
+}
 /* Bootstrap Override */
 
 /* Cards - Recipe Cards, Ingredient Cards etc */
