@@ -1,4 +1,8 @@
 /**
+ * @typedef {import('../types/recipeTypes.js').RecipeCard} RecipeCard
+ */
+
+/**
  * @typedef {import('./eventEmitter.js').Listener} Listener
  * @typedef {import('./eventEmitter.js').ChainableReturnType} EmitterChain
  * @typedef {import('../types/stateTypes.js').PartialAppState} PartialAppState
@@ -25,6 +29,7 @@
 import CayenneEventEmitter from './eventEmitter.js';
 
 const STATE_CHANGE = 'state:change';
+const CAYENNE_STATE = 'cayenneUserState';
 export function createStateStore(initialState = {}) {
 	const emitter = new CayenneEventEmitter();
 
@@ -39,7 +44,7 @@ export function createStateStore(initialState = {}) {
 	 */
 	function setState(updates, opts = {}) {
 		state = { ...state, ...updates };
-
+		persistState();
 		if (opts.global) {
 			emitter.publish(STATE_CHANGE, { ...updates });
 			return;
@@ -99,6 +104,40 @@ export function createStateStore(initialState = {}) {
 			}
 		} else {
 			emitter.publish('state:change', { ...state });
+		}
+	}
+
+	/**
+	 *
+	 * @param {RecipeCard} recipe
+	 */
+	function saveRecipe(recipe) {
+		const { likedRecipes = [] } = state;
+		if (!likedRecipes.some(r => r.id === recipe.id)) {
+			setState({ likedRecipes: [...likedRecipes, recipe] });
+		}
+	}
+
+	/**
+	 *
+	 * @param {number} recipeId
+	 */
+	function removeLikedRecipe(recipeId) {
+		const { likedRecipes = [] } = state;
+		setState({ likedRecipes: likedRecipes.filter(r => r.id !== recipeId) });
+	}
+
+	/**
+	 *
+	 * @param {RecipeCard} recipe
+	 */
+	function toggleLikedrecipe(recipe) {
+		const { likedRecipes = [] } = state;
+		const exists = likedRecipes.some(r => r.id === recipe.id);
+		if (exists) {
+			setState({ likedRecipes: likedRecipes.filter(r => r.id !== recipe.id) });
+		} else {
+			setState({ likedRecipes: [...likedRecipes, recipe] });
 		}
 	}
 
@@ -187,9 +226,36 @@ export function createStateStore(initialState = {}) {
 		}
 	}
 
-	function resetState() {
+	async function resetState() {
+		await resetLocalStorage();
 		state = { ...initialState };
 		emitter.publish('state:change', { ...state });
 	}
-	return { setState, getState, subscribe, dispatch, resetState };
+
+	function persistState() {
+		const { likedRecipes, unitLocale } = state;
+		localStorage.setItem(
+			CAYENNE_STATE,
+			JSON.stringify({ likedRecipes, unitLocale })
+		);
+	}
+
+	async function resetLocalStorage() {
+		return new Promise(resolve => {
+			localStorage.removeItem(CAYENNE_STATE);
+			resolve();
+		});
+		// localStorage.removeItem(CAYENNE_STATE);
+	}
+
+	return {
+		setState,
+		getState,
+		subscribe,
+		dispatch,
+		resetState,
+		saveRecipe,
+		removeLikedRecipe,
+		toggleLikedrecipe
+	};
 }

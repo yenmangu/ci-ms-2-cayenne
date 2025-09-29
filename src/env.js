@@ -12,3 +12,4 @@ const env = {
 const isProd = PROD_HOSTNAMES.includes(window.location.hostname);
 // export const ENV = isProd ? env.prod : env.dev;
 export const ENV = env.prod;
+export { isProd };

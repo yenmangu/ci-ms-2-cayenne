@@ -26,6 +26,7 @@ export {};
  * @property {RecipeFull | null} [currentRandom] - Currently selected/loaded recipe
  * @property {string} [searchQuery] - Current search query
  * @property {object} [activeFilters] - Structured object for filters (diets, cook time etc)
+ * @property {RecipeCard[]} [likedRecipes] - List of user-favourited recipes
  * @property {boolean} [loading] - Loading flag
  * @property {ErrorConfig|null} [error] - Current error, if any
  *
@@ -39,8 +40,17 @@ export {};
  * @property {RecipeFull | null} [currentRecipe] - Currently selected/loaded recipe
  * @property {RecipeFull | null} [currentRandom] - Currently selected/loaded recipe
  * @property {string} [searchQuery] - Current search query
+ * @property {RecipeCard[]} [likedRecipes] - List of user-favourited recipes
  * @property {object} [activeFilters] - Structured object for filters (diets, cook time etc)
  * @property {boolean} [loading] - Loading flag
  * @property {ErrorConfig|null} [error] - Current error, if any
  *
+ */
+
+/**
+ * Type definition for the allowed persistable state
+ *
+ * @typedef {object} PersistableState
+ * @property {RecipeCard[]} [likedRecipes]
+ * @property {UnitLocale} [unitLocale]
  */

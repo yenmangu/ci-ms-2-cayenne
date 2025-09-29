@@ -13,7 +13,7 @@ export class AppHeader {
 	/**
 	 * @param {HTMLElement} container
 	 */
-	constructor(container) {
+	constructor(container, dev = false) {
 		/** @type {HTMLElement} */
 		this.container = container;
 
@@ -41,6 +41,8 @@ export class AppHeader {
 		/** @type {UnitLength} */
 		this.unitLength = 'unitShort';
 
+		this.dev = dev;
+
 		this.subscription = appStore.subscribe(state => {
 			this.unitLength = state.unitLength ?? 'unitShort';
 			this.unitLocale = state.unitLocale ?? 'metric';
@@ -54,6 +56,35 @@ export class AppHeader {
 		if (this.toggleContainer) {
 			this.#_initToggles();
 		}
+		if (this.dev) {
+			this.#_initDevControls();
+		}
+	}
+
+	#_initDevControls() {
+		const controls = [
+			{ label: 'Log State', onClick: () => console.log(appStore.getState()) },
+			{
+				label: 'Reset State',
+				onClick: () => {
+					console.log('Resetting state..');
+					appStore.resetState();
+					console.log(appStore.getState());
+				}
+			}
+		];
+		const ref = this.header.querySelector('.app-header__left');
+		controls.forEach(({ label, onClick }) => {
+			const btn = document.createElement('button');
+			btn.innerText = label;
+			btn.style.padding = '0.2rem';
+			btn.addEventListener('click', e => {
+				e.preventDefault();
+				e.stopPropagation();
+				onClick();
+			});
+			ref.insertAdjacentElement('afterend', btn);
+		});
 	}
 
 	#_initToggles() {

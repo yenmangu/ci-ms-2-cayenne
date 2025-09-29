@@ -2,10 +2,10 @@ export {};
 
 /**
  * @typedef {object} RecipeCard
- * @property {number} id
- * @property {string} title
- * @property {string} image
- * @property {string} imageType
+ * @property {number} [id]
+ * @property {string} [title]
+ * @property {string} [image]
+ * @property {string} [imageType]
  */
 
 /**

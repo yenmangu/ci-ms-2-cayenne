@@ -8,6 +8,7 @@ import { ErrorMessage } from './components/error-message/errorMessage.controller
 import { startRouter } from './router/appRouter.js';
 import { AppHeader } from './components/app-header/appHeader.controller.js';
 
+import { isProd } from './env.js';
 /**
  * Single point of logic for collecting 'appRoot' element.
  * Injects appRoot into the rest of the cayenne app.
@@ -17,7 +18,7 @@ async function initCayenne() {
 	initNavbar();
 	const appRoot = document.getElementById('app');
 	const main = document.getElementById('cayenne-main');
-	const appHeaderComponent = new AppHeader(main);
+	const appHeaderComponent = new AppHeader(main, !isProd);
 	if (appHeaderComponent)
 		document.body.insertBefore(appHeaderComponent.header, main);
 	appHeaderComponent.init();
