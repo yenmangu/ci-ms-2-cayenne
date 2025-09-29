@@ -18,14 +18,8 @@
 This platform is meant to attract two types of users.
 
 **Primary User** -
-users of any age and background, who share a common goal of wanting to stay on track with their fitness goals.
 
 **Secondary User** -
-any existing fitness organisation/gym owner who currently doesn't but wishes to offer fitness or goal tracking services to existing customers.
-
-There is clear navigation for both types of User, designed to clearly guide the user towards the appropriate section.
-
-Users can directly contact Momentum if they wish to work with us as we are always looking for new talent to join our growing family.
 
 ### The 5 Planes of UX
 
@@ -131,10 +125,47 @@ The link config is defined in `navbarConfig.js`, and used by `initNavbar()` to r
 | Feature                      | Notes                                                                                                                                                                                                                   | Image |
 | ---------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----- |
 | SPA style hash-based routing | Client-side navigation using `#/path` fragments. Works seamlessly on GitHub Pages without server configuration. URLs are functional but less SEO-friendly and considered a legacy fallback compared to the History API. |       |
+| State Management             | See [State Management System](#state-management-system)                                                                                                                                                                 |       |
 
 #### Development Features
 
+| Feature                 | Notes                                                                     | Image                                                   |
+| ----------------------- | ------------------------------------------------------------------------- | ------------------------------------------------------- |
+| Dev Tools in app header | Buttons for logging/resetting app state, only visible in development mode | ![image](./documentation/ux/features/dev/dev-tools.png) |
+
 ### Future Features
+
+## State Management System
+
+Cayenne uses a modular, event-driven state management system to coordinate application state and UI updates. This system is designed for flexibility, testability, and future scalability.
+
+### Core Concepts
+
+- **Global Store**: The core application state is managed by a central store implemented in plain JavaScript, using a custom event emitter for reactive updates.
+- **Event-Driven Architecture**: All state changes publish events (e.g., `state:change`), which UI components subscribe to. This ensures efficient and decoupled updates throughout the application.
+- **Selective Persistence**: Only user-relevant state (such as `likedRecipes` and `unitLocale`) is persisted to `localStorage`. Ephemeral or session-only data remains in-memory and is never stored across reloads.
+- **Environment-Safe Dev Tools**: Developer tools and debug controls are injected into the UI only in non-production environments, using a central environment flag (`isProd`). This prevents debug features from leaking into production builds.
+
+### Features
+
+| Feature         | Notes                                                                                                                                                                                                             |
+| --------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Reactive UI     | UI components automatically update when relevant state changes occur, via store subscriptions.                                                                                                                    |
+| Async-Ready API | State persistence methods (such as reset and save) are wrapped in async functions, allowing for seamless migration to future async storage mechanisms (like IndexedDB or cloud storage) without changing the API. |
+| Testability     | The decoupled, event-based approach allows for straightforward unit testing of both state and UI logic.                                                                                                           |
+| Extensibility   | The system can be easily extended to support new features, additional persisted fields, or more advanced dev tooling.                                                                                             |
+
+### Example Workflow
+
+1. **User Action**: User toggles a unit setting or likes a recipe.
+2. **State Update**: The store updates the relevant state and triggers a `state:change` event.
+3. **Persistence**: Only the whitelisted fields are saved to `localStorage`.
+4. **UI Reaction**: Subscribed components detect the state change and re-render as needed.
+
+### Technical Notes
+
+- The store and event system are implemented in vanilla JavaScript (no frameworks), and fully documented with JSDoc for editor IntelliSense.
+- Dev-only features (such as state logging and reset buttons) are never included in production builds.
 
 ## Development & Code Style
 
