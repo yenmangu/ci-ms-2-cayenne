@@ -22,7 +22,7 @@ export class SearchBar {
 
 	init() {
 		if (this.searchComponent) {
-			this.container.appendChild(this.searchComponent);
+			this.container.innerHTML = this.htmlString;
 		} else {
 			console.log('No Search');
 		}
