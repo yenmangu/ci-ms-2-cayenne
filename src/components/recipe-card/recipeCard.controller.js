@@ -2,6 +2,7 @@
  * @typedef {import("../../types/recipeTypes.js").RecipeCard} RecipeCardObject
  */
 
+import { stringToHtml } from '../../util/htmlToElement.js';
 import { renderRecipeCard } from './recipeCard.view.js';
 
 export class RecipeCard {
@@ -13,10 +14,17 @@ export class RecipeCard {
 	constructor(parentElement, recipe) {
 		/** @type {HTMLElement} */ this.parent = parentElement;
 		/** @type {RecipeCardObject} */ this.recipe = recipe;
+
+		/** @type {HTMLElement} */
+		this.cardEl = null;
+		this.init();
+	}
+	init() {
+		this.cardEl = stringToHtml(renderRecipeCard(this.recipe));
 	}
 
 	render() {
-		this.parent.innerHTML = renderRecipeCard(this.recipe);
+		this.parent.appendChild(this.cardEl);
 	}
 
 	destroy() {
