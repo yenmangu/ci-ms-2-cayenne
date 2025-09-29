@@ -6,6 +6,7 @@ import { multipleRecipes } from '../data/multipleRecipes.js';
 import { RecipeGrid } from '../components/recipe-grid/recipeGrid.controller.js';
 import { ErrorMessage } from '../components/error-message/errorMessage.controller.js';
 import { RecipeDetail } from '../components/recipe-detail/recipeDetail.controller.js';
+import { LandingPage } from '../components/landing-page/landingPage.controller.js';
 
 /**
  * The public '/' route handler
@@ -44,26 +45,41 @@ export async function initCayenneApp(appRoot, pathName, params) {
 	// const detail = new RecipeDetail(appRoot, testId);
 	// detail.publicTest();
 
-	const grid = new RecipeGrid(appRoot, []);
-	grid.setLoading(true);
-	grid.render();
+	// New landing logic
+
+	const landing = new LandingPage(appRoot);
+	if (landing) {
+		console.log('Landing found');
+
+		await landing.init();
+		landing.render();
+	}
+
+	try {
+	} catch (error) {
+		showErrorMessage(appRoot, error);
+	}
+
+	// const grid = new RecipeGrid(appRoot, []);
+	// grid.setLoading(true);
+	// grid.render();
 
 	// Dev - uncomment below to only show skeletons
 	// return;
 
 	// TODO Implement live API calls
-	try {
-		const recipes = await grid.service.getTestRecipes();
-		// const recipes = await fakeFetchRecipes();
+	// try {
+	// 	const recipes = await grid.service.getTestRecipes();
+	// 	// const recipes = await fakeFetchRecipes();
 
-		// Executed after promise resolves
-		grid.setLoading(false);
-		grid.updateCards(recipes);
-		grid.render();
-	} catch (error) {
-		grid.setLoading(false);
-		showErrorMessage(appRoot, error);
-	}
+	// 	// Executed after promise resolves
+	// 	grid.setLoading(false);
+	// 	grid.updateCards(recipes);
+	// 	grid.render();
+	// } catch (error) {
+	// 	grid.setLoading(false);
+	// 	showErrorMessage(appRoot, error);
+	// }
 }
 
 /**
