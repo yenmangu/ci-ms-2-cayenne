@@ -1,4 +1,11 @@
 export {};
+/**
+ * @typedef {object} RecipeCardElementMap
+ * @property {HTMLElement} [title]
+ * @property {HTMLAnchorElement} [anchor]
+ * @property {HTMLImageElement} [image]
+ * @property {HTMLButtonElement} [likeBtn]
+ */
 
 /**
  * @typedef {object} RecipeCard

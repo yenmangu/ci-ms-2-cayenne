@@ -20,7 +20,13 @@ export function renderRecipeCard(recipe) {
 				class="btn btn--like"
 				data-like-btn
 				tabindex="0"
-				>Like
+				aria-pressed="false"
+				title="Like this recipe"
+				>
+				<span class="btn__like-text">Like this recipe</span>
+				<i class="fa-regular fa-heart">
+					<span class="visually-hidden">Like</span>
+				</i>
 			</button>
 		</a>
 	</div>

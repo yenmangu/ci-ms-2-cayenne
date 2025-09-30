@@ -1,7 +1,5 @@
 /* Fonts Import */
 
-/* CSS Variables */
-
 /* Global styles */
 
 *.hidden {
@@ -46,6 +44,39 @@ a div {
 	text-decoration: none;
 	color: inherit;
 }
+
+/* Bootstrap Override */
+
+.btn--like {
+	background: transparent;
+	border: none;
+	box-shadow: none;
+	padding: 0.5rem;
+	color: #e55353;
+	transition: color 0.2s;
+	cursor: pointer;
+	max-width: max-content;
+	margin: 0 auto;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+
+.btn--like > i {
+	font-size: 1.2rem;
+}
+.btn--like[aria-pressed='true'] {
+	color: #e55353;
+}
+button.btn--like:focus {
+	outline: 2px solid #6a0dad;
+}
+/* .btn--like .fa-heart {
+
+}
+.btn--like[aria-pressed='true'] .fa-heart {
+
+} */
 
 /* App */
 
@@ -153,7 +184,7 @@ a div {
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
-	margin-bottom: 1rem;
+	margin-bottom: 2rem;
 }
 .wrapper.wrapper__random-button {
 	display: flex;
@@ -177,7 +208,6 @@ a div {
 .wrapper.wrapper__random-button p {
 	margin: 0;
 }
-/* Bootstrap Override */
 
 /* Cards - Recipe Cards, Ingredient Cards etc */
 
