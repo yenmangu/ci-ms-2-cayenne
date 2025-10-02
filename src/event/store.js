@@ -142,6 +142,20 @@ export function createStateStore(initialState = {}) {
 	}
 
 	/**
+	 *
+	 * @param {string} string
+	 */
+	function addSearchString(string) {
+		const { searchQuery = [] } = state;
+
+		const exists = searchQuery.some(s => s === string);
+		if (!exists) {
+			searchQuery.push(string);
+		}
+		setState({ searchQuery: searchQuery });
+	}
+
+	/**
 	 * Helper function to minimise repetition
 	 *
 	 * @param {*} state
@@ -256,6 +270,7 @@ export function createStateStore(initialState = {}) {
 		resetState,
 		saveRecipe,
 		removeLikedRecipe,
-		toggleLikedrecipe
+		toggleLikedrecipe,
+		addSearchString
 	};
 }
