@@ -51,6 +51,7 @@ export class SpoonacularClient {
 	 *
 	 * @param {string[]} searchTerms
 	 * @param {Object} params
+	 * @returns
 	 */
 	async searchRecipes(searchTerms, params = {}) {
 		// const urlParams =
