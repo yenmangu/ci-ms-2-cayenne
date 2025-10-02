@@ -39,6 +39,25 @@ export const AppRouter = {
 		if (entry.title) {
 			document.title = entry.title;
 		}
+	},
+
+	/**
+	 *
+	 * @param {string} path
+	 * @param {Record<string, *>} [params]
+	 */
+	navigate(path, params = {}) {
+		/** @type {Record<string, *>} */
+		const serialised = {};
+		for (const [k, v] of Object.entries(params)) {
+			serialised[k] = Array.isArray(v) ? v.join(',') : v;
+		}
+
+		const qs = Object.keys(serialised).length
+			? '?' + new URLSearchParams(serialised).toString()
+			: '';
+
+		window.location.hash = `#${path}${qs}`;
 	}
 };
 
