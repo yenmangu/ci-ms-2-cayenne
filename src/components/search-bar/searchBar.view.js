@@ -24,5 +24,6 @@ export function renderSearchBar() {
     Search
   </button>
 </form>
+<div id="noResults" class="visually-hidden"></div>
 `;
 }
