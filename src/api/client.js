@@ -27,7 +27,7 @@ export class SpoonacularClient {
 	 */
 	async getTestApiRecipes(single = false) {
 		const queryParams = { test: true };
-		const endpoint = single ? '/test-random' : '/test';
+		const endpoint = single ? '/recipes/test-random' : '/recipes/test';
 		try {
 			const responseJson = await this._fetch(endpoint, queryParams);
 			return responseJson;

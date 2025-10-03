@@ -3,7 +3,7 @@
  * @callback RouteHandler
  * @param {HTMLElement} appRoot - The DOM node where the component should render
  * @param {string} pathName
- * @param {Record<string, string>} [params] - Route parameters extracted from the URL
+ * @param {Record<string, *>} [params] - Route parameters extracted from the URL
  */
 
 /**

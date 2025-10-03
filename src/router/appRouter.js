@@ -32,6 +32,7 @@ export const AppRouter = {
 		/** @type {{path: string, params: Record<string,string> | {}}} */
 		const { path, params } = parseHashRoute(hash);
 		console.log('Params: ', params);
+		console.log('path: ', path);
 
 		const entry = routeMap[path] || routeMap['/404'];
 
@@ -48,10 +49,10 @@ export const AppRouter = {
 	 */
 	navigate(path, params = {}) {
 		/** @type {Record<string, *>} */
-		const serialised = {};
-		for (const [k, v] of Object.entries(params)) {
-			serialised[k] = Array.isArray(v) ? v.join(',') : v;
-		}
+		const serialised = params;
+		// for (const [k, v] of Object.entries(params)) {
+		// 	serialised[k] = Array.isArray(v) ? v.join(',') : v;
+		// }
 
 		const qs = Object.keys(serialised).length
 			? '?' + new URLSearchParams(serialised).toString()

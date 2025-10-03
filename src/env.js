@@ -2,10 +2,10 @@ const PROD_HOSTNAMES = ['yenmangu.github.io'];
 
 const env = {
 	prod: {
-		API_URL: 'https://ci-cayenne-proxy.vercel.app/api/recipes'
+		API_URL: 'https://ci-cayenne-proxy.vercel.app/api'
 	},
 	dev: {
-		API_URL: 'http://127.0.0.1:3000/api/recipes'
+		API_URL: 'http://127.0.0.1:3000/api'
 	}
 };
 
