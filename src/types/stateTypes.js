@@ -3,6 +3,7 @@ export {};
 /**
  * @typedef {import("./recipeTypes.js").RecipeCard} RecipeCard
  * @typedef {import("./recipeTypes.js").RecipeFull} RecipeFull
+ * @typedef {import('./ingredientTypes.js').IngredientResultCard} IngredientResultCard
  * @typedef {import(
  * 		"../components/error-message/errorMessage.controller.js"
  * 	).ErrorMessageConfig} ErrorConfig
@@ -54,7 +55,7 @@ export {};
  * @property {object} [activeFilters] - Structured object for filters (diets, cook time etc)
  * @property {boolean} [loading] - Loading flag
  * @property {ErrorConfig|null} [error] - Current error, if any
- * @property {ShoppingListItem[]} [shoppingList]
+ * @property {IngredientResultCard[]} [shoppingList]
  *
  */
 
@@ -64,5 +65,18 @@ export {};
  * @typedef {object} PersistableState
  * @property {RecipeCard[]} [likedRecipes]
  * @property {UnitLocale} [unitLocale]
- * @property {ShoppingListItem[]} [shoppingList]
+ * @property {IngredientResultCard[]} [shoppingList]
+ */
+
+/**
+ * @typedef {'unitLocale' |
+ *  'unitLength' |
+ *  'recipeResults' |
+ *  'currentRecipe' |
+ *  'searchQuery' |
+ *  'activeFilters' |
+ *  'loading' |
+ * 	'shoppingList' |
+ *  'error'
+ * } StateKey
  */
