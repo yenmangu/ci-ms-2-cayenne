@@ -6,6 +6,7 @@
  * @typedef {import('./eventEmitter.js').Listener} Listener
  * @typedef {import('./eventEmitter.js').ChainableReturnType} EmitterChain
  * @typedef {import('../types/stateTypes.js').PartialAppState} PartialAppState
+ * @typedef {import('../types/stateTypes.js').StateKey} StateKey
  */
 
 /**
@@ -39,7 +40,7 @@ export function createStateStore(initialState = {}) {
 	/**
 	 *
 	 * @param {PartialAppState} updates
-	 * @param {Object} opts
+	 * @param {object} opts
 	 * @param {boolean} [opts.global=true]
 	 */
 	function setState(updates, opts = {}) {
@@ -89,6 +90,11 @@ export function createStateStore(initialState = {}) {
 				case 'activeFilters':
 					emitter.publish('state:activeFilters', {
 						[key]: state.activeFilters
+					});
+					break;
+				case 'shoppingList':
+					emitter.publish('state:shoppingList', {
+						[key]: state.shoppingList
 					});
 					break;
 				case 'loading':
@@ -174,7 +180,7 @@ export function createStateStore(initialState = {}) {
 	/**
 	 *
 	 * @param {StoreListener} [listener]
-	 * @param {string} [key=null]
+	 * @param {StateKey} [key=null]
 	 * @returns {StoreChainApi}
 	 */
 	function subscribe(listener, key = null) {
