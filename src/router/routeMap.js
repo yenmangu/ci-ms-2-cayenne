@@ -3,8 +3,9 @@
  */
 
 import { loadHome } from '../pages/cayenne.js';
-import { handleRecipeDetail } from '../pages/recipe.js';
+import { loadRecipeDetail } from '../pages/recipe.js';
 import { loadRecipes } from '../pages/recipes.js';
+import { loadShoppingList } from '../pages/shoppingList.js';
 
 /** @type {RouteMap} */
 export const routeMap = {
@@ -19,8 +20,14 @@ export const routeMap = {
 	},
 
 	'/recipe': {
-		handler: handleRecipeDetail,
+		handler: loadRecipeDetail,
 		title: 'Recipe Detail',
+		domain: true
+	},
+
+	'/shopping-list': {
+		handler: loadShoppingList,
+		title: 'Shopping List',
 		domain: true
 	},
 

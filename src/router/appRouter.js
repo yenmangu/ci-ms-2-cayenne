@@ -34,9 +34,11 @@ export const AppRouter = {
 		console.log('Params: ', params);
 		console.log('path: ', path);
 
+		const isDev = params['dev'] === 'true' || params['dev'] === '1';
+
 		const entry = routeMap[path] || routeMap['/404'];
 
-		entry.handler(appRoot, path, params);
+		entry.handler(appRoot, path, { ...params, dev: isDev });
 		if (entry.title) {
 			document.title = entry.title;
 		}
