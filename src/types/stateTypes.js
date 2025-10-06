@@ -18,6 +18,15 @@ export {};
  */
 
 /**
+ * @typedef {object} ShoppingListItem
+ * @property {number} [id]
+ * @property {string} name
+ * @property {number} [amount]
+ * @property {string} [unit]
+ * @property {number}[recipeId] - optional to track which recipe the ingredient came from
+ */
+
+/**
  * @typedef {object} AppState
  * @property {UnitLocale} unitLocale - User's preferred units
  * @property {UnitLength} unitLength - User's preferred unit length
@@ -29,6 +38,7 @@ export {};
  * @property {RecipeCard[]} [likedRecipes] - List of user-favourited recipes
  * @property {boolean} [loading] - Loading flag
  * @property {ErrorConfig|null} [error] - Current error, if any
+ * @property {ShoppingListItem[]} [shoppingList]
  *
  */
 /**
@@ -44,6 +54,7 @@ export {};
  * @property {object} [activeFilters] - Structured object for filters (diets, cook time etc)
  * @property {boolean} [loading] - Loading flag
  * @property {ErrorConfig|null} [error] - Current error, if any
+ * @property {ShoppingListItem[]} [shoppingList]
  *
  */
 
@@ -53,4 +64,5 @@ export {};
  * @typedef {object} PersistableState
  * @property {RecipeCard[]} [likedRecipes]
  * @property {UnitLocale} [unitLocale]
+ * @property {ShoppingListItem[]} [shoppingList]
  */
