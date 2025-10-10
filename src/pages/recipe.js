@@ -10,7 +10,7 @@ import { RecipeDetail } from '../components/recipe-detail/recipeDetail.controlle
  * @param {string} pathName
  * @param {Record<string, string | number>} params
  */
-export async function handleRecipeDetail(container, pathName, params = {}) {
+export async function loadRecipeDetail(container, pathName, params = {}) {
 	// Clear the container
 	container.innerHTML = '';
 
