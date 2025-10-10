@@ -41,30 +41,30 @@ window.addEventListener('DOMContentLoaded', () => {
 	initCayenne();
 
 	// ---- enable the probe only when requested (and not in prod) ----
-	const probeOn =
-		!isProd && new URLSearchParams(location.search).has('probePadding');
-	if (probeOn) {
-		// Run as soon as the page is shown after navigation/refresh
-		window.addEventListener(
-			'pageshow',
-			() => {
-				const main = /** @type {HTMLElement|null} */ (
-					document.querySelector('main#cayenne-main')
-				);
-				if (!main) {
-					console.warn('[probe] main#cayenne-main not found');
-				} else {
-					// kicks off frame-by-frame logging immediately
-					const stop = startPaddingProbe(main, 'main#cayenne-main');
-					const w = getDevWindow();
-					const dev = ensureDev(w);
-					// optional auto-stop after 5s (you can also call window.__stopPaddingProbe() in console)
-					setTimeout(() => dev.__stopPaddingProbe?.(), 5000);
-				}
-			},
-			{ once: true }
-		);
-	}
+	// const probeOn =
+	// 	!isProd && new URLSearchParams(location.search).has('probePadding');
+	// if (probeOn) {
+	// 	// Run as soon as the page is shown after navigation/refresh
+	// 	window.addEventListener(
+	// 		'pageshow',
+	// 		() => {
+	// 			const main = /** @type {HTMLElement|null} */ (
+	// 				document.querySelector('main#cayenne-main')
+	// 			);
+	// 			if (!main) {
+	// 				console.warn('[probe] main#cayenne-main not found');
+	// 			} else {
+	// 				// kicks off frame-by-frame logging immediately
+	// 				const stop = startPaddingProbe(main, 'main#cayenne-main');
+	// 				const w = getDevWindow();
+	// 				const dev = ensureDev(w);
+	// 				// optional auto-stop after 5s (you can also call window.__stopPaddingProbe() in console)
+	// 				setTimeout(() => dev.__stopPaddingProbe?.(), 5000);
+	// 			}
+	// 		},
+	// 		{ once: true }
+	// 	);
+	// }
 	// ----------------------------------------------------------------
 	initAppHeader(appHeader, 300);
 });
