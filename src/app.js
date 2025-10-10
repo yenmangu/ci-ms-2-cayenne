@@ -9,7 +9,6 @@ import { AppHeader } from './components/app-header/appHeader.controller.js';
 
 import { isProd } from './env.js';
 import { startPaddingProbe } from './util/.dev/probes.js';
-import { initHeaderHideBehaviour } from './util/headerStack.js';
 import { initAppHeader } from './util/responsiveHeader.js';
 import { ensureDev, getDevWindow } from './util/.dev/devWindow.js';
 let appHeader = null;
