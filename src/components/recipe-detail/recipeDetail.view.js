@@ -118,13 +118,13 @@ export function renderRecipeDetail(recipe, summaryObj, opts) {
 	// 	summaryInsertsArray.push(summaryInsert);
 	// }
 
-	const recipeTemplate = `<main class="recipe-detail container my-2" id="recipeDetail">
+	const recipeTemplate = `<div class="recipe-detail container my-2" id="recipeDetail">
 
-  <header class="mb-4 text-center">
+  <section class="mb-4 text-center">
     <h2 class="recipe-title">${title}</h2>
     <img class="img-fluid recipe-image rounded" src="${image}" />
 		<div class="toggle-container" id="toggleContainer"></div>
-  </header>
+  </section>
 
   <section class="recipe-summary mb-4">
     <!-- summary HTML will be injected here -->
@@ -164,7 +164,7 @@ export function renderRecipeDetail(recipe, summaryObj, opts) {
       </div>
     </div>
   </div>
-</main>
+</div>
 `;
 
 	return recipeTemplate;

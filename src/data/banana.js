@@ -63,3 +63,4 @@ const bananaResultsWithImages = mapFullImageUrl(bananaResults.results);
 console.log('BananaResultsImages: ', bananaResultsWithImages);
 
 export const banana = bananaResultsWithImages[1];
+export const bananas = bananaResultsWithImages;
