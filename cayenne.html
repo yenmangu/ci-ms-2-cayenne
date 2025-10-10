@@ -41,23 +41,30 @@
 		<link rel="stylesheet"
 					href="./assets/css/style.css">
 	</head>
-	<body>
-		<header id="header"
-						class="bg-dark text-white py-4">
-			<div class="container text-center">
-				<h1 class="display-5">Cayenne Features</h1>
-				<p class="lead">Explore how Cayenne helps you cook smarter, faster, and with more flavour.</p>
+	<body class="cayenne-main">
+		<div id="header-app-stack"
+				 class="header-app-stack">
+			<div id="header-stack"
+					 class="header-stack">
+				<header id="header"
+								class="bg-dark text-white py-4">
+					<div class="container text-center">
+						<h1 class="display-5">Cayenne Features</h1>
+						<p class="lead">Explore how Cayenne helps you cook smarter, faster, and with more flavour.</p>
+					</div>
+				</header>
 			</div>
-		</header>
-		<main id="cayenne-main"
-					class="container py-0 app-container">
-			<div id="app"></div>
-		</main>
-		<footer class="bg-light text-center text-muted py-4 mt-auto">
-			<div class="container">
-				<p class="mb-1">© 2025 Cayenne. All rights reserved.</p>
-				<small>Powered by Spoonacular API & Bootstrap 5</small>
-			</div>
+			<main id="cayenne-main"
+						class="container app-container">
+				<div id="app-root"
+						 class="app-root"></div>
+			</main>
+			<footer class="bg-light text-center text-muted py-4 mt-auto">
+				<div class="container">
+					<p class="mb-1">© 2025 Cayenne. All rights reserved.</p>
+					<small>Powered by Spoonacular API & Bootstrap 5</small>
+				</div>
+		</div>
 		</footer>
 		<script type="module"
 						src="./src/app.js"></script>

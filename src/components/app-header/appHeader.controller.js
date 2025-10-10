@@ -19,6 +19,7 @@ export class AppHeader {
 
 		/** @type {HTMLElement} */
 		this.header = stringToHtml(renderAppHeader());
+		// this.setOffset();
 
 		/** @type {HTMLElement} */
 		this.toggleContainer = null;
@@ -47,6 +48,28 @@ export class AppHeader {
 			this.unitLength = state.unitLength ?? 'unitShort';
 			this.unitLocale = state.unitLocale ?? 'metric';
 		});
+	}
+
+	/**
+	 *
+	 * @param {boolean} [scrolled=false]
+	 */
+	setOffset(scrolled = false) {
+		const headerStack = document.getElementById('header-stack');
+
+		if (!headerStack) throw new Error('#header-stack not found');
+		const spacer = document.getElementById('scroll-spacer');
+		if (!spacer) throw new Error('#spacer not found');
+
+		const headerStackOffset = headerStack.offsetHeight;
+
+		if (scrolled) {
+			this.header.style.marginTop = `${0}`;
+			spacer.style.height = `${this.header.offsetHeight}px`;
+		} else {
+			this.header.style.marginTop = `${headerStackOffset}px`;
+			spacer.style.height = `${0}`;
+		}
 	}
 
 	init() {

@@ -91,6 +91,7 @@ const createNavbarInner = config => {
 export const createNavbar = navConfig => {
 	const { navInner, navClasses } = createNavbarInner(navConfig);
 	const navEl = document.createElement('nav');
+	navEl.id = 'cayenne-nav';
 	navEl.classList = navClasses;
 	navEl.innerHTML = navInner;
 

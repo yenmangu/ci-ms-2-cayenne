@@ -1,5 +1,16 @@
 /* Fonts Import */
 
+/* Root vars */
+
+:root {
+	--stack-offset-height: 0px;
+	--app-header-offset-height: 0px;
+	--header-transition: ease;
+	--main-pad-top: 0px;
+	--header-speed: 0;
+	--main-shift: 0px;
+}
+
 /* Global styles */
 
 *.hidden {
@@ -17,19 +28,25 @@
 html,
 body {
 	height: 100%;
+	width: 100%;
 	overflow: hidden;
 	/* iOS 100vh bug fix */
 	block-size: 100dvb;
+	margin: 0;
+	padding: 0;
 }
 
 body {
-	min-height: 100vh;
-	width: 100%;
 	display: flex;
 	flex-direction: column;
 }
 
-main {
+a div {
+	text-decoration: none;
+	color: inherit;
+}
+
+main:not(#cayenne-main) {
 	display: flex;
 	flex-direction: column;
 	flex: 1 1 auto;
@@ -37,12 +54,84 @@ main {
 	overflow-y: auto;
 	justify-content: space-between;
 	align-items: center;
-	padding-top: 56px;
 }
 
-a div {
-	text-decoration: none;
-	color: inherit;
+/* Custom header/ app-stack styles */
+
+.header-app-stack {
+	height: 100vh;
+	width: 100%;
+	display: flex;
+	flex-direction: column;
+}
+
+#header-stack {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	z-index: 1100;
+	transform: translateY(0);
+	transition: transform var(--header-speed, 300ms) var(--header-transition);
+	/* will-change: transfom; */
+}
+
+#header-stack.header-stack--hidden {
+	transform: translateY(calc(-1 * var(--stack-offset-height, 0px)));
+}
+
+.app-header {
+	position: fixed;
+	left: 0;
+	z-index: 1099;
+	top: var(--stack-offset-height, 0px);
+	transition: none;
+	width: 100%;
+	min-height: 44px;
+	max-width: 100%;
+	background: #fff;
+	border-bottom: 1px solid #eee;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 0;
+}
+
+.app-header[data-ready='true'] {
+	transition: top var(--header-speed, 300ms) var(--header-transition);
+}
+
+.header-stack--hidden ~ #cayenne-main .app-header {
+	top: 0;
+}
+
+/* Main Scrollable Content (App) */
+main#cayenne-main {
+	box-sizing: border-box;
+	height: 100dvh;
+	flex: 1 1 auto;
+	overflow-y: auto;
+	padding-top: var(--main-pad-top, 0px);
+	transition: none;
+}
+main#cayenne-main[data-ready='true'] {
+	transition: padding-top var(--header-speed, 300ms)
+		var(--header-transition, ease);
+}
+
+/* Scroll Spacer */
+#scroll-spacer {
+	height: var(--app-header-offset-height, 0px);
+}
+
+/* Individual Headers/Navbars */
+#header {
+	width: 100%;
+}
+
+.navbar {
+	width: 100%;
+	z-index: 1099;
 }
 
 /* Bootstrap Override */
@@ -71,39 +160,18 @@ a div {
 button.btn--like:focus {
 	outline: 2px solid #6a0dad;
 }
-/* .btn--like .fa-heart {
 
-}
-.btn--like[aria-pressed='true'] .fa-heart {
-
+/* App Header Shadow */
+/* .header-app-stack--scroll .app-header {
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.07);
+	border-bottom: 1px solid #ddd;
 } */
 
 /* App */
 
 .app-container {
-	padding-left: 0;
-	padding-right: 0;
-}
-#app {
-	width: 100%;
-}
-
-/* App Header */
-
-.app-header {
-	min-height: 44px; /* About as slim as iOS top bars */
-	width: 100%;
-	max-width: 100%;
-	background: #fff;
-	border-bottom: 1px solid #eee;
-	/* Optional: stick to top */
-	position: sticky;
-	top: 0;
-	z-index: 100;
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
-	padding: 0;
+	padding-left: 1rem;
+	padding-right: 1rem;
 }
 
 .app-header__left {
@@ -209,6 +277,12 @@ button.btn--like:focus {
 	margin: 0;
 }
 
+/* Shopping List */
+
+#addItemForm {
+	margin-top: 1rem;
+}
+
 /* Cards - Recipe Cards, Ingredient Cards etc */
 
 .card-img-top {
@@ -271,5 +345,12 @@ main.recipe-detail {
 
 @media (prefers-color-scheme: dark) {
 	body {
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	#header-stack,
+	.app-header {
+		transition: none;
 	}
 }

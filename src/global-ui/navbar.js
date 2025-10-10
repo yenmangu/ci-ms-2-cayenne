@@ -5,7 +5,9 @@ import { getActivePageLink } from '../navigation.js';
 
 export function initNavbar() {
 	const currentPageLink = getActivePageLink(navConfig.links);
+
 	const header = document.getElementById('header');
+
 	if (!header) {
 		console.warn('[Cayenne] No #header found on page');
 		return;
