@@ -127,13 +127,46 @@ The link config is defined in `navbarConfig.js`, and used by `initNavbar()` to r
 | SPA style hash-based routing | Client-side navigation using `#/path` fragments. Works seamlessly on GitHub Pages without server configuration. URLs are functional but less SEO-friendly and considered a legacy fallback compared to the History API. |       |
 | State Management             | See [State Management System](#state-management-system)                                                                                                                                                                 |       |
 
-#### Development Features
+#### User Facing Features
 
-| Feature                 | Notes                                                                     | Image                                                   |
-| ----------------------- | ------------------------------------------------------------------------- | ------------------------------------------------------- |
-| Dev Tools in app header | Buttons for logging/resetting app state, only visible in development mode | ![image](./documentation/ux/features/dev/dev-tools.png) |
+| Feature                      | Notes                                                                                                                                                                                                                   | Image |
+| ---------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----- |
+| SPA style hash-based routing | Client-side navigation using `#/path` fragments. Works seamlessly on GitHub Pages without server configuration. URLs are functional but less SEO-friendly and considered a legacy fallback compared to the History API. |       |
+| State Management             | See [State Management System](#state-management-system)                                                                                                                                                                 |       |
+
+<!-- | Robust scroll event handling | [Single scroll handler](#handling-scroll-events-in-spa-layouts) responds to any scrollable container, allowing seamless navigation auto-hide behaviour across all SPA views.                                            |       | -->
 
 ### Future Features
+
+<!-- ### Handling Scroll Events in SPA Layouts -->
+
+The Cayenne app uses a single-page application (SPA) structure, with multiple independently scrollable containers (e.g., shopping list, recipe grid) dynamically injected into the main content area (`<main id="cayenne-main">`). To support features such as auto-hiding the main navigation bar during user scrolling—regardless of which scrollable area is active—the app employs a robust event-handling pattern:
+
+#### Scroll Event Capturing
+
+- **Background:** In the DOM event model, most events (e.g., `click`, `input`) bubble up the tree, allowing parent elements to react to events triggered by their children. However, some events—most notably `scroll`, `focus`, and `blur`—do **not** bubble.
+- **Solution:** To reliably respond to scrolling within any descendant of the main SPA container, Cayenne attaches a single `scroll` event listener to `#cayenne-main` using the capture phase (`{{ capture: true }}`).
+- **Result:** This ensures the handler is invoked for any scroll event originating from any scrollable child, regardless of dynamic injection or page navigation. The handler inspects `event.target` to determine which specific element was scrolled.
+
+**Why is this necessary?**
+The use of event capturing is a robust solution to a less common problem: catching non-bubbling events from dynamic children in an SPA. This avoids the complexity and fragility of attaching and detaching listeners to every scrollable component as they are created or destroyed.
+
+#### Example Pattern
+
+```js
+const main = document.getElementById('cayenne-main');
+main.addEventListener(
+	'scroll',
+	event => {
+		const scrolledEl = event.target;
+		// Logic to hide/show navbar, depending on scroll position
+	},
+	true // capture phase
+);
+```
+
+**Reference:**
+For a full explanation of event bubbling and capturing, see [javascript.info: Bubbling and Capturing](https://javascript.info/bubbling-and-capturing#capturing).
 
 ## State Management System
 
