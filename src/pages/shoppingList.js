@@ -14,4 +14,5 @@ import { ShoppingList } from '../components/shopping-list/shoppingList.controlle
 export function loadShoppingList(appRoot, pathName, params = {}) {
 	appRoot.innerHTML = '';
 	const shoppingList = new ShoppingList(appRoot, params);
+	shoppingList.init();
 }
