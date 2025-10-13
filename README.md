@@ -23,13 +23,29 @@ This platform is meant to attract two types of users.
 
 ### The 5 Planes of UX
 
+### The 5 Planes of UX
+
 #### 1. Strategy Plane
 
 ##### Purpose
 
+- Provide a fast, intuitive way for users to **discover recipes** and **plan meals** using live data from the Spoonacular API.
+- Allow users to **search by ingredient** to make use of what they already have at home.
+- Enable users to **save favourites** and build a **shopping list** for convenient reuse.
+
 ##### Business Goals
 
+- Encourage regular return visits through saved favourites and a smooth user experience.
+- Present a professional, portfolio-quality web application that demonstrates modern front-end development skills and API integration.
+- Serve as an educational cooking resource by exposing users to new ingredients and cuisines.
+
 ##### Primary User Needs
+
+- Search for recipes by ingredient, keyword, or category.
+- Save favourite recipes for quick access.
+- Add ingredients to a shopping list for later use.
+- View recipes with clear imagery and legible nutritional information.
+- Seamlessly switch between metric and US units.
 
 #### 2. Scope Plane
 
@@ -39,27 +55,61 @@ This platform is meant to attract two types of users.
 
 ##### Content Requirements
 
+- Recipe cards with images, titles, and brief summaries.
+- Detailed recipe pages including ingredients, measures, and instructions.
+- Interface elements for liking recipes and managing a shopping list.
+- Global controls for measurement system and unit length.
+- Informative error states for missing data or network issues.
+
 #### 3. Structure Plane
 
 ##### Information Architecture
 
-- **Navigation Menu**:
-  - Accessible links in the navbar.
-- **Hierarchy**:
-  - Clear call-to-action buttons.
-  - Prominent placement of social media links in the footer.
+- **Site Navigation Menu:**
+
+  - Fixed navbar with links to **Home**, **Features**, **About**, and **Cayenne App**.
+  - Each static page includes a clear “Launch the App” call-to-action linking directly to the live application (`cayenne.html`).
+  - Active-link highlighting helps users track their location across the site.
+
+- **Application Navigation:**
+
+  - Inside the **Cayenne App**, a hash-based router controls navigation between internal views:
+    - `#/` – Landing view (in-app home or welcome)
+    - `#/recipe-grid` – Recipe search results
+    - `#/recipe` – Individual recipe detail
+    - `#/shopping-list` – User shopping list
+    - `#/404` – Fallback route for invalid hashes
+  - The app retains a global **App Header** with measurement toggles and a consistent layout across all internal routes.
+
+- **Hierarchy:**
+  - **Header Stack** (site header + navbar) remains consistent across all static pages.
+  - **Main Content** presents clear CTAs (e.g., “Explore Features”, “Launch Cayenne App”).
+  - **Footer** repeats essential navigation and attributions for accessibility.
 
 ##### User Flow
 
-1.
-2.
-3.
+1. **User lands on the Home page (`index.html`)** → reads a short introduction to Cayenne and can immediately click **“Launch App”**.
+2. Optionally explores **Features** or **About** pages to learn more about the project and its purpose.
+3. Clicks **“Launch App”** → opens the live **Cayenne application** (`cayenne.html`).
+4. Inside the app:
+   - Searches recipes by ingredient or keyword.
+   - Views recipe results in the **Recipe Grid**.
+   - Opens a **Recipe Detail** view to read ingredients and instructions.
+   - Adds recipes to **Favourites** or items to the **Shopping List**.
+   - Navigates back to search or other features via the in-app header.
+5. At any time, the user can return to the marketing pages using the main navigation bar.
+
+This dual-layer structure (marketing site + embedded SPA) ensures that new visitors can understand Cayenne’s value before engaging with the interactive application, while returning users can jump straight into the app experience.
 
 #### 4. Skeleton Plane
 
 ##### Wireframe Suggestions
 
 - A full list of [Wireframes](#wireframes) can be viewed in detail below.
+- Each primary view (Home, Recipe Grid, Recipe Detail, Shopping List) should have:
+  - Fixed header stack with app header below.
+  - Scrollable main content (`#cayenne-main`).
+  - Responsive grid layout that adapts to mobile first.
 
 #### 5. Surface Plane
 
@@ -70,22 +120,23 @@ This platform is meant to attract two types of users.
 
 ### Colour Scheme
 
-I used [coolors.co](https://coolors.co/6a0dad-ff3b30-1e1e1e-f2f2f2-ff9500) to generate my color palette.
+Cayenne uses a warm, modern palette inspired by spice and flame:
 
--
--
--
--
--
+- `#C63D0F` — Cayenne red (primary accent)
+- `#F2B134` — Warm gold highlight
+- `#1E1E1E` — Primary text and neutral backgrounds
+- `#FFFFFF` — Content background for readability
+- `#EAEAEA` — Subtle divider and neutral UI elements
 
-Other colours used
--``/`#`
+_Generated via [coolors.co](https://coolors.co/). The palette was tested for contrast compliance (WCAG AA)._
 
-![screenshot](documentation/ux/colours/momentum-palette.png)
+![screenshot](documentation/ux/colours/cayenne-palette.png)
 
 ### Typography
 
-- [Font Awesome](https://fontawesome.com) icons were used throughout the site, such as the social media icons in the footer.
+- [Inter](https://fonts.google.com/specimen/Inter) for body text (legible and neutral on mobile).
+- [Playfair Display](https://fonts.google.com/specimen/Playfair+Display) for headings, giving a refined culinary feel.
+- [Font Awesome](https://fontawesome.com) for icons such as favourites (heart), shopping basket, and navigation cues.
 
 ## Architecture
 
@@ -133,6 +184,7 @@ The link config is defined in `navbarConfig.js`, and used by `initNavbar()` to r
 | ---------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----- |
 | SPA style hash-based routing | Client-side navigation using `#/path` fragments. Works seamlessly on GitHub Pages without server configuration. URLs are functional but less SEO-friendly and considered a legacy fallback compared to the History API. |       |
 | State Management             | See [State Management System](#state-management-system)                                                                                                                                                                 |       |
+| Animated Responsive Header   | See [Responsive & Animated App Header](#responsive--animated-app-header). Automatically recalculates layout variables, respects motion preferences, and smoothly hides the site header when the app opens.              |       |
 
 <!-- | Robust scroll event handling | [Single scroll handler](#handling-scroll-events-in-spa-layouts) responds to any scrollable container, allowing seamless navigation auto-hide behaviour across all SPA views.                                            |       | -->
 
@@ -167,6 +219,59 @@ main.addEventListener(
 
 **Reference:**
 For a full explanation of event bubbling and capturing, see [javascript.info: Bubbling and Capturing](https://javascript.info/bubbling-and-capturing#capturing).
+
+#### Responsive & Animated App Header
+
+The **Responsive Header System** provides a dynamic, adaptive layout for Cayenne’s multi-layered header structure. It manages transitions between the site’s main header stack (`#header-stack`), the app-specific header (`AppHeader`), and the primary content container (`#cayenne-main`).
+
+This system ensures consistent spacing, smooth animation, and accessibility compliance across different viewport sizes and motion preferences.
+
+##### Overview
+
+The module (`responsiveHeader.js`) is responsible for:
+
+- Calculating and maintaining CSS custom properties to synchronise layout values between JavaScript and CSS.
+- Animating the header stack to slide gracefully out of view when the Cayenne app is active.
+- Respecting the user's `prefers-reduced-motion` setting for accessibility.
+- Dynamically adjusting to height changes in header elements via `ResizeObserver`.
+
+##### Core CSS Variables
+
+| Variable                     | Purpose                                                                                                         |
+| ---------------------------- | --------------------------------------------------------------------------------------------------------------- |
+| `--stack-offset-height`      | The total height of the combined header and navigation stack.                                                   |
+| `--app-header-offset-height` | The height of the Cayenne app’s internal header, which contains global toggles and controls.                    |
+| `--main-pad-top`             | Padding applied to the main content area to ensure smooth layout shifts during header transitions.              |
+| `--header-speed`             | Duration of the header’s hide/show transition, controlled via JavaScript and synced to user motion preferences. |
+
+##### Behaviour and Features
+
+- **Dynamic Layout Calculation**
+  The system continuously monitors header height changes, ensuring that layout spacing remains accurate as content or viewport size changes.
+
+- **Smooth Animated Transition**
+  When the app launches, the `header-stack` translates upwards, freeing additional vertical space for app content.
+  The animation timing is dynamically derived from `--header-speed`, allowing easy tuning through CSS.
+
+- **Reduced Motion Support**
+  Users who prefer minimal animation will see instantaneous transitions, ensuring accessibility compliance.
+
+- **Animation Safety and Robustness**
+  The module documents multiple strategies for synchronising the end of animations:
+
+  - A timer-based fallback (derived from CSS variable timing).
+  - A `transitionend` event listener approach.
+  - A hybrid of both for high-refresh-rate displays.
+
+- **Maintainability**
+  All optional patterns and design decisions (scroll-based visibility, velocity-gated animation, etc.) are retained in-line and commented for tutor review and potential future iterations.
+
+##### Technical Notes
+
+- Written entirely in vanilla JavaScript with ES module syntax and full JSDoc typing.
+- No external dependencies or build tools are required.
+- A cleanup function is returned upon initialisation, which disconnects observers, clears timeouts, and restores initial header visibility.
+- Fully compatible with Bootstrap’s responsive grid system while maintaining independence from Bootstrap’s fixed header logic.
 
 ## State Management System
 
@@ -377,9 +482,16 @@ Browser support details and feature compatibility are documented in [DEVELOPMENT
 
 ### Credits For Specific Features
 
-| Feature      | Source                                                                                                                              | Notes                                                                                                                                                        |
-| ------------ | ----------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| Hash routing | [Medium - Hash routing](https://thedevdrawer.medium.com/single-page-application-routing-using-hash-or-url-d6d1e2adcde/Hash_routing) | Inspiration for using `hashchange` because GitHub pages does not support History API [GitHub Community](https://github.com/orgs/community/discussions/64096) |
+| Feature                             | Source                                                                                                                                                   | Notes                                                                                                                                                                                                         |
+| ----------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Hash routing                        | [Medium - Hash routing](https://thedevdrawer.medium.com/single-page-application-routing-using-hash-or-url-d6d1e2adcde/Hash_routing)                      | Inspiration for using `hashchange` because GitHub pages does not support History API [GitHub Community](https://github.com/orgs/community/discussions/64096)                                                  |
+| Responsive Header Layout            | [MDN – ResizeObserver](https://developer.mozilla.org/en-US/docs/Web/API/ResizeObserver)                                                                  | Used to dynamically calculate and synchronise header and app-header heights, ensuring responsive spacing across breakpoints.                                                                                  |
+| Motion Accessibility Compliance     | [MDN – prefers-reduced-motion](https://developer.mozilla.org/en-US/docs/Web/CSS/%40media/prefers-reduced-motion)                                         | Ensures animations respect user motion preferences, complying with WCAG recommendations.                                                                                                                      |
+| Animation Synchronisation Pattern   | [Web.dev – “prefers-reduced-motion: Sometimes less movement is more”](https://web.dev/articles/prefers-reduced-motion)                                   | Guidance on accessible motion and techniques for reducing animation intensity for sensitive users.                                                                                                            |
+| Resize Performance Considerations   | [CSS-Tricks – “A Better API for the Resize Observer”](https://css-tricks.com/a-better-api-for-the-resize-observer/)                                      | Reinforced decision to use a single observer instance for performance and maintainability in responsive layout recalculations.                                                                                |
+| High-Refresh-Rate Animation Safety  | [Stack Overflow – “ResizeObserver one vs multiple performance”](https://stackoverflow.com/questions/51528940/resizeobserver-one-vs-multiple-performance) | Background research on safe update intervals and avoiding layout thrashing during ResizeObserver callbacks.                                                                                                   |
+| WCAG Motion Accessibility Technique | [W3C – WCAG Technique C39](https://www.w3.org/WAI/WCAG21/Techniques/css/C39)                                                                             | Formal WCAG technique describing best practice for implementing `prefers-reduced-motion` to mitigate vestibular motion issues.                                                                                |
+| Transition Event Fallback Design    | [Stack Overflow – “How can I throttle a ResizeObserver?”](https://stackoverflow.com/questions/69469814/how-can-i-throttle-a-resizeobserver)              | Informed implementation of dual fallback (CSS-duration timer + transitionend listener) to handle high-frequency frame updates and ensure animation completion synchronisation across different refresh rates. |
 
 ### Other Credits
 

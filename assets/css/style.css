@@ -55,6 +55,16 @@ main:not(#cayenne-main) {
 	align-items: center;
 }
 
+main.container--main {
+	width: 100%;
+	max-width: none;
+}
+
+.wrapper {
+	max-width: 1280px;
+	margin: auto;
+}
+
 /* Custom header/ app-stack styles */
 
 .header-app-stack {

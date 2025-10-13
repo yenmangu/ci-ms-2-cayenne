@@ -2,7 +2,7 @@
  * @typedef {import("../types/uiTypes.js").NavBar} NavBar
  */
 
-export const NAVBAR_BASE = `<nav class="navbar navbar-expand-lg bg-body-tertiary">
+export const NAVBAR_BASE = `<nav class="navbar navbar-expand-sm bg-body-tertiary">
 			<div class="container-fluid">
 				<a class="navbar-brand"
 					 href="#">Navbar</a>
@@ -48,7 +48,7 @@ export const NAVBAR_BASE = `<nav class="navbar navbar-expand-lg bg-body-tertiary
 const createNavbarInner = config => {
 	const { activeLink, links } = config;
 
-	const navClasses = 'navbar navbar-expand-lg bg-body-tertiary';
+	const navClasses = 'navbar  bg-body-tertiary';
 	const navLinks = links
 		.map(link => {
 			const isActive = link.title === activeLink;

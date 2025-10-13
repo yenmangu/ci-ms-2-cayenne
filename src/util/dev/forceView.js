@@ -41,6 +41,14 @@ export function emulateViewportFromQuery(params) {
 	}
 	meta.setAttribute('content', content);
 
+	if (preset === 'mobile') {
+		const allColumns = document.querySelectorAll('div.col-md-6');
+		allColumns.forEach(column => {
+			column.classList.remove('col-md-6');
+			column.classList.add('col-12');
+		});
+	}
+
 	// Body class + badge
 	document.documentElement.classList.add('emulate-viewport');
 	document.documentElement.style.setProperty('--emulate-width', `${widthPx}px`);
