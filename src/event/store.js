@@ -97,6 +97,11 @@ export function createStateStore(initialState = {}) {
 						[key]: state.shoppingList
 					});
 					break;
+				case 'route':
+					emitter.publish('state:route', {
+						[key]: state.route
+					});
+					break;
 				case 'loading':
 					emitter.publish('state:loading', {
 						[key]: state.loading
@@ -184,7 +189,7 @@ export function createStateStore(initialState = {}) {
 	 * @returns {StoreChainApi}
 	 */
 	function subscribe(listener, key = null) {
-		console.log('Subscribing with: ', key);
+		// console.log('Subscribing with: ', key);
 
 		// debugger;
 		const event = key ? `state:${key}` : STATE_CHANGE;

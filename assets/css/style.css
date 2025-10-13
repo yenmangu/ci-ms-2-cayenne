@@ -96,6 +96,21 @@ main:not(#cayenne-main) {
 	padding: 0;
 }
 
+.app-header__nav-links {
+	list-style: none;
+	display: flex;
+	flex-direction: row;
+	gap: 2rem;
+	margin-bottom: 0;
+	padding-left: 0;
+	width: 100%;
+}
+
+.app-header__nav-link {
+	font-size: 1.4rem;
+	color: rgb(223, 15, 15);
+}
+
 .app-header[data-ready='true'] {
 	transition: top var(--header-speed, 300ms) var(--header-transition);
 }

@@ -1,3 +1,4 @@
+import { appStore } from '../appStore.js';
 import { parseHashRoute } from './parseHashRoute.js';
 import { routeMap } from './routeMap.js';
 
@@ -37,6 +38,8 @@ export const AppRouter = {
 		const isDev = params['dev'] === 'true' || params['dev'] === '1';
 
 		const entry = routeMap[path] || routeMap['/404'];
+
+		appStore.setState({ route: entry });
 
 		entry.handler(appRoot, path, { ...params, dev: isDev });
 		if (entry.title) {

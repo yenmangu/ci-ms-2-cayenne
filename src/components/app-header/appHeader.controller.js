@@ -1,13 +1,15 @@
 /**
  * @typedef {import('../../types/stateTypes.js').UnitLength} UnitLength
  * @typedef {import('../../types/stateTypes.js').UnitLocale} UnitLocale
+ * @typedef {import('../../types/routerTypes.js').RouteEntry} RouteEntry
  */
 
 import { appStore } from '../../appStore.js';
+import { routeMap } from '../../router/routeMap.js';
 import { stringToHtml } from '../../util/htmlToElement.js';
 import { ToggleComponent } from '../toggle-component/toggleComponent.controller.js';
 import * as service from './appHeader.service.js';
-import { renderAppHeader } from './appHeader.view.js';
+import { renderAppHeader, renderAppNav } from './appHeader.view.js';
 
 export class AppHeader {
 	/**
@@ -20,6 +22,12 @@ export class AppHeader {
 		/** @type {HTMLElement} */
 		this.header = stringToHtml(renderAppHeader());
 		// this.setOffset();
+
+		/** @type {HTMLElement} */
+		this.navWrapper = null;
+
+		/** @type {string} */
+		this.currentPath = '/';
 
 		/** @type {HTMLElement} */
 		this.toggleContainer = null;
@@ -42,12 +50,25 @@ export class AppHeader {
 		/** @type {UnitLength} */
 		this.unitLength = 'unitShort';
 
-		this.dev = dev;
+		this.dev = false;
 
 		this.subscription = appStore.subscribe(state => {
 			this.unitLength = state.unitLength ?? 'unitShort';
 			this.unitLocale = state.unitLocale ?? 'metric';
 		});
+		this.routeSubscription = appStore.subscribe(state => {
+			console.log('ROUTE: ', state);
+			this.#_handleRouteEntry(state.route);
+		}, 'route');
+	}
+
+	/**
+	 *
+	 * @param {RouteEntry} routeEntry
+	 * @returns {*}
+	 */
+	#_handleRouteEntry(routeEntry) {
+		console.log('Path in getPageFromPath: ', routeEntry);
 	}
 
 	/**
@@ -73,6 +94,14 @@ export class AppHeader {
 	}
 
 	init() {
+		this.navWrapper = /** @type {HTMLElement} */ (
+			this.header.querySelector('.app-header__nav-wrapper')
+		);
+		if (this.navWrapper instanceof HTMLElement) {
+			console.log('rendering nav');
+
+			this.#_renderNav();
+		}
 		this.toggleContainer = /** @type {HTMLElement} */ (
 			this.header.querySelector('.toggle-container')
 		);
@@ -82,6 +111,14 @@ export class AppHeader {
 		if (this.dev) {
 			this.#_initDevControls();
 		}
+	}
+
+	#_renderNav() {
+		console.log('RouteMap: ', routeMap);
+
+		const nav = renderAppNav(routeMap);
+		const htmlNav = stringToHtml(nav);
+		this.navWrapper.appendChild(htmlNav);
 	}
 
 	#_initDevControls() {
@@ -135,6 +172,12 @@ export class AppHeader {
 	}
 
 	destroy() {
-		console.warn('Function destroy() not yet implemented.');
+		if (this.subscription) {
+			this.subscription.unsubscribe();
+		}
+
+		if (this.routeSubscription) {
+			this.routeSubscription.unsubscribe();
+		}
 	}
 }

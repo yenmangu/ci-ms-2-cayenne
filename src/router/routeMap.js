@@ -12,11 +12,14 @@ export const routeMap = {
 	'/': {
 		handler: loadHome,
 		title: 'Home',
-		domain: true
+		domain: true,
+		showInNav: true,
+		icon: 'house'
 	},
 
 	'/recipe-grid': {
-		handler: loadRecipes
+		handler: loadRecipes,
+		title: 'Recipe Results'
 	},
 
 	'/recipe': {
@@ -28,7 +31,9 @@ export const routeMap = {
 	'/shopping-list': {
 		handler: loadShoppingList,
 		title: 'Shopping List',
-		domain: true
+		domain: true,
+		showInNav: true,
+		icon: 'basket-shopping'
 	},
 
 	'/404': {

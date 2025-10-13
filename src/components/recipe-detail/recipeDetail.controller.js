@@ -68,7 +68,7 @@ export class RecipeDetail {
 		this.componentReady = false;
 
 		this.lastState = appStore.getState();
-		this.init();
+		// this.init();
 	}
 
 	async init() {
@@ -87,7 +87,7 @@ export class RecipeDetail {
 		this.recipeDetailComponent = stringToHtml(
 			renderRecipeDetail(this.fetchedRecipe, this.summary)
 		);
-		console.log('Component: ', this.recipeDetailComponent);
+		// console.log('Component: ', this.recipeDetailComponent);
 		this.componentReady = true;
 	}
 
@@ -105,9 +105,9 @@ export class RecipeDetail {
 	}
 
 	render() {
-		console.log('Implementing render()');
+		// console.log('Implementing render()');
 		if (this.recipeDetailComponent instanceof HTMLElement) {
-			console.log('Is Instance of HTMLElement');
+			// console.log('Is Instance of HTMLElement');
 		}
 		if (this.appRoot) this.appRoot.append(this.recipeDetailComponent);
 		else console.warn('No App root');
@@ -127,7 +127,7 @@ export class RecipeDetail {
 		this.fetchedRecipe = this.service.fetchedRecipe;
 		this.summary = this.service.recipeSummary;
 
-		console.log('RecipeDetailController: ', this);
+		// console.log('RecipeDetailController: ', this);
 	}
 
 	async publicTest() {
@@ -141,15 +141,6 @@ export class RecipeDetail {
 		this.summary = summary ?? this.noSummaryPlaceholder;
 
 		appStore.setState({ currentRecipe: this.fetchedRecipe });
-
-		console.log('fetched recipe: ', this.fetchedRecipe);
-		console.log(
-			this.summary
-				? `Fetched summary: ${JSON.stringify(this.summary)}`
-				: 'No sumamry available'
-		);
-
-		const toRender = renderRecipeDetail(this.fetchedRecipe, this.summary);
 	}
 
 	_getIdFromUrl() {

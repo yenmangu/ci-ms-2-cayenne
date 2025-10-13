@@ -13,6 +13,8 @@
  * @property {boolean} [requiresAuth] - Whether the route requires login
  * @property {string} [title] - Optional title to set for the page
  * @property {boolean} [domain] - Flag if component is domain level
+ * @property {boolean} [showInNav]
+ * @property {string} [icon]
  */
 
 /**

@@ -4,6 +4,7 @@ export {};
  * @typedef {import("./recipeTypes.js").RecipeCard} RecipeCard
  * @typedef {import("./recipeTypes.js").RecipeFull} RecipeFull
  * @typedef {import('./ingredientTypes.js').IngredientResultCard} IngredientResultCard
+ * @typedef {import("./routerTypes.js").RouteEntry} RouteEntry
  * @typedef {import(
  * 		"../components/error-message/errorMessage.controller.js"
  * 	).ErrorMessageConfig} ErrorConfig
@@ -38,6 +39,7 @@ export {};
  * @property {object} [activeFilters] - Structured object for filters (diets, cook time etc)
  * @property {RecipeCard[]} [likedRecipes] - List of user-favourited recipes
  * @property {boolean} [loading] - Loading flag
+ * @property {RouteEntry} [route]
  * @property {ErrorConfig|null} [error] - Current error, if any
  * @property {ShoppingListItem[]} [shoppingList]
  *
@@ -53,9 +55,10 @@ export {};
  * @property {string[]} [searchQuery] - Current search query
  * @property {RecipeCard[]} [likedRecipes] - List of user-favourited recipes
  * @property {object} [activeFilters] - Structured object for filters (diets, cook time etc)
- * @property {boolean} [loading] - Loading flag
+ * @property {boolean} [loading] - Loading flag *
+ * @property {RouteEntry} [route]
  * @property {ErrorConfig|null} [error] - Current error, if any
- * @property {IngredientResultCard[]} [shoppingList]
+ * @property {ShoppingListItem[]} [shoppingList]
  *
  */
 
@@ -65,7 +68,7 @@ export {};
  * @typedef {object} PersistableState
  * @property {RecipeCard[]} [likedRecipes]
  * @property {UnitLocale} [unitLocale]
- * @property {IngredientResultCard[]} [shoppingList]
+ * @property {ShoppingListItem[]} [shoppingList]
  */
 
 /**
@@ -77,6 +80,7 @@ export {};
  *  'activeFilters' |
  *  'loading' |
  * 	'shoppingList' |
+ *  'route'|
  *  'error'
  * } StateKey
  */

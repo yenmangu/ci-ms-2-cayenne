@@ -25,6 +25,7 @@ export async function loadRecipeDetail(container, pathName, params = {}) {
 	const recipeDetailParams = { recipeId };
 
 	const recipeDetail = new RecipeDetail(container, recipeDetailParams);
+	recipeDetail.init();
 	try {
 		// TODO: Implement live data
 		await recipeDetail.publicTest();
