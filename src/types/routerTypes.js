@@ -10,6 +10,7 @@
  * Represents a route entry in the route map
  * @typedef {object} RouteEntry
  * @property {RouteHandler} handler - Function called when route is matched
+ * @property {string} path
  * @property {boolean} [requiresAuth] - Whether the route requires login
  * @property {string} [title] - Optional title to set for the page
  * @property {boolean} [domain] - Flag if component is domain level

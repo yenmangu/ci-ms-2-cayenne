@@ -11,6 +11,7 @@ import { loadShoppingList } from '../pages/shoppingList.js';
 export const routeMap = {
 	'/': {
 		handler: loadHome,
+		path: '/',
 		title: 'Home',
 		domain: true,
 		showInNav: true,
@@ -19,17 +20,20 @@ export const routeMap = {
 
 	'/recipe-grid': {
 		handler: loadRecipes,
+		path: '/recipe-grid',
 		title: 'Recipe Results'
 	},
 
 	'/recipe': {
 		handler: loadRecipeDetail,
+		path: '/recipe',
 		title: 'Recipe Detail',
 		domain: true
 	},
 
 	'/shopping-list': {
 		handler: loadShoppingList,
+		path: '/shopping-list',
 		title: 'Shopping List',
 		domain: true,
 		showInNav: true,
@@ -40,6 +44,7 @@ export const routeMap = {
 		handler: (appRoot, pathName, params) => {
 			console.log('Route handler triggered with: ', pathName);
 		},
+		path: '/404',
 		title: 'Not Found',
 		domain: true
 	}

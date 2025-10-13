@@ -111,6 +111,10 @@ main:not(#cayenne-main) {
 	color: rgb(223, 15, 15);
 }
 
+.app-header__nav-link.is-active {
+	text-decoration: underline;
+}
+
 .app-header[data-ready='true'] {
 	transition: top var(--header-speed, 300ms) var(--header-transition);
 }

@@ -26,6 +26,9 @@ export class AppHeader {
 		/** @type {HTMLElement} */
 		this.navWrapper = null;
 
+		/** @type {NodeListOf<HTMLAnchorElement>} */
+		this.navLinks = null;
+
 		/** @type {string} */
 		this.currentPath = '/';
 
@@ -58,17 +61,22 @@ export class AppHeader {
 		});
 		this.routeSubscription = appStore.subscribe(state => {
 			console.log('ROUTE: ', state);
-			this.#_handleRouteEntry(state.route);
+			const { route } = state;
+			this.#_handleRouteChange(route.path);
 		}, 'route');
 	}
 
 	/**
 	 *
-	 * @param {RouteEntry} routeEntry
+	 * @param {string} path
 	 * @returns {*}
 	 */
-	#_handleRouteEntry(routeEntry) {
-		console.log('Path in getPageFromPath: ', routeEntry);
+	#_handleRouteChange(path) {
+		this.navLinks.forEach(link => {
+			const href = link.getAttribute('href').replace(/^#/, '');
+			link.classList.toggle('is-active', href === path);
+			link.setAttribute('aria-current', href === path ? 'page' : 'false');
+		});
 	}
 
 	/**
@@ -119,6 +127,9 @@ export class AppHeader {
 		const nav = renderAppNav(routeMap);
 		const htmlNav = stringToHtml(nav);
 		this.navWrapper.appendChild(htmlNav);
+		this.navLinks = /** @type {NodeListOf<HTMLAnchorElement>} */ (
+			htmlNav.querySelectorAll('a.app-header__nav-link')
+		);
 	}
 
 	#_initDevControls() {
