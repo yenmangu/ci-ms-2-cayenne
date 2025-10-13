@@ -122,6 +122,7 @@ main#cayenne-main {
 	overflow-y: auto;
 	padding-top: var(--main-pad-top, 0px);
 	transition: none;
+	max-width: none;
 }
 main#cayenne-main[data-ready='true'] {
 	transition: padding-top var(--header-speed, 300ms)
