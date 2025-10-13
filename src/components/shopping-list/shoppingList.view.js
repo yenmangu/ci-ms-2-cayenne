@@ -13,6 +13,7 @@ export function renderInput() {
 	return `<form id="addItemForm"
 			class="shopping-list__add0form mb-3"
 			autocomplete="off">
+			<h3>Shopping List</h3>
 	<div class="shopping-list__input-group input-group">
 		<input type="text"
 					 class="shopping-list__input form-control"

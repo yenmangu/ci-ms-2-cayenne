@@ -9,7 +9,7 @@
  */
 export function getActivePageLink(links) {
 	let pathname = window.location.pathname;
-	console.log('widnow.location: ', window.location.host);
+	console.log('window.location: ', window.location.host);
 
 	// Normalise root to index.html for local dev and GitHub Pages
 	if (pathname == '/' || pathname === '') {
