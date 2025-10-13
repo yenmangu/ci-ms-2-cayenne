@@ -4,6 +4,7 @@ export {};
  * @typedef {object} LinkObject
  * @property {string} href
  * @property {string}	title
+ * @property {string} dataPage
  */
 
 /**

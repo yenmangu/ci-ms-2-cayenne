@@ -7,10 +7,10 @@
  * @typedef {Link[]}
  */
 const links = [
-	{ href: './index.html', title: 'Home' },
-	{ href: './features.html', title: 'Features' },
-	{ href: './about.html', title: 'About' },
-	{ href: './cayenne.html', title: 'Cayenne' }
+	{ href: './index.html', title: 'Home', dataPage: 'index' },
+	{ href: './features.html', title: 'Features', dataPage: 'features' },
+	{ href: './about.html', title: 'About', dataPage: 'about' },
+	{ href: './cayenne.html', title: 'Cayenne', dataPage: 'cayenne' }
 ];
 
 /**
