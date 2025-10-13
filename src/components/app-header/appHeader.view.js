@@ -9,7 +9,7 @@ export function renderAppHeader() {
 	return `<!-- App Header Slice -->
 <div class="app-header shadow-sm">
   <div class="app-header__left ">
-    <img src="/assets/images/logo/cayenne-logo.png" alt="Cayenne Logo" class="app-header__logo me-2" height="28" />
+    <img src="../../../assets/images/logo/cayenne-logo.png" alt="Cayenne Logo" class="app-header__logo me-2" height="28" />
     <span class="app-header__title fw-bold">Cayenne</span>
   </div>
   <div class="app-header__toggles d-flex align-items-center gap-2">
