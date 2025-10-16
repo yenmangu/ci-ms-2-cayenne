@@ -32,6 +32,8 @@ export class RecipeCard {
 	}
 	init() {
 		this.subscription = appStore.subscribe(state => {
+			// console.log('State in recipeCardController: ', state);
+
 			const found = state.likedRecipes.some(r => r.id === this.recipe.id);
 
 			const icon = this.cardElementMapping.likeBtn?.querySelector('i');
@@ -41,7 +43,7 @@ export class RecipeCard {
 				);
 			}
 			this.#_toggleIcon(icon, found);
-		});
+		}, 'likedRecipes');
 		this.cardEl = stringToHtml(renderRecipeCard(this.recipe));
 		const cardElementMapping = {
 			title: /** @type {HTMLElement} */ (
@@ -113,7 +115,7 @@ export class RecipeCard {
 		for (const [key, val] of Object.entries(newRecipeCardData)) {
 			if (key === 'id') {
 				if (this.cardElementMapping.anchor instanceof HTMLAnchorElement) {
-					this.cardElementMapping.anchor.href = `#recipe?id=${newRecipeCardData.id}`;
+					this.cardElementMapping.anchor.href = `#/recipe?id=${newRecipeCardData.id}`;
 				}
 			}
 			if (key === 'image') {

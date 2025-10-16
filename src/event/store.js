@@ -92,6 +92,11 @@ export function createStateStore(initialState = {}) {
 						[key]: state.activeFilters
 					});
 					break;
+				case 'likedRecipes':
+					emitter.publish('state:likedRecipes', {
+						[key]: state.likedRecipes
+					});
+					break;
 				case 'shoppingList':
 					emitter.publish('state:shoppingList', {
 						[key]: state.shoppingList
