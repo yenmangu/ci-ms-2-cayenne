@@ -288,6 +288,12 @@ The BEM (Block, Element, Modifier) naming convention has been adopted for all cu
 > [!NOTE]
 > See [Complex Search](COMPLEX_SEARCH.md) for MoSCoW prioritisation of the full [complexSearch](https://spoonacular.com/food-api/docs#Search-Recipes-Complex) endpoint
 
+## Development Bugs
+
+| Bug/Issue                                                                                                    | Diagnosis                                                                                                                                                                                                                                                                    | Fix                                                                                                                                                                                                                                                                                                                                |
+| ------------------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Recipe card like button causes routing to fail or not-found after click; unexpected re-renders or UI flicker | Root cause: When liking a recipe, the anchor `href` was set to `#recipe?id=...` (missing the canonical slash). This broke SPA hash parsing (`#/recipe?id=...` expected). A secondary symptom was over-broad state updates (publishing the entire state), causing UI flicker. | 1. **Routing:** Ensure all dynamic anchor `href` values use the canonical `#/route` format.<br>2. **State:** Update state management to publish only the `likedRecipes` slice when liking/unliking, and have `RecipeCard` subscribe only to `state:likedRecipes`. This prevents unnecessary re-renders and keeps UI logic modular. |
+
 ## Testing
 
 > [!NOTE]
