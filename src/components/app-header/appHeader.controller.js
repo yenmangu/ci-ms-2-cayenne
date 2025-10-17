@@ -10,6 +10,7 @@ import { stringToHtml } from '../../util/htmlToElement.js';
 import { ToggleComponent } from '../toggle-component/toggleComponent.controller.js';
 import * as service from './appHeader.service.js';
 import { renderAppHeader, renderAppNav } from './appHeader.view.js';
+import { ENV } from '../../env.js';
 
 export class AppHeader {
 	/**
@@ -20,7 +21,7 @@ export class AppHeader {
 		this.container = container;
 
 		/** @type {HTMLElement} */
-		this.header = stringToHtml(renderAppHeader());
+		this.header = stringToHtml(renderAppHeader(ENV.HOME_URL));
 		// this.setOffset();
 
 		/** @type {HTMLElement} */
