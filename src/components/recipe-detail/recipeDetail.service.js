@@ -5,7 +5,6 @@
 
 /**
  * @typedef {object} DetailService
- * @property {number} recipeId
  * @property {RecipeFull} fetchedRecipe
  * @property {Summary} recipeSummary
  * @property {object}	[opts]
@@ -26,7 +25,6 @@ export const createDetailService = opts => {
 	const client = new SpoonacularClient();
 	/** @type {DetailService} */
 	const service = {
-		recipeId: opts.recipeId,
 		opts: {},
 		fetchedRecipe: null,
 		recipeSummary: null,
@@ -37,7 +35,7 @@ export const createDetailService = opts => {
 		 * @param {*} [params]
 		 * @returns {Promise<{fetchedRecipe: RecipeFull, summary:Summary}>}
 		 */
-		fetchRecipeById: async (id = service.recipeId, params = {}) => {
+		fetchRecipeById: async (id, params = {}) => {
 			const { recipe, summary } = await fetchRecipeDetail(id);
 			service.fetchedRecipe = recipe;
 			service.recipeSummary = summary;
@@ -67,11 +65,18 @@ export async function fetchRecipeDetail(recipeId) {
 	try {
 		/** @type {RecipeFull} */ let recipe;
 		/** @type {Summary} */ let summary;
-		// recipe = await client.getRecipeInformation(recipeId);
-		// summary = await client.getRecipeSummary(recipeId);
-		// If test recipe wanted
-		recipe = getTestRecipe().testRecipe;
-		summary = getTestRecipe().testRecipeSummary;
+		const dev = false;
+		if (dev) {
+			// If test recipe wanted
+			recipe = getTestRecipe().testRecipe;
+			summary = getTestRecipe().testRecipeSummary;
+		} else {
+			recipe = await client.getRecipeInformation(recipeId);
+			// summary = recipe.summary
+			// debugger;
+			summary = await client.getRecipeSummary(recipeId);
+		}
+
 		return { recipe, summary };
 	} catch (error) {
 		throw error;

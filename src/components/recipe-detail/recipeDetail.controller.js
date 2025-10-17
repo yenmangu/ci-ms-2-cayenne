@@ -34,7 +34,7 @@ export class RecipeDetail {
 		this.recipeDetailComponent = null;
 
 		this.recipeId = detailParams.recipeId;
-		this.service = service.createDetailService({ recipId: this.recipeId });
+		this.service = service.createDetailService();
 		/** @type {Recipe} */ this.fetchedRecipe = null;
 		/** @type {Summary} */ this.summary = null;
 
@@ -76,11 +76,12 @@ export class RecipeDetail {
 			this.subscription = appStore.subscribe(state => {
 				this.handleStateChange(state);
 			});
-		}
-		try {
-			await this.publicTest();
-		} catch (error) {
-			throw error;
+			const { fetchedRecipe, summary } = await this.service.fetchRecipeById(
+				this.recipeId,
+				{}
+			);
+			this.fetchedRecipe = fetchedRecipe;
+			this.summary = summary;
 		}
 
 		// Build the component using the HTML string;
