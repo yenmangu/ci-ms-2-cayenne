@@ -96,6 +96,11 @@ main:not(#cayenne-main) {
 	padding: 0;
 }
 
+.app-header__home-link {
+	text-decoration: none;
+	color: rgb(33, 37, 41);
+}
+
 .app-header__nav-links {
 	list-style: none;
 	display: flex;
