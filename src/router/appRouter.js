@@ -1,3 +1,7 @@
+/**
+ * @typedef {import('../types/routerTypes.js').ComponentInstance} Component
+ */
+
 import { appStore } from '../appStore.js';
 import { parseHashRoute } from './parseHashRoute.js';
 import { routeMap } from './routeMap.js';
@@ -21,11 +25,16 @@ export const AppRouter = {
 		);
 	},
 
+	// Track last active route and current instances
+	/** @type {string} */
+	lastActivePath: '',
+	/** @type {Record<string,Component>} */
+	currentInstances: {},
+
 	/**
 	 * Handle hash changes
 	 * @param {HTMLElement} appRoot
 	 */
-
 	handleRouteChange(appRoot) {
 		console.log('Handling route change');
 
@@ -39,12 +48,45 @@ export const AppRouter = {
 
 		const entry = routeMap[path] || routeMap['/404'];
 
+		// Handle automatic teardown to avoid memory leak
+		let lastPath = AppRouter.lastActivePath;
+		const lastInstance = AppRouter.currentInstances[lastPath];
+		if (lastInstance && typeof lastInstance.destroy === 'function') {
+			console.log('Destroying instance: ', lastInstance);
+			lastInstance.destroy();
+
+			delete AppRouter.currentInstances[lastPath];
+		}
+
 		appStore.setState({ route: entry });
 
-		entry.handler(appRoot, path, { ...params, dev: isDev });
+		const component = entry.handler(appRoot, path, { ...params, dev: isDev });
+
+		// Ensure all return values are treated as resolves promises.
+
+		Promise.resolve(component).then(
+			/** @param {Component} instance */ instance => {
+				if (instance && typeof instance.destroy === 'function')
+					AppRouter.currentInstances[path] = instance || null;
+			}
+		);
+
+		// entry.handler(appRoot, path, { ...params, dev: isDev });
 		if (entry.title) {
 			document.title = entry.title;
 		}
+
+		// Assign new path to last active path for next navigation
+		AppRouter.lastActivePath = path;
+	},
+
+	destroyAllInstances() {
+		Object.values(AppRouter.currentInstances).forEach(instance => {
+			if (instance && typeof instance.destroy === 'function') {
+				instance.destroy();
+			}
+		});
+		AppRouter.currentInstances = {};
 	},
 
 	/**

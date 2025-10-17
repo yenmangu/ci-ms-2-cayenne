@@ -25,15 +25,16 @@ export async function loadRecipeDetail(container, pathName, params = {}) {
 	const recipeDetailParams = { recipeId };
 
 	const recipeDetail = new RecipeDetail(container, recipeDetailParams);
-	recipeDetail.init();
 	try {
-		// TODO: Implement live data
-		await recipeDetail.publicTest();
+		await recipeDetail.init();
+
 		if (recipeDetail.componentReady) {
+			console.log('Component ready');
+
 			recipeDetail.render();
 		}
-	} catch (err) {
-		console.error('error: ', err);
+		return recipeDetail || null;
+	} catch (error) {
+		console.error('[Recipe Domain Error: ]', error);
 	}
-	// recipeDetail.fetchRecipe();
 }

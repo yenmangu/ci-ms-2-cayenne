@@ -7,6 +7,10 @@ import { multipleRecipes } from '../data/multipleRecipes.js';
 import { RecipeGrid } from '../components/recipe-grid/recipeGrid.controller.js';
 import { SpoonacularClient } from '../api/client.js';
 
+export async function recipes(appRoot, path, params) {
+	const grid = await loadRecipes(appRoot, path, params);
+	return grid || null;
+}
 /**
  *
  * @param {HTMLElement} appRoot
@@ -24,6 +28,7 @@ export async function loadRecipes(appRoot, path, params) {
 	// const recipes = getRecipes()
 	const grid = new RecipeGrid(appRoot, recipes);
 	grid.render();
+	return grid;
 }
 
 // /**

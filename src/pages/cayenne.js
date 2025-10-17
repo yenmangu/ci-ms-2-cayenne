@@ -16,7 +16,8 @@ import { LandingPage } from '../components/landing-page/landingPage.controller.j
  * @param {Record<string, string>} [params]
  */
 export function loadHome(appRoot, pathName, params) {
-	initCayenneApp(appRoot, pathName, params);
+	const landing = initCayenneApp(appRoot, pathName, params);
+	return landing || null;
 }
 
 /**
@@ -53,6 +54,7 @@ export async function initCayenneApp(appRoot, pathName, params) {
 
 		await landing.init();
 		landing.render();
+		return landing;
 	}
 
 	try {

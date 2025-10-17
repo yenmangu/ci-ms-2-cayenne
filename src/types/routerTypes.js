@@ -23,4 +23,9 @@
  * @typedef {Record<string, RouteEntry>} RouteMap
  */
 
+/**
+ * @typedef {object} ComponentInstance
+ * @property {function(): void } destroy
+ */
+
 export {};

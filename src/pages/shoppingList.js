@@ -15,4 +15,5 @@ export function loadShoppingList(appRoot, pathName, params = {}) {
 	appRoot.innerHTML = '';
 	const shoppingList = new ShoppingList(appRoot, params);
 	shoppingList.init();
+	return shoppingList || null;
 }

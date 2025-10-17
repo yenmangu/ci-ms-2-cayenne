@@ -4,7 +4,7 @@
 
 import { loadHome } from '../pages/cayenne.js';
 import { loadRecipeDetail } from '../pages/recipe.js';
-import { loadRecipes } from '../pages/recipes.js';
+import { loadRecipes, recipes } from '../pages/recipes.js';
 import { loadShoppingList } from '../pages/shoppingList.js';
 
 /** @type {RouteMap} */
@@ -19,7 +19,7 @@ export const routeMap = {
 	},
 
 	'/recipe-grid': {
-		handler: loadRecipes,
+		handler: recipes,
 		path: '/recipe-grid',
 		title: 'Recipe Results'
 	},
