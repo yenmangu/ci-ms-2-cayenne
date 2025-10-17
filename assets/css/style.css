@@ -1,18 +1,23 @@
+@import './theme.css';
+
 /* Fonts Import */
 
 /* Root vars */
 
 :root {
-	--stack-offset-height: 0px;
+	/* Header vars */
+	--app-stack-offset-height: 0px;
 	--app-header-offset-height: 0px;
 	--header-transition: ease;
 	--main-pad-top: 0px;
-	--header-speed: 0;
+	--app-header-speed: 0;
+
+	--footer-offset-height: 0px;
 }
 
 /* Global styles */
 
-*.hidden {
+.hidden {
 	display: none;
 }
 
@@ -45,6 +50,13 @@ a div {
 	color: inherit;
 }
 
+button,
+input,
+select,
+textarea {
+	font: inherit;
+}
+
 main:not(#cayenne-main) {
 	display: flex;
 	flex-direction: column;
@@ -71,25 +83,25 @@ main:not(#cayenne-main) {
 	width: 100%;
 	z-index: 1100;
 	transform: translateY(0);
-	transition: transform var(--header-speed, 300ms) var(--header-transition);
+	transition: transform var(--app-header-speed, 300ms) var(--header-transition);
 	/* will-change: transfom; */
 }
 
 #header-stack.header-stack--hidden {
-	transform: translateY(calc(-1 * var(--stack-offset-height, 0px)));
+	transform: translateY(calc(-1 * var(--app-stack-offset-height, 0px)));
 }
 
 .app-header {
 	position: fixed;
 	left: 0;
 	z-index: 1099;
-	top: var(--stack-offset-height, 0px);
+	top: var(--app-stack-offset-height, 0px);
 	transition: none;
 	width: 100%;
 	min-height: 44px;
 	max-width: 100%;
-	background: #fff;
-	border-bottom: 1px solid #eee;
+	background: var(--colour-surface);
+	border-bottom: 1px solid var(--border-subtle);
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
@@ -98,7 +110,7 @@ main:not(#cayenne-main) {
 
 .app-header__home-link {
 	text-decoration: none;
-	color: rgb(33, 37, 41);
+	color: var(--colour-text);
 }
 
 .app-header__nav-links {
@@ -121,11 +133,25 @@ main:not(#cayenne-main) {
 }
 
 .app-header[data-ready='true'] {
-	transition: top var(--header-speed, 300ms) var(--header-transition);
+	transition: top var(--app-header-speed, 300ms) var(--header-transition);
 }
 
 .header-stack--hidden ~ #cayenne-main .app-header {
 	top: 0;
+}
+
+.site-footer {
+	position: fixed;
+	bottom: 0;
+	left: 0;
+	right: 0;
+
+	z-index: 1098;
+
+	background: var(--colour-surface);
+	border-top: 1px solid var(--border-subtle);
+
+	padding-bottom: max(1rem, env(safe-area-inset-bottom));
 }
 
 /* Main Scrollable Content (App) */
@@ -135,11 +161,12 @@ main#cayenne-main {
 	flex: 1 1 auto;
 	overflow-y: auto;
 	padding-top: var(--main-pad-top, 0px);
+	padding-bottom: var(--footer-offset-height, 0px);
 	transition: none;
 	max-width: none;
 }
 main#cayenne-main[data-ready='true'] {
-	transition: padding-top var(--header-speed, 300ms)
+	transition: padding-top var(--app-header-speed, 300ms)
 		var(--header-transition, ease);
 }
 
@@ -159,6 +186,15 @@ main#cayenne-main[data-ready='true'] {
 }
 
 /* Bootstrap Override */
+
+.btn-primary {
+	background-color: var(--colour-accent);
+	border-color: var(--colour-accent);
+}
+
+.btn-primary:hover {
+	background-color: var(--colour-accent-hover);
+}
 
 .btn--like {
 	background: transparent;
@@ -331,7 +367,7 @@ button.btn--like:focus {
 	background: linear-gradient(
 		to right,
 		transparent 0%,
-		rgba(255, 255, 255, 0.2) 50%,
+		var(--shimmer-highlight) 50%,
 		transparent 100%
 	);
 	animation: shimmer 1.5s infinite;
@@ -367,14 +403,13 @@ main.recipe-detail {
 	/* Mobile First */
 }
 
-@media (prefers-color-scheme: dark) {
-	body {
-	}
-}
-
 @media (prefers-reduced-motion: reduce) {
 	#header-stack,
 	.app-header {
 		transition: none;
+	}
+	.placeholder-shimmer,
+	.placeholder::after {
+		animation: none;
 	}
 }

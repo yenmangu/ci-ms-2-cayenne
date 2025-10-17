@@ -1,0 +1,70 @@
+{
+	"version": 1.1,
+	"properties": [
+		{
+			"name": "--cayenne-colour-red",
+			"syntax": "<color>",
+			"description": "Cayenne main red (#e3302e)"
+		},
+		{
+			"name": "--cayenne-colour-red-dark",
+			"syntax": "<color>",
+			"description": "Dark red (#bb2827)"
+		},
+		{
+			"name": "--cayenne-colour-red-light",
+			"syntax": "<color>",
+			"description": "Light red (#f57883)"
+		},
+		{
+			"name": "--cayenne-colour-green-light",
+			"syntax": "<color>",
+			"description": "Light green (#8aa55a)"
+		},
+		{
+			"name": "--cayenne-colour-green-dark",
+			"syntax": "<color>",
+			"description": "Dark green (#667a44)"
+		},
+		{
+			"name": "--colour-accent",
+			"syntax": "<color>",
+			"description": "Semantic accent (maps to main red)"
+		},
+		{
+			"name": "--colour-accent-hover",
+			"syntax": "<color>",
+			"description": "Hover accent (light red)"
+		},
+		{
+			"name": "--colour-danger",
+			"syntax": "<color>",
+			"description": "Danger red (dark red)"
+		},
+		{
+			"name": "--colour-success",
+			"syntax": "<color>",
+			"description": "Success green (light green)"
+		},
+		{
+			"name": "--colour-success-dark",
+			"syntax": "<color>",
+			"description": "Dark success green"
+		},
+		{
+			"name": "--colour-surface",
+			"syntax": "<color>",
+			"description": "Surface background"
+		},
+		{
+			"name": "--colour-text",
+			"syntax": "<color>",
+			"description": "Primary text colour"
+		},
+		{
+			"name": "--colour-muted-text",
+			"syntax": "<color>",
+			"description": "Muted text colour"
+		}
+	]
+}

@@ -1,9 +1,9 @@
 import { AppHeader } from '../components/app-header/appHeader.controller.js';
 
-const STACK_OFFSET_VAR = '--stack-offset-height';
+const STACK_OFFSET_VAR = '--app-stack-offset-height';
 const APP_H_OFFSET_VAR = '--app-header-offset-height';
 const MAIN_PAD_TOP_VAR = '--main-pad-top';
-const HEADER_SPEED_VAR = '--header-speed';
+const HEADER_SPEED_VAR = '--app-header-speed';
 
 const HIDDEN_CLASS = 'header-stack--hidden';
 

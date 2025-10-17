@@ -13,6 +13,7 @@
 		"**/CVS": true,
 		"**/._*": true
 	},
+	"css.customData": ["./css-custom-data.json"],
 	"files.autoSave": "off",
 	"workbench.colorTheme": "Ayu Mirage Bordered",
 	"terminal.integrated.gpuAcceleration": "auto",

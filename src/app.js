@@ -12,6 +12,7 @@ import { startPaddingProbe } from './util/dev/probes.js';
 import { initAppHeader } from './util/responsiveHeader.js';
 import { ensureDev, getDevWindow } from './util/dev/devWindow.js';
 import { initDevBootstrap } from './util/dev/devBoostrap.js';
+import { initStickyFooter } from './util/footerOffsets.js';
 let appHeader = null;
 // import { updateMainOffset } from './util/headerOffsets.js';
 /**
@@ -41,6 +42,8 @@ async function initCayenne() {
 window.addEventListener('DOMContentLoaded', () => {
 	initDevBootstrap({ forceView: true });
 	initCayenne();
+	initStickyFooter();
+	initAppHeader(appHeader, 300);
 
 	// ---- enable the probe only when requested (and not in prod) ----
 	// const probeOn =
@@ -68,5 +71,4 @@ window.addEventListener('DOMContentLoaded', () => {
 	// 	);
 	// }
 	// ----------------------------------------------------------------
-	initAppHeader(appHeader, 300);
 });

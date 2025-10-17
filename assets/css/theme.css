@@ -1,0 +1,99 @@
+/* Cayenne Brand Colours (British spelling) */
+:root {
+	/* Brand tokens */
+	--cayenne-colour-red: #e3302e;
+	--cayenne-colour-red-dark: #bb2827;
+	--cayenne-colour-red-light: #f57883;
+	--cayenne-colour-green-light: #8aa55a;
+	--cayenne-colour-green-dark: #667a44;
+
+	/* Semantic tokens */
+	--colour-accent: var(--cayenne-colour-red);
+	--colour-accent-hover: var(--cayenne-colour-red-light);
+	--colour-danger: var(--cayenne-colour-red-dark);
+	--colour-success: var(--cayenne-colour-green-light);
+	--colour-success-dark: var(--cayenne-colour-green-dark);
+	--colour-surface: #ffffff;
+	--colour-text: #1a1a1a;
+	--colour-muted-text: #555555;
+	--border-subtle: #e5e7eb;
+	--colour-app-header: var(--colour-surface);
+
+	--skeleton-base: var(--border-subtle);
+	--shimmer-highlight: rgba(255, 255, 255, 0.25);
+
+	/* Bootstrap variable overrides (bridge) */
+	--bs-primary: var(--colour-accent);
+	--bs-primary-rgb: 227, 48, 46;
+
+	--bs-success: var(--colour-success);
+	--bs-success-rgb: 138, 165, 90;
+
+	--bs-danger: var(--colour-danger);
+	--bs-danger-rgb: 187, 40, 39;
+
+	--bs-link-color: var(--colour-accent);
+	--bs-link-hover-color: var(--colour-accent-hover);
+
+	/* Subtle backgrounds & borders */
+	--bs-primary-bg-subtle: color-mix(in oklab, var(--colour-accent) 15%, white);
+	--bs-primary-border-subtle: color-mix(
+		in oklab,
+		var(--colour-accent) 35%,
+		white
+	);
+	--bs-success-bg-subtle: color-mix(in oklab, var(--colour-success) 15%, white);
+	--bs-success-border-subtle: color-mix(
+		in oklab,
+		var(--colour-success) 35%,
+		white
+	);
+	--bs-danger-bg-subtle: color-mix(in oklab, var(--colour-danger) 15%, white);
+	--bs-danger-border-subtle: color-mix(
+		in oklab,
+		var(--colour-danger) 35%,
+		white
+	);
+}
+
+@supports (color: color-mix(in oklab, white, black)) {
+	:root {
+		--border-subtle: color-mix(
+			in oklab,
+			var(--colour-text) 10%,
+			var(--colour-surface)
+		);
+		--shimmer-highlight: color-mix(
+			in oklab,
+			var(--colour-surface) 85%,
+			var(--border-subtle) 15%
+		);
+	}
+}
+
+/* Dark mode */
+@media (prefers-color-scheme: dark) {
+	:root {
+		--colour-surface: #121212;
+		--colour-text: #f2f2f2;
+		--colour-muted-text: #b3b3b3;
+
+		--shimmer-highlight: color-mix(
+			in oklab,
+			var(--colour-surface) 70%,
+			var(--border-subtle) 30%
+		);
+
+		--bs-primary-bg-subtle: color-mix(
+			in oklab,
+			var(--colour-accent) 25%,
+			black
+		);
+		--bs-success-bg-subtle: color-mix(
+			in oklab,
+			var(--colour-success) 25%,
+			black
+		);
+		--bs-danger-bg-subtle: color-mix(in oklab, var(--colour-danger) 25%, black);
+	}
+}
