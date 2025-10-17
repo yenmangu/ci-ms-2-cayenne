@@ -124,6 +124,10 @@ export class SpoonacularClient {
 		try {
 			const response = await fetch(url);
 			if (!response.ok) {
+				if (response.status === 402) {
+					console.log('Hit paywalll');
+					// TODO: implement some sort of paywall fallback
+				}
 				if (retries > 0) {
 					console.warn(`[RETRYING] ${url} (${retries} retries remaining)`);
 					await this._delay();
@@ -136,6 +140,7 @@ export class SpoonacularClient {
 			return await response.json();
 		} catch (error) {
 			console.error(`[FETCH FAIL] ${url}`, error);
+
 			throw error;
 		}
 	}
