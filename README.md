@@ -70,18 +70,18 @@ This platform is meant to attract two types of users.
 
 ### Colour Scheme
 
-I used [coolors.co](https://coolors.co/6a0dad-ff3b30-1e1e1e-f2f2f2-ff9500) to generate my color palette.
+I used [the favicon](./assets/images/favicon/apple-touch-icon.png) along with a colour picker tool to choose the Cayenne colour palette.
 
--
--
--
--
--
+| Tone            | Hex       | HSL                  | Use                                                    |
+| --------------- | --------- | -------------------- | ------------------------------------------------------ |
+| **Main Red**    | `#e3302e` | `hsl(1, 77%, 53%)`   | Primary brand accent (buttons, highlights)             |
+| **Dark Red**    | `#bb2827` | `hsl(1, 63%, 44%)`   | Active / pressed / hover states, strong emphasis       |
+| **Light Red**   | `#f57883` | `hsl(355, 85%, 72%)` | Subtle accents, link hovers, backgrounds               |
+| **Light Green** | `#8aa55a` | `hsl(82, 30%, 50%)`  | Secondary accent, success / confirmation               |
+| **Dark Green**  | `#667a44` | `hsl(82, 28%, 37%)`  | Darker success states, contrast text on green surfaces |
 
-Other colours used
--``/`#`
-
-![screenshot](documentation/ux/colours/momentum-palette.png)
+I used [Coolors](https://coolors.co/e3302e-bb2827-f57883-8aa55a-667a44) to generate the following pallete from my chosen colours.
+![screenshot](documentation/ux/colours/cayenne-colour-palette.png)
 
 ### Typography
 
@@ -126,15 +126,7 @@ The link config is defined in `navbarConfig.js`, and used by `initNavbar()` to r
 | ---------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----- |
 | SPA style hash-based routing | Client-side navigation using `#/path` fragments. Works seamlessly on GitHub Pages without server configuration. URLs are functional but less SEO-friendly and considered a legacy fallback compared to the History API. |       |
 | State Management             | See [State Management System](#state-management-system)                                                                                                                                                                 |       |
-
-#### User Facing Features
-
-| Feature                      | Notes                                                                                                                                                                                                                   | Image |
-| ---------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----- |
-| SPA style hash-based routing | Client-side navigation using `#/path` fragments. Works seamlessly on GitHub Pages without server configuration. URLs are functional but less SEO-friendly and considered a legacy fallback compared to the History API. |       |
-| State Management             | See [State Management System](#state-management-system)                                                                                                                                                                 |       |
-
-<!-- | Robust scroll event handling | [Single scroll handler](#handling-scroll-events-in-spa-layouts) responds to any scrollable container, allowing seamless navigation auto-hide behaviour across all SPA views.                                            |       | -->
+| Reactive header & icon nav   | App header is fully reactive with SVG Icon Registry and class-based IconButton components. Toggles icons and ARIA state to reflect current route. Prevents drift/stuck buttons; improves accessibility and UX.          |       |
 
 ### Future Features
 
@@ -167,6 +159,14 @@ main.addEventListener(
 
 **Reference:**
 For a full explanation of event bubbling and capturing, see [javascript.info: Bubbling and Capturing](https://javascript.info/bubbling-and-capturing#capturing).
+
+## Design Patterns
+
+### Singleton
+
+### Publish/Subscribe pattern
+
+### Registry Patters
 
 ## State Management System
 
