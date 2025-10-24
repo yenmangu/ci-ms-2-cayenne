@@ -13,7 +13,14 @@ import { initAppHeader } from './util/responsiveHeader.js';
 import { ensureDev, getDevWindow } from './util/dev/devWindow.js';
 import { initDevBootstrap } from './util/dev/devBoostrap.js';
 import { initStickyFooter } from './util/footerOffsets.js';
+
+import {
+	configureIconBaseDir,
+	preloadIcons
+} from './util/icon/icon-component/icon.service.js';
+
 let appHeader = null;
+
 // import { updateMainOffset } from './util/headerOffsets.js';
 /**
  * Single point of logic for collecting 'appRoot' element.
@@ -30,6 +37,17 @@ async function initCayenne() {
 	const headerStack = document.getElementById('header-stack');
 
 	appRoot.insertAdjacentElement('beforebegin', appHeader.header);
+
+	configureIconBaseDir('/assets/images/icon');
+	const appIcons = [
+		'house-regular',
+		'house-solid',
+		'cart-regular',
+		'cart-solid',
+		'bookmark-regular',
+		'bookmark-solid'
+	];
+	await preloadIcons(appIcons);
 
 	if (appHeader) appHeader.init();
 

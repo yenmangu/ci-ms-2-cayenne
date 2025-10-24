@@ -57,6 +57,49 @@ textarea {
 	font: inherit;
 }
 
+.icon-button {
+	color: var(--colour-accent); /* Default red */
+	background: none;
+	border: none;
+	cursor: pointer;
+	padding: 0.25em 0.5em;
+	border-radius: 0.3em;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	transition: color 0.18s, background 0.18s;
+}
+
+/* Ghost style for nav */
+.icon-button--ghost {
+	background: none;
+}
+
+.icon-button:focus-visible,
+.icon-button--active {
+	outline: 2px solid var(--colour-accent); /* For accessibility */
+	outline-offset: 2px;
+}
+
+/* Remove default webkit border (Safari, Chrome) */
+.icon-button::-webkit-focus-inner {
+	border: 0;
+}
+
+/* When active (e.g., aria-pressed="true") */
+.icon-button[aria-pressed='true'],
+.icon-button--active {
+	/* background: var(--app-header-active-bg, #fff); */
+	border-radius: 0.35em;
+}
+
+/* Hover/focus effect */
+.icon-button:hover,
+.icon-button:focus-visible {
+	background: var(--colour-accent-hover, rgba(255, 255, 255, 0.06));
+	border-radius: 0.35em;
+}
+
 main:not(#cayenne-main) {
 	display: flex;
 	flex-direction: column;
@@ -117,7 +160,7 @@ main:not(#cayenne-main) {
 	list-style: none;
 	display: flex;
 	flex-direction: row;
-	gap: 2rem;
+	/* gap: 2rem; */
 	margin-bottom: 0;
 	padding-left: 0;
 	width: 100%;
@@ -128,10 +171,10 @@ main:not(#cayenne-main) {
 	color: rgb(223, 15, 15);
 }
 
-.app-header__nav-link.is-active {
-	text-decoration: underline;
+.app-header__nav-link li {
+	display: flex;
+	align-items: center;
 }
-
 .app-header[data-ready='true'] {
 	transition: top var(--app-header-speed, 300ms) var(--header-transition);
 }
@@ -227,21 +270,25 @@ button.btn--like:focus {
 	border-bottom: 1px solid #ddd;
 } */
 
-/* App */
+/* App header internals */
 
-.app-container {
-	padding-left: 1rem;
-	padding-right: 1rem;
+.app-header__icon {
+	width: 1.5rem;
+	height: 1.5rem;
+	color: var(--colour-accent);
+	fill: var(--colour-accent);
 }
 
 .app-header__left {
 	padding-left: 1rem;
 }
+
 .app-header__logo {
 	height: 28px;
 	width: auto;
 	object-fit: contain;
 }
+
 .app-header__title {
 	font-size: 1.1rem;
 	letter-spacing: 0.03em;
@@ -269,9 +316,11 @@ button.btn--like:focus {
 
 .toggle-container > p {
 	margin-bottom: 0;
+	color: var(--colour-text);
 }
 
 .toggle-container > .form-check {
+	color: var(--colour-text);
 	width: max-content;
 	padding-left: 2rem;
 }
@@ -304,6 +353,13 @@ button.btn--like:focus {
 	.app-header__logo {
 		height: 24px;
 	}
+}
+
+/* App */
+
+.app-container {
+	padding-left: 1rem;
+	padding-right: 1rem;
 }
 
 /* Landing Page */

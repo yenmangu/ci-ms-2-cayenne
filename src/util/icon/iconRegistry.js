@@ -4,6 +4,7 @@
  * I agree this is overkill for such a project, but I like to learn and building it
  * is the only way to learn.
  *
+ *
  * References/resources/further reading:
  *
  * https://developer.mozilla.org/en-US/docs/Web/SVG
@@ -12,6 +13,12 @@
  * https://stackoverflow.com/questions/70202971/load-external-svg-icons-into-vanilla-javascript-code/70205031#70205031
  * https://css-tricks.com/svg-symbol-good-choice-icons/
  * https://css-tricks.com/svg-sprites-use-better-icon-fonts/
+ *
+ * XSS prevention:
+ * https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html
+ * https://portswigger.net/web-security/cross-site-scripting
+ * https://www.cloudflare.com/en-gb/cloudforce-one/research/svgs-the-hackers-canvas/
+ *
  *
  */
 
@@ -29,6 +36,18 @@
  * @property {string|number} [strokeWidth]
  * @property {string} [fill]
  * @property {string} [vectorEffect]
+ * @property {string} [role]                 // usually 'img'
+ * @property {string} [ariaLabel]            // accessible name
+ * @property {boolean} [ariaHidden]          // mark decorative
+ * @property {string} [labelledBy]           // idref to <title> or external label
+ * @property {string} [describedBy]          // idref to <desc> or external hint
+ * @property {string} [title]                // creates/updates <title>
+ * @property {string} [desc]                 // creates/updates <desc>
+ * @property {number} [tabIndex]             // focus management (defaults: no tab stop)
+ * @property {string} [class]
+ * @property {string[]} [classList]
+ * @property {string} [style]
+ * @property {Record<string, string|number>} [styleObj]
  */
 
 /**
@@ -44,12 +63,6 @@ export class IconRegistry {
 	constructor(baseDir) {
 		/** @type {string} */
 		this.baseDir = baseDir.replace(/\/+$/, '');
-		this.iconSet = new Set();
-
-		/**
-		 * @type {IconRecord}
-		 */
-		this.icons = {};
 	}
 
 	/** @type {Map<string, IconEntry>} */
@@ -71,6 +84,53 @@ export class IconRegistry {
 		this.#icons.set(name, { name, template });
 	}
 
+	/**
+	 * Fetch and register `baseDir/<name>.svg`
+	 * Optimised - if already cached, returns
+	 *
+	 * @param {string} name
+	 * @param {{sanitise?: boolean}} [options]
+	 */
+	async register(name, options = {}) {
+		if (this.#icons.has(name)) return;
+
+		const url = `${this.baseDir}/${encodeURIComponent(name)}.svg`;
+		const res = await fetch(url, { cache: 'force-cache' });
+		if (!res.ok) {
+			throw new Error(`IconRegistry: failed to fetch ${url} (${res.status})`);
+		}
+
+		const svgText = await res.text();
+		const template = this.#parseAndNormalise(svgText, options.sanitise ?? true);
+		this.#icons.set(name, { name, template });
+	}
+
+	/**
+	 *
+	 * @param {string} name
+	 * @param {{sanitise?: boolean}} options
+	 * @returns
+	 */
+	async ensure(name, options = {}) {
+		if (this.#icons.has(name)) return;
+		await this.register(name, options);
+	}
+
+	/**
+	 *
+	 * @param {string[]} names
+	 * @param {{sanitise?: boolean}} [options]
+	 */
+	async preload(names, options = {}) {
+		await Promise.all(
+			names.map(n =>
+				this.ensure(n, options).catch(err => {
+					console.warn(`Iconregistry failed to preload "${n}": `, err);
+				})
+			)
+		);
+	}
+
 	getIcon(name, attrs = {}) {
 		const entry = this.#icons.get(name);
 		if (!entry) throw new Error(`Icon "${name}" not registered`);
@@ -80,9 +140,10 @@ export class IconRegistry {
 	/**
 	 *
 	 * @param {string} svgText
+	 * @param {boolean} sanitise
 	 * @returns {SVGElement}
 	 */
-	#parseAndNormalise(svgText) {
+	#parseAndNormalise(svgText, sanitise = true) {
 		const doc = new DOMParser().parseFromString(svgText, 'image/svg+xml');
 		const svg = doc.documentElement;
 
@@ -94,7 +155,9 @@ export class IconRegistry {
 			throw new Error('Not instance of SVGElement');
 		}
 
-		this.#sanitizeSvg(svg);
+		if (sanitise) {
+			this.#sanitizeSvg(svg);
+		}
 
 		// Ensure viewBox exists (scalable). If absent, derive from width/height
 		if (!svg.getAttribute('viewBox')) {

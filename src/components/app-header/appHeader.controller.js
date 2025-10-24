@@ -9,8 +9,11 @@ import { routeMap } from '../../router/routeMap.js';
 import { stringToHtml } from '../../util/htmlToElement.js';
 import { ToggleComponent } from '../toggle-component/toggleComponent.controller.js';
 import * as service from './appHeader.service.js';
-import { renderAppHeader, renderAppNav } from './appHeader.view.js';
+import { renderAppHeader } from './appHeader.view.js';
 import { ENV } from '../../env.js';
+import { getIconRegistry } from '../../util/icon/icon-component/icon.service.js';
+import { IconButton } from '../../util/icon/icon-component/iconButton.controller.js';
+import { routerService } from '../../router/routerService.js';
 
 export class AppHeader {
 	/**
@@ -26,6 +29,11 @@ export class AppHeader {
 
 		/** @type {HTMLElement} */
 		this.navWrapper = null;
+
+		this.iconRegistry = getIconRegistry();
+
+		/** @type {IconButton[]} */
+		this.iconButtons = [];
 
 		/** @type {NodeListOf<HTMLAnchorElement>} */
 		this.navLinks = null;
@@ -73,10 +81,20 @@ export class AppHeader {
 	 * @returns {*}
 	 */
 	#_handleRouteChange(path) {
-		this.navLinks.forEach(link => {
-			const href = link.getAttribute('href').replace(/^#/, '');
-			link.classList.toggle('is-active', href === path);
-			link.setAttribute('aria-current', href === path ? 'page' : 'false');
+		if (!this.iconButtons) return;
+		// debugger;
+
+		this.iconButtons.forEach(btn => {
+			console.log(
+				'Button:',
+				btn.routeKey,
+				'Active:',
+				routerService.activeRouteKey,
+				'IsActive:',
+				routerService.isActiveRoute(btn.routeKey)
+			);
+
+			btn.setToggled(routerService.isActiveRoute(btn.routeKey));
 		});
 	}
 
@@ -122,16 +140,68 @@ export class AppHeader {
 		}
 	}
 
-	#_renderNav() {
-		console.log('RouteMap: ', routeMap);
-
-		const nav = renderAppNav(routeMap);
-		const htmlNav = stringToHtml(nav);
-		this.navWrapper.appendChild(htmlNav);
-		this.navLinks = /** @type {NodeListOf<HTMLAnchorElement>} */ (
-			htmlNav.querySelectorAll('a.app-header__nav-link')
-		);
+	async #_renderNav() {
+		this.#_renderIconLinks();
+		const nav = document.getElementById('app-header-nav');
+		const ul = document.createElement('ul');
+		ul.className = 'app-header__nav-links';
+		this.iconButtons.forEach(btn => {
+			const li = document.createElement('li');
+			li.className = 'app-header__nav-link';
+			btn.mount(li);
+			ul.appendChild(li);
+		});
+		nav.appendChild(ul);
 	}
+
+	/**
+	 * As a refactor I would like there to be an abstraction layer on the router,
+	 * one that defines these buttons and then assigns them to the routeMap registry
+	 * for each route entry.
+	 */
+
+	#_renderIconLinks() {
+		const home = new IconButton(this.iconRegistry, {
+			icon: 'house-regular',
+			toggledIcon: 'house-solid',
+			isNavLink: true,
+			routeKey: routeMap['/'].path,
+			ariaLabel: 'Home',
+			onClick: (e, btn) => {
+				e.preventDefault();
+				routerService.navigateHome();
+			}
+		});
+		const savedRecipes = new IconButton(this.iconRegistry, {
+			icon: 'bookmark-regular',
+			toggledIcon: 'bookmark-solid',
+			isNavLink: true,
+			routeKey: routeMap['/liked-recipes'].path,
+			ariaLabel: 'Saved Recipes',
+			onClick: (e, btn) => {
+				e.preventDefault();
+				routerService.navigateLikedRecipes();
+			}
+		});
+		const shoppingList = new IconButton(this.iconRegistry, {
+			icon: 'cart-regular',
+			toggledIcon: 'cart-solid',
+			isNavLink: true,
+			routeKey: routeMap['/shopping-list'].path,
+			ariaLabel: 'Shopping list',
+			onClick: (e, btn) => {
+				e.preventDefault();
+				routerService.navigateShoppingList();
+			}
+		});
+		this.iconButtons.push(home, savedRecipes, shoppingList);
+	}
+
+	/**
+	 *
+	 * @param {IconButton} icon
+	 */
+	#_insertIcon(icon) {}
 
 	#_initDevControls() {
 		const controls = [

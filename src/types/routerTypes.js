@@ -15,7 +15,8 @@
  * @property {string} [title] - Optional title to set for the page
  * @property {boolean} [domain] - Flag if component is domain level
  * @property {boolean} [showInNav]
- * @property {string} [icon]
+ * @property  {boolean} [useOwnIcon] - Flag to specify if own icon is to be used
+ * @property {string} [icon] - Either a font-awesome icon name or SVG file
  */
 
 /**

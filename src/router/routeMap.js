@@ -3,6 +3,7 @@
  */
 
 import { loadHome } from '../pages/cayenne.js';
+import { loadLikedRecipes } from '../pages/likedRecipes.js';
 import { loadRecipeDetail } from '../pages/recipe.js';
 import { loadRecipes, recipes } from '../pages/recipes.js';
 import { loadShoppingList } from '../pages/shoppingList.js';
@@ -38,6 +39,16 @@ export const routeMap = {
 		domain: true,
 		showInNav: true,
 		icon: 'basket-shopping'
+	},
+
+	'/liked-recipes': {
+		handler: loadLikedRecipes,
+		path: '/liked-recipes',
+		title: 'Liked Recipes',
+		domain: true,
+		showInNav: true,
+		useOwnIcon: true,
+		icon: 'wishlist.svg'
 	},
 
 	'/404': {

@@ -5,6 +5,7 @@
 import { appStore } from '../appStore.js';
 import { parseHashRoute } from './parseHashRoute.js';
 import { routeMap } from './routeMap.js';
+import { routerService } from './routerService.js';
 
 export function startRouter(appRoot) {
 	console.log('Init appRouter');
@@ -47,6 +48,7 @@ export const AppRouter = {
 		const isDev = params['dev'] === 'true' || params['dev'] === '1';
 
 		const entry = routeMap[path] || routeMap['/404'];
+		routerService.setActiveRouteKey(path); // NOW HERE
 
 		// Handle automatic teardown to avoid memory leak
 		let lastPath = AppRouter.lastActivePath;
@@ -78,6 +80,7 @@ export const AppRouter = {
 
 		// Assign new path to last active path for next navigation
 		AppRouter.lastActivePath = path;
+		// routerService.setActiveRouteKey(path); WAS HERE
 	},
 
 	destroyAllInstances() {
