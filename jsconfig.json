@@ -20,7 +20,8 @@
 		"public/**/*",
 		"createSlice.js",
 		"env.js",
-		"global-augmentations.d.ts"
+		"global-augmentations.d.ts",
+		".dev/html/*"
 	],
 	"exclude": ["node_modules", "api/node_modules"]
 }

@@ -23,3 +23,4 @@ cloudinary_python.txt
 .d.ts
 *.ts
 # /src/util/dev
+src/util/svg.js
