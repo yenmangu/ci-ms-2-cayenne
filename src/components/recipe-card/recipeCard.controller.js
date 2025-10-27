@@ -16,9 +16,17 @@ export class RecipeCard {
 	 * @param {RecipeCardObject} recipe
 	 */
 	constructor(parentElement, recipe) {
-		/** @type {HTMLElement} */ this.parent = parentElement;
-		/** @type {RecipeCardObject} */ this.recipe = recipe;
+		/** @type {HTMLElement} */
+		this.parent = parentElement;
+
+		/** @type {RecipeCardObject} */
+		this.recipe = recipe;
+
+		/** @type {number} */
+		this.id = recipe.id;
+
 		this.service = service.createCardService();
+
 		/** @type {HTMLElement} */
 		this.cardEl = null;
 

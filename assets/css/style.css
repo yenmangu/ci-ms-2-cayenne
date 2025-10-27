@@ -406,6 +406,15 @@ button.btn--like:focus {
 	object-fit: cover;
 }
 
+/* Card removal animation */
+
+.recipe-card--leaving {
+	opacity: 0;
+	transform: scale (0.35);
+	transition: opacity 450ms cubic-bezier(0.4, 0, 0.2, 1),
+		transform 450ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
 /* Placeholder shimmer effect */
 
 .placeholder-shimmer .placeholder {

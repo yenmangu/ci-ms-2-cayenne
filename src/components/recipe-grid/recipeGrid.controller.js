@@ -2,6 +2,7 @@
  * @typedef {import("../../types/recipeTypes.js").RecipeCard} RecipeCardObject
  */
 
+import { appStore } from '../../appStore.js';
 import { RecipeCard } from '../recipe-card/recipeCard.controller.js';
 import * as service from './recipeGrid.service.js';
 import {
@@ -20,17 +21,30 @@ export class RecipeGrid {
 	constructor(appRoot, recipes, opts = {}) {
 		this.appRoot = appRoot;
 		this.service = service.createGridService();
+
 		/** @type {RecipeCardObject[]} */
 		this.recipes = recipes;
+
 		this.loading = false;
 
 		/** @type {Object} */
 		this.opts = opts;
 
+		/** @type {string} */
+		this.title = opts?.title;
+
 		/** @type {RecipeCard[]} */
 		this.cardInstances = [];
 
 		this.grid = null;
+
+		this.subscription = appStore
+			.subscribe(state => {
+				if (state && state.route) {
+					this.title = state.route.title || '';
+				}
+			}, 'route')
+			.immediate();
 	}
 
 	/**
@@ -43,6 +57,48 @@ export class RecipeGrid {
 	}
 
 	/**
+	 *
+	 * @param {RecipeCardObject[]} updatedRecipes
+	 * @param {boolean} animate
+	 */
+	onGridUpdate(updatedRecipes, animate = false) {
+		if (!animate) {
+			this.updateCards(updatedRecipes);
+			this.render();
+		} else {
+			const toRemoveIds = this.recipes
+				.filter(prev => !updatedRecipes.some(next => next.id === prev.id))
+				.map(r => r.id);
+			toRemoveIds.forEach(id => {
+				const cardInstance = this.getCardById(id);
+				if (cardInstance && cardInstance.parent)
+					this._removeCardWithAnimation(cardInstance.parent, () => {
+						this.updateCards(updatedRecipes);
+					});
+			});
+		}
+	}
+
+	/**
+	 *
+	 * @param {HTMLElement} cardEl
+	 * @param {()=> void} onDone
+	 */
+	_removeCardWithAnimation(cardEl, onDone) {
+		cardEl.classList.add('recipe-card--leaving');
+
+		cardEl.addEventListener(
+			'transitionend',
+			function handler(e) {
+				cardEl.removeEventListener('transitionend', handler);
+				// Once done, invoke onDone()
+				if (typeof onDone === 'function') onDone();
+			},
+			{ once: true }
+		);
+	}
+
+	/**
 	 * Renders the grid and
 	 * either skeletons if loading === true,
 	 * or live recipe cards if loading === false
@@ -50,7 +106,7 @@ export class RecipeGrid {
 	 * @returns {void}
 	 */
 	render() {
-		this.appRoot.innerHTML = renderGridContainer();
+		this.appRoot.innerHTML = renderGridContainer(this.title);
 		this.grid = document.getElementById('recipeGrid');
 		if (!this.grid) {
 			throw new Error(`[Recipe Grid Controller] Recipe grid not found`);
@@ -140,6 +196,23 @@ export class RecipeGrid {
 		return this.cardInstances.find(card => card.recipe.id === id);
 	}
 
+	_preRenderCardInstances() {
+		this.cardInstances = this.recipes.map(recipe => {
+			const wrapper = document.createElement('div');
+			wrapper.className = getCardWrapperClassName();
+			const card = new RecipeCard(wrapper, recipe);
+			// card.render()
+			return card;
+		});
+	}
+
+	_renderInstances() {
+		this.cardInstances.forEach(card => {
+			card.render();
+			this.grid.appendChild(card.parent);
+		});
+	}
+
 	/**
 	 * Renders the individual recipe cards
 	 *
@@ -174,5 +247,9 @@ export class RecipeGrid {
 		this.appRoot.innerHTML = '';
 		this.cardInstances = [];
 		this.grid = null;
+		if (this.subscription) {
+			this.subscription.unsubscribe();
+			this.subscription = null;
+		}
 	}
 }

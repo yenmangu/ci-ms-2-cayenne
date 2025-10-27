@@ -2,36 +2,55 @@
  * @typedef {import('../../types/recipeTypes.js').RecipeCard} RecipeCard
  */
 
+import { appStore } from '../../appStore.js';
 import { RecipeGrid } from '../recipe-grid/recipeGrid.controller.js';
 import * as service from './likedRecipes.service.js';
 
 export class LikedRecipes {
 	/**
 	 * @param {HTMLElement} container
-	 * @param {RecipeCard[]} recipes
+	 * @param {object} [params]
+	 * @param {string} [params.title]
+	 * @param {RecipeCard[]} [params.recipes]
 	 */
-	constructor(container, recipes = []) {
+	constructor(container, params = {}) {
 		/** @type {HTMLElement} */
 		this.container = container;
 
+		/** @type {string} */
+		this.title = params.title;
+
 		/** @type {RecipeCard[]} */
-		this.recipes = recipes;
+		this.recipes = params.recipes;
+
 		/** @type {RecipeGrid} */
 		this.grid = null;
+
+		this.subscription = null;
+
 		this.init();
 	}
 
 	init() {
-		this.grid = new RecipeGrid(this.container, this.recipes);
-		console.log('Recipes in likedRecipes: ', this.recipes);
+		this.subscription = appStore.subscribe(state => {
+			if (state && state.likedRecipes) {
+				this.recipes = state.likedRecipes;
+				this.grid.onGridUpdate(state.likedRecipes, true);
+			}
+		}, 'likedRecipes');
 
+		this.grid = new RecipeGrid(this.container, this.recipes, {
+			title: this.title
+		});
+
+		// console.log('Recipes in likedRecipes: ', this.recipes);
 		this.grid.render();
-	}
-	render() {
-		console.warn('Function render() not yet implemented.');
 	}
 
 	destroy() {
-		console.warn('Function destroy() not yet implemented.');
+		if (this.subscription) {
+			this.subscription.unsubscribe();
+			this.subscription = null;
+		}
 	}
 }

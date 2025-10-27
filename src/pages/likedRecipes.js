@@ -2,6 +2,7 @@
  * @typedef {import('../types/recipeTypes.js').RecipeCard} RecipeCard
  */
 
+import { appStore } from '../appStore.js';
 import { LikedRecipes } from '../components/liked-recipes/likedRecipes.controller.js';
 
 const likedRecipeKey = 'LIKED_RECIPES';
@@ -9,10 +10,11 @@ const likedRecipeKey = 'LIKED_RECIPES';
 export function loadLikedRecipes(container, pathName, params) {
 	_devStoreRecipes();
 	const fromStorage = loadRecipesFromStorage();
+	const fromState = appStore.getState().likedRecipes || fromStorage; // DEV
 	console.log('From storage: ', fromStorage);
 
 	const likedComponent = initLikedRecipes(container, pathName, {
-		recipes: fromStorage
+		recipes: fromState
 	});
 	return likedComponent;
 }
@@ -45,7 +47,7 @@ function loadRecipesFromStorage() {
  * @param {RecipeCard[]} [params.recipes]
  */
 function initLikedRecipes(appRoot, pathName, params = {}) {
-	const liked = new LikedRecipes(appRoot, params.recipes);
+	const liked = new LikedRecipes(appRoot, { recipes: params.recipes });
 	liked.grid.setLoading(false);
 }
 
