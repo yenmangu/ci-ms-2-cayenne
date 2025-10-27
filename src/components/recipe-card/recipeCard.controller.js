@@ -22,6 +22,9 @@ export class RecipeCard {
 		/** @type {HTMLElement} */
 		this.cardEl = null;
 
+		/** @type {HTMLElement} */
+		this.icon = null;
+
 		/**
 		 * @type {CardElementMap}
 		 */
@@ -31,19 +34,8 @@ export class RecipeCard {
 		this.init();
 	}
 	init() {
-		this.subscription = appStore.subscribe(state => {
-			// console.log('State in recipeCardController: ', state);
+		// console.log('Init in card component');
 
-			const found = state.likedRecipes.some(r => r.id === this.recipe.id);
-
-			const icon = this.cardElementMapping.likeBtn?.querySelector('i');
-			if (!icon) {
-				throw new Error(
-					`Like button icon not found for recipe id: ${this.recipe.id}`
-				);
-			}
-			this.#_toggleIcon(icon, found);
-		}, 'likedRecipes');
 		this.cardEl = stringToHtml(renderRecipeCard(this.recipe));
 		const cardElementMapping = {
 			title: /** @type {HTMLElement} */ (
@@ -56,6 +48,31 @@ export class RecipeCard {
 			)
 		};
 		this.cardElementMapping = cardElementMapping;
+
+		this.subscription = appStore
+			// Subscribe immediately to the state
+			.subscribe(state => {
+				console.log('state: ', state);
+				// debugger;
+				let found;
+				if (state && state.likedRecipes) {
+					console.log('SANITY DEBUG in CARD CONTROLLER');
+
+					found = state.likedRecipes.some(r => r.id === this.recipe.id);
+					console.log('Found: ', found);
+				}
+
+				this.icon = this.cardElementMapping.likeBtn?.querySelector('i');
+				if (!this.icon) {
+					throw new Error(
+						`Like button icon not found for recipe id: ${this.recipe.id}`
+					);
+				}
+				this.#_toggleIcon(this.icon, found);
+			}, 'likedRecipes')
+			// })
+			.immediate();
+
 		this.cardElementMapping.likeBtn.addEventListener('click', e => {
 			// Important as mounted inside an anchor link
 			e.preventDefault();
@@ -129,10 +146,18 @@ export class RecipeCard {
 			}
 		}
 		this.recipe = newRecipeCardData;
+		this.icon = this.cardElementMapping.likeBtn?.querySelector('i');
+		this.#_checkIsLiked();
+	}
+
+	#_checkIsLiked() {
+		const liked = appStore.getState().likedRecipes || [];
+		const isLiked = liked.some(r => r.id === this.recipe.id);
+		this.#_toggleIcon(this.icon, isLiked);
 	}
 
 	destroy() {
 		this.parent.innerHTML = '';
-		if (this.subscription) this.subscription.unsubscribe;
+		if (this.subscription) this.subscription.unsubscribe();
 	}
 }

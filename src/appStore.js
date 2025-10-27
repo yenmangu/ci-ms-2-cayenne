@@ -20,5 +20,14 @@ const initialState = {
 };
 
 const cayenneStateStore = createStateStore(initialState);
+// if (cayenneStateStore) {
+// 	console.log('cayenneStateStore created: ', cayenneStateStore.getState());
+// }
+
+// let appStore = null;
+
+// function initStateStore() {
+// 	appStore = createStateStore(initialState);
+// }
 
 export { cayenneStateStore as appStore };

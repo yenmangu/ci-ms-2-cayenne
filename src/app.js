@@ -18,6 +18,7 @@ import {
 	configureIconBaseDir,
 	preloadIcons
 } from './util/icon/icon-component/icon.service.js';
+// import { initStateStore } from './appStore.js';
 
 let appHeader = null;
 
@@ -29,7 +30,7 @@ let appHeader = null;
  */
 async function initCayenne() {
 	console.log('isProd? ', isProd);
-
+	// initStateStore();
 	initNavbar();
 	// Main injection site
 	const appRoot = document.getElementById('app-root');

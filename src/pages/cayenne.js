@@ -61,27 +61,6 @@ export async function initCayenneApp(appRoot, pathName, params) {
 	} catch (error) {
 		showErrorMessage(appRoot, error);
 	}
-
-	// const grid = new RecipeGrid(appRoot, []);
-	// grid.setLoading(true);
-	// grid.render();
-
-	// Dev - uncomment below to only show skeletons
-	// return;
-
-	// TODO Implement live API calls
-	// try {
-	// 	const recipes = await grid.service.getTestRecipes();
-	// 	// const recipes = await fakeFetchRecipes();
-
-	// 	// Executed after promise resolves
-	// 	grid.setLoading(false);
-	// 	grid.updateCards(recipes);
-	// 	grid.render();
-	// } catch (error) {
-	// 	grid.setLoading(false);
-	// 	showErrorMessage(appRoot, error);
-	// }
 }
 
 /**

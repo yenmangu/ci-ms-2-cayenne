@@ -26,12 +26,15 @@
  * *Tap* into the subscription pipeline
  * - Returns a new subscription pipeline
  */
+import { constants } from '../env.js';
 
 import CayenneEventEmitter from './eventEmitter.js';
 
 const STATE_CHANGE = 'state:change';
 const CAYENNE_STATE = 'cayenneUserState';
 export function createStateStore(initialState = {}) {
+	console.log('Creating state store:');
+
 	const emitter = new CayenneEventEmitter();
 
 	/** @type {PartialAppState} */
@@ -217,8 +220,8 @@ export function createStateStore(initialState = {}) {
 	 */
 	function makeStoreApi(emitterChain, listener, key) {
 		const chain = {
-			immediate: (data, ...args) => {
-				listener(data, ...args);
+			immediate: () => {
+				listener(getListenerArg(state, key));
 				return chain;
 			},
 			unsubscribe: () => {
@@ -277,6 +280,8 @@ export function createStateStore(initialState = {}) {
 		});
 		// localStorage.removeItem(CAYENNE_STATE);
 	}
+
+	console.log('State store created');
 
 	return {
 		setState,
