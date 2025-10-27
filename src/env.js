@@ -18,7 +18,7 @@ const env = {
 const isProd = PROD_HOSTNAMES.includes(window.location.hostname);
 // export const ENV = isProd ? env.prod : env.dev;
 // export const ENV = env.prod;
-export const ENV = env.dev;
+export const ENV = env.prod;
 export const ENV_1 = isProd ? env.prod : env.dev;
 
 const envConfig = {
@@ -36,3 +36,7 @@ export const setEnvConfig = useRemoteApi => {
 };
 
 export { isProd };
+
+export const constants = {
+	likedKey: 'LIKED_RECIPES'
+};
