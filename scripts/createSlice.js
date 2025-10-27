@@ -7,6 +7,16 @@ import path from 'path';
  *
  */
 
+// process.argv.forEach((val, index) => {
+// 	console.log(`${index}: ${val}`);
+// });
+
+// process.exit(0);
+
+let pathArg = null;
+if (process.argv[3]) {
+	pathArg = process.argv[3];
+}
 const sliceName = process.argv[2];
 
 if (!sliceName) {
@@ -18,7 +28,7 @@ const camelName = sliceName.replace(/-([a-z])/g, (_, /** @type {string} */ c) =>
 	c.toUpperCase()
 );
 
-const baseDir = path.join('src', 'components', sliceName);
+const baseDir = pathArg ?? path.join('src', 'components', sliceName);
 if (!fs.existsSync(baseDir)) {
 	fs.mkdirSync(baseDir, { recursive: true });
 	console.log(`Created folder: ${baseDir}`);
