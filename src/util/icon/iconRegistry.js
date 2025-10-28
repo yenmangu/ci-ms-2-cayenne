@@ -23,9 +23,8 @@
  */
 
 /**
- * @typedef {object} IconEntry
- * @property {string} name
- * @property {SVGElement} template
+ * @typedef {import('../../types/iconTypes.js').IconEntry} IconEntry
+ * @typedef {import('../../types/iconTypes.js').IconRecord} IconRecord
  */
 
 /**
@@ -42,16 +41,13 @@
  * @property {string} [labelledBy]           // idref to <title> or external label
  * @property {string} [describedBy]          // idref to <desc> or external hint
  * @property {string} [title]                // creates/updates <title>
+ * @property {string} [toggledTitle]
  * @property {string} [desc]                 // creates/updates <desc>
  * @property {number} [tabIndex]             // focus management (defaults: no tab stop)
  * @property {string} [class]
  * @property {string[]} [classList]
  * @property {string} [style]
  * @property {Record<string, string|number>} [styleObj]
- */
-
-/**
- * @typedef {Record<string, IconEntry>} IconRecord
  */
 
 import { Icon } from './icon-component/icon.controller.js';

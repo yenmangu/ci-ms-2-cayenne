@@ -9,10 +9,12 @@ export class Icon {
 	/**
 	 * @param {IconEntry} entry
 	 * @param {IconAttributes} [attrs={}]
+	 * @param {IconAttributes} [toggledAttrs ={}]
 	 */
-	constructor(entry, attrs = {}) {
+	constructor(entry, attrs = {}, toggledAttrs = {}) {
 		this.entry = entry;
 		this.attrs = { ...attrs };
+		this.toggledAttrs = { ...toggledAttrs };
 
 		/** @type {SVGElement | null} */
 		this.node = null;

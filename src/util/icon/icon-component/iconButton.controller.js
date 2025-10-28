@@ -14,33 +14,27 @@
  */
 
 /**
- * @typedef {import('../iconRegistry.js').IconRegistry} Registry
- * @typedef {import('./icon.controller.js').Icon} Icon
+ * @typedef {IconRegistry} Registry
+ *
+ * @typedef {import('../../../types/iconTypes.js').ButtonAttributes} ButtonAttributes
+ * @typedef {import('../../../types/iconTypes.js').IconAttributes} IconAttributes
+ * @typedef {import('../../../types/iconTypes.js').IconButtonOptions} IconButtonOptions
+ */
+/**
+ * @typedef {import('../../../types/iconTypes.js').ButtonVariant} ButtonVariant
+ * @typedef {import('../../../types/iconTypes.js').CustomSize} CustomSize
+ * @typedef {import('../../../types/iconTypes.js').ButtonSize} ButtonSize
  */
 
 import { IconRegistry } from '../iconRegistry.js';
+import { Icon } from './icon.controller.js';
 
-/**
- * @typedef {'ghost'|'solid'|'link'} ButtonVariant
- * @typedef {string} CustomSize
- * @typedef {'xs'|'sm'|'md'|'lg'|CustomSize} ButtonSize
- */
-
-/**
- * @typedef {object} IconButtonOptions
- * @property {string} icon
- * @property {boolean} isNavLink
- * @property {string} [routeKey]
- * @property {import("./icon.controller.js").IconAttributes} [iconAttrs]
- * @property {string} [toggledIcon]
- * @property {boolean} [toggled]
- * @property {boolean} [disabled]
- * @property {string} [label]
- * @property {string} [ariaLabel]
- * @property {ButtonVariant} [variant]
- * @property {ButtonSize} [size]
- * @property {(ev: MouseEvent, btn:IconButton) => void} [onClick]
- */
+const LABELLED_ATTRS = {
+	title: 'title',
+	ariaLabel: 'aria-label',
+	ariaLabelledBy: 'aria-labelledby',
+	ariaDescribedBy: 'aria-describedby'
+};
 
 /**
  * Regex101 - Validate CSS Units
@@ -58,52 +52,108 @@ export class IconButton {
 	/** @type {IconRegistry} */ #registry;
 	/** @type {string} */ #routeKey = null;
 
+	/** @type {IconAttributes} */ #iconAttrs;
+	/** @type {IconAttributes} */ #iconToggledAttrs;
+
+	/** @type {ButtonAttributes} */ #buttonAttrs;
+	/** @type {ButtonAttributes} */ #buttonToggledAttrs;
+
 	/**
-	 *
 	 * @param {Registry} registry
 	 * @param {IconButtonOptions} opts
 	 */
 	constructor(registry, opts) {
+		// Validation & registry
 		if (!registry) throw new Error('IconButton: registry is required');
 		if (!opts?.icon) throw new Error('IconButton: "icon" is required');
-		if (!opts.label && !opts.ariaLabel)
-			throw new Error('IconButton: icon-only usage requires ariaLabel');
-		if (opts.isNavLink && !opts.routeKey)
+
+		// New attributes
+		this.#iconAttrs = opts.iconAttrs || {};
+		this.#iconToggledAttrs = opts.iconToggledAttrs || {};
+		this.#buttonAttrs = opts.buttonAttrs || {};
+		this.#buttonToggledAttrs = opts.buttonToggledAttrs || {};
+
+		// Label/ARIA Validation - checking ONLY if one exists
+		const initialLabel =
+			this.#buttonAttrs.label ||
+			this.#buttonToggledAttrs.label ||
+			this.#buttonAttrs.ariaLabel ||
+			this.#buttonToggledAttrs.ariaLabel;
+		if (!initialLabel) {
+			throw new Error(
+				'IconButton: Visible text or ariaLabel is required in buttonAttrs or buttonToggledAttrs'
+			);
+		}
+
+		// Nav Link/Route Validation
+		if (opts.isNavLink && !opts.routeKey) {
 			throw new Error('IconButton: routeKey must be set when isNavLink true');
+		}
+
 		this.#registry = registry;
 		this.#opts = { variant: 'ghost', size: 'md', toggled: false, ...opts };
-
 		if (opts.routeKey) this.#routeKey = opts.routeKey;
 
+		// Create DOM Elements
 		this.#el = document.createElement('button');
 		this.#el.type = 'button';
 		this.#el.className = this.#classList();
+
+		// If label is present in either state, add the label span (text set in render)
+		if (this.#buttonAttrs.label || this.#buttonToggledAttrs.label) {
+			this.#labelNode = this.#createLabelNode();
+		}
+
 		this.#el.disabled = !!this.#opts.disabled;
 		this.#el.setAttribute('aria-pressed', String(!!this.#opts.toggled));
-		if (this.#opts.ariaLabel) {
-			this.#el.setAttribute('aria-label', this.#opts.ariaLabel);
-		}
 
-		this.#iconHost = document.createElement('span');
-		this.#iconHost.className = 'icon-button__icon';
-		this.#el.appendChild(this.#iconHost);
+		// No direct aria-label or title setting here; all handled in render()
 
-		if (this.#opts.label) {
-			const span = document.createElement('span');
-			span.className = 'icon-button__label';
-			span.textContent = this.#opts.label;
-			this.#el.appendChild(span);
-			this.#labelNode = span;
-		}
-
-		this.toggled = false;
-
-		this.#el.addEventListener('click', ev => {
+		this.#el.addEventListener('click', event => {
 			if (typeof this.#opts.toggled === 'boolean') {
 				this.setToggled(!this.#opts.toggled);
 			}
-			this.#opts.onClick?.(ev, this);
+			this.#opts.onClick?.(event, this);
 		});
+	}
+
+	/**
+	 *
+	 * @returns {HTMLSpanElement}
+	 */
+	#createLabelNode() {
+		const span = document.createElement('span');
+		span.className = 'icon-button__label';
+		this.#el.appendChild(span);
+		return span;
+	}
+
+	/**
+	 *
+	 * @param {Element} el
+	 * @param {object} attrs
+	 */
+	#setLabelAttributes(el, attrs) {
+		for (const [key, attrName] of Object.entries(LABELLED_ATTRS)) {
+			const value = attrs[key];
+			if (value != null && value !== false) {
+				el.setAttribute(attrName, value);
+			} else {
+				el.removeAttribute(attrName);
+			}
+		}
+	}
+
+	getCurrentIconAttrs() {
+		return this.#opts.toggled
+			? { ...this.#iconAttrs, ...this.#iconToggledAttrs }
+			: { ...this.#iconAttrs };
+	}
+
+	getCurrentButtonAttrs() {
+		return this.#opts.toggled
+			? { ...this.#buttonAttrs, ...this.#buttonToggledAttrs }
+			: { ...this.#buttonAttrs };
 	}
 
 	#classList() {
@@ -155,31 +205,55 @@ export class IconButton {
 		void this.render();
 	}
 
+	// New Render()
+
 	async render() {
-		const name =
-			this.#opts.toggled && this.#opts.toggledIcon
+		const isToggled = !!this.#opts.toggled;
+
+		const iconName =
+			isToggled && this.#opts.toggledIcon
 				? this.#opts.toggledIcon
 				: this.#opts.icon;
 
-		if (!this.#icon || this.#icon.entry.name !== name) {
-			this.#icon = this.#registry.getIcon(name, this.#opts.iconAttrs);
-			this.#icon.render(this.#iconHost);
-		} else {
-			if (this.#opts.iconAttrs) {
-				this.#icon.update(this.#opts.iconAttrs);
-			}
-		}
+		const currentButtonAttrs = this.getCurrentButtonAttrs();
+		const currentIconAttrs = this.getCurrentIconAttrs();
+
+		// Button attributes
 
 		this.#el.className = this.#classList();
-		this.#el.setAttribute('aria-pressed', String(!!this.#opts.toggled));
 		this.#el.disabled = !!this.#opts.disabled;
+		this.#el.setAttribute('aria-pressed', String(isToggled));
+
+		// Set label and ARIA attributes
+		this.#setLabelAttributes(this.#el, currentButtonAttrs);
+
+		// Update label node text
+		if (this.#labelNode) {
+			this.#labelNode.textContent = currentButtonAttrs.label || '';
+		}
+
+		// Icon rendering
+		if (!this.#icon || this.#icon.entry.name !== iconName) {
+			this.#icon = this.#registry.getIcon(iconName, currentIconAttrs);
+			this.#icon.render(this.#iconHost);
+		} else {
+			this.#icon.update(currentIconAttrs);
+		}
+
+		// Set icon ARIA label attributes
+		if (this.#icon.node) {
+			this.#setLabelAttributes(this.#icon.node, currentIconAttrs);
+		}
 	}
 
+	/**
+	 *
+	 * @param {boolean} on
+	 */
 	setToggled(on) {
-		// if (this.isToggled() === !!on) return;
-		console.log('Toggling icon: ', this.#routeKey, 'with: ', on);
 		this.toggled = !!on;
 		this.#opts.toggled = !!on;
+		// this.#setToggledAttrs(on);
 		void this.render();
 	}
 
@@ -195,29 +269,36 @@ export class IconButton {
 		void this.render();
 	}
 
-	setIconAttrs(next) {
-		this.#opts.iconAttrs = {
-			...(this.#opts.iconAttrs || {}),
-			...next
-		};
+	setIconAttrs(next, isToggled = false) {
+		if (isToggled) {
+			this.#iconToggledAttrs = { ...this.#iconToggledAttrs, ...next };
+		} else {
+			this.#iconAttrs = { ...this.#iconAttrs, ...next };
+		}
 		void this.render();
 	}
 
-	setLabel(text) {
-		this.#opts.label = text;
+	setLabel(text, isToggled = false) {
+		if (isToggled) {
+			this.#buttonToggledAttrs.label = text;
+		} else {
+			this.#buttonAttrs.label = text;
+		}
 		if (!this.#labelNode) {
-			const span = document.createElement('span');
-			span.className = 'icon-button__label';
-			this.#el.appendChild(span);
-			this.#labelNode = span;
+			this.#labelNode = this.#createLabelNode();
 		}
 		this.#labelNode.textContent = text;
-		this.#el.removeAttribute('aria-label');
+		void this.render();
 	}
 
-	setAriaLabel(text) {
-		this.#opts.ariaLabel = text;
-		this.el.setAttribute('aria-label', text);
+	setAriaLabel(text, isToggled) {
+		if (isToggled) {
+			this.#buttonToggledAttrs.ariaLabel = text;
+		} else {
+			this.#buttonAttrs.ariaLabel = text;
+		}
+
+		void this.render();
 	}
 
 	// Optional cleanup; minimise memory leaks
