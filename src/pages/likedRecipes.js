@@ -8,7 +8,7 @@ import { LikedRecipes } from '../components/liked-recipes/likedRecipes.controlle
 const likedRecipeKey = 'LIKED_RECIPES';
 
 export function loadLikedRecipes(container, pathName, params) {
-	_devStoreRecipes();
+	// _devStoreRecipes();
 	const fromStorage = loadRecipesFromStorage();
 	const fromState = appStore.getState().likedRecipes || fromStorage; // DEV
 	console.log('From storage: ', fromStorage);

@@ -11,8 +11,6 @@ export const iconButtonConfigs = {
 	cart: buildCartOptions,
 	savedRecipes: buildSavedRecipesOptions,
 	home: buildHomeOptions
-
-	// More to be added
 };
 
 // example: const cartNav = iconButtonConfigs.cart(true)
