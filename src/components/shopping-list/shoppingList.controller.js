@@ -1,13 +1,19 @@
 /**
  * @typedef {import('../../types/stateTypes.js').PartialAppState} PartialState
  * @typedef {import('../../types/stateTypes.js').ShoppingListItem} ShoppingListItem
+ * @typedef {import('../../types/recipeTypes.js').ExtendedIngredient} ExtendedIngredient
  */
 
 import { appStore } from '../../appStore.js';
 import { banana, bananas } from '../../data/banana.js';
 import { stringToHtml } from '../../util/htmlToElement.js';
+import { IngredientMiniCard } from '../ingredient-mini-card/ingredientMiniCard.controller.js';
 import * as service from './shoppingList.service.js';
-import { renderInput, renderShoppingListItem } from './shoppingList.view.js';
+import {
+	renderInput,
+	renderShoppingList,
+	renderShoppingListItem
+} from './shoppingList.view.js';
 
 export class ShoppingList {
 	/**
@@ -20,9 +26,13 @@ export class ShoppingList {
 		this.container = container;
 
 		this.dev = params.dev;
+		this.view = stringToHtml(renderShoppingList());
 
 		/** @type {ShoppingListItem[]} */
 		this.currentList = [];
+
+		/** @type {IngredientMiniCard[]} */
+		this.ingredientCardInstances = [];
 
 		/** @type {Record<number,HTMLButtonElement>} */
 		this.removeButtonMap = {};
@@ -30,115 +40,147 @@ export class ShoppingList {
 		/** @type {HTMLButtonElement} */
 		this.searchBtn = null;
 
-		if (this.container) {
-			this.#_renderInput();
-			const ul = document.createElement('ul');
-			this.ul = ul;
-			this.container.appendChild(ul);
-		}
+		this.ul = null;
 		this.currentList = appStore.getState().shoppingList || [];
-
+		this.init();
 		this.#_render();
+		this.subscription = null;
 	}
 
 	init() {
-		appStore.subscribe(state => {
-			console.log('State: ', state);
+		this.container.appendChild(this.view);
 
-			if (state) {
-				console.log('ShoppingList: ', state.shoppingList);
-
-				this.currentList = state.shoppingList;
-				console.log('CurrentList: ', this.currentList);
-
-				this.#_render();
+		this.subscription = appStore.subscribe(state => {
+			if (state && state.shoppingList) {
+				this.#_updateList(state.shoppingList);
 			}
 		}, 'shoppingList');
+
 		if (this.dev) {
 			// appStore.setState({ shoppingList: [...bananas, ...bananas] });
 		}
 	}
 
-	#_renderInput() {
-		this.formElement = stringToHtml(renderInput());
-		this.container.appendChild(this.formElement);
-		this.formElement.addEventListener(
-			'submit',
-			this.#_wireSearchListener.bind(this)
+	/**
+	 *
+	 * @param {ShoppingListItem[]} updated
+	 */
+	#_updateList(updated) {
+		const toRemoveIds = this.currentList
+			.filter(prev => !updated.some(next => next.id === prev.id))
+			.map(i => i.id);
+
+		toRemoveIds.forEach(id => {
+			const ingredientCardInstance = this.#_getCardById(id);
+			if (ingredientCardInstance && ingredientCardInstance.el) {
+				this.#_removeWithAnimation(ingredientCardInstance.el, () => {
+					this.updateCards(updated);
+				});
+			}
+		});
+	}
+
+	// #_adaptIngredient(item) {
+	// 	const { linkedRecipe, linkedRecipeId, ...ingredient } = item;
+	// 	return ingredient;
+	// }
+
+	#_buildIngredientCards() {
+		console.log('this.currentList: ', this.currentList);
+		console.log('Card instances: ', this.ingredientCardInstances);
+
+		this.currentList.forEach(item => {
+			const recipeDetails = {
+				linkedRecipe: item.linkedRecipe ?? '',
+				linkedRecipeId: item.linkedRecipeId ?? 0
+			};
+
+			const tempItem = { ...item };
+
+			delete tempItem.linkedRecipe;
+			delete tempItem.linkedRecipeId;
+
+			const itemAsIngredient = /** @type {ExtendedIngredient} */ (tempItem);
+
+			const ingredientCard = new IngredientMiniCard(itemAsIngredient, {
+				inRecipeDetail: false,
+				system: appStore.getState().unitLocale,
+				unitLength: appStore.getState().unitLength,
+				...recipeDetails
+			});
+
+			const el = ingredientCard.render();
+			ingredientCard.init();
+
+			this.ingredientCardInstances.push(ingredientCard);
+
+			this.ul.appendChild(el);
+		});
+	}
+
+	/**
+	 *
+	 * @param {HTMLElement} cardEl
+	 * @param {()=> void} onDone
+	 */
+	#_removeWithAnimation(cardEl, onDone) {
+		cardEl.classList.add('ingredient-mini-card--leaving');
+
+		cardEl.addEventListener(
+			'transitionend',
+			function handler(e) {
+				cardEl.removeEventListener('transitionend', handler);
+				// Once done, invoke onDone()
+				if (typeof onDone === 'function') onDone();
+			},
+			{ once: true }
 		);
+	}
+
+	updateCards(updated) {
+		this.currentList = updated;
+		this.#_render();
+	}
+
+	#_getCardById(id) {
+		return this.ingredientCardInstances.find(card => card.ingredient.id === id);
 	}
 
 	#_render() {
-		this.ul.innerHTML = '';
-		this.currentList.forEach(item => {
-			const listItem = stringToHtml(renderShoppingListItem(item));
-			this.ul.appendChild(listItem);
-			const removeBtn = /** @type {HTMLButtonElement} */ (
-				listItem.querySelector('button[data-remove-item-btn]')
-			);
-			if (removeBtn) {
-				removeBtn.addEventListener(
-					'click',
-					this.#_wireRemoveListeners.bind(this)
-				);
-				this.removeButtonMap[item.id] = removeBtn;
-			} else {
-				console.log(`Cannot find remove button for item id: ${item.id}`);
-			}
-		});
-	}
-
-	#_wireSearchListener() {}
-
-	/**
-	 *
-	 * @param {MouseEvent} event
-	 */
-	#_wireRemoveListeners(event) {
-		const btn = event.currentTarget;
-		if (btn instanceof HTMLButtonElement) {
-			const id = btn.dataset.ingredientId;
-			const li = btn.closest('li[data-shopping-item]');
-			if (li) li.remove();
-
-			this.#_removeItem(id);
+		if (!this.ul) {
+			this.ul = document.createElement('ul');
+			this.ul.className = 'shopping-list__ul';
 		}
-	}
 
-	/**
-	 *
-	 * @param {ShoppingListItem} item
-	 */
-	#_addItem(item) {
-		const state = appStore.getState();
-		const exists = state.shoppingList?.some(
-			listItem => listItem.id === item.id
+		const shoppingListContainer = document.getElementById(
+			'shopping-list-container'
 		);
-		console.log('Exists: ', exists);
+		this.#_buildIngredientCards();
+		shoppingListContainer.appendChild(this.ul);
 
-		if (!exists) {
-			appStore.setState({ shoppingList: [...(state.shoppingList || [])] });
-		}
+		// if (this.container) {
+		// 	// This has been removed because time constraints
+		// 	// and api quota constraints have prevented me
+		// 	// from implementing the search properly
+		// 	// this.#_renderInput();
+		// }
 	}
 
-	/**
-	 *
-	 * @param {string} id
-	 */
-	#_removeItem(id) {
-		const intId = parseInt(id, 10);
-		const state = appStore.getState();
-		const filteredList = state.shoppingList.filter(i => {
-			if (i.id === intId) {
-				console.log(`found item with id: ${id} : name: ${i.name}`);
-			}
-			return i.id !== intId;
-		});
+	// /**
+	//  *
+	//  * @param {ShoppingListItem} item
+	//  */
+	// #_addItem(item) {
+	// 	const state = appStore.getState();
+	// 	const exists = state.shoppingList?.some(
+	// 		listItem => listItem.id === item.id
+	// 	);
+	// 	console.log('Exists: ', exists);
 
-		console.log('filteredList: ', filteredList);
-
-		appStore.setState({ shoppingList: filteredList });
-	}
+	// 	if (!exists) {
+	// 		appStore.setState({ shoppingList: [...(state.shoppingList || [])] });
+	// 	}
+	// }
 
 	destroy() {
 		console.warn('Function destroy() not yet implemented.');

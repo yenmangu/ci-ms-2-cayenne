@@ -139,9 +139,8 @@ export function renderRecipeDetail(recipe, summaryObj, opts) {
         </button>
       </h2>
       <div id="collapseIngredients" class="accordion-collapse collapse show" data-bs-parent="#recipeAccordion">
-        <div class="accordion-body recipe-ingredients">
+        <div id="recipe-ingredients" class="accordion-body recipe-ingredients">
           <!-- ingredients list goes here -->
-					${ingredientsHtml}
         </div>
       </div>
     </div>

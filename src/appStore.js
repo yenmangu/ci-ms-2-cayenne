@@ -16,6 +16,7 @@ const initialState = {
 	recipeResults: [],
 	currentRecipe: null,
 	likedRecipes: [],
+	shoppingList: [],
 	...userState
 };
 

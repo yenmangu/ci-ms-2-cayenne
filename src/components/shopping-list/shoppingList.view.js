@@ -5,6 +5,13 @@
 
 import { escapeHtml } from '../../util/escapeHtml.js';
 
+export function renderShoppingList() {
+	return `<section class="shopping-list__section py-5 text-center">
+	<h1 class="shopping-list__title mb-4">Shopping List</h1>
+	<div id="shopping-list-container"></div>
+	</section>`;
+}
+
 /**
  *
  * @returns {string}

@@ -3,8 +3,8 @@ export {};
 /**
  * @typedef {import("./recipeTypes.js").RecipeCard} RecipeCard
  * @typedef {import("./recipeTypes.js").RecipeFull} RecipeFull
- * @typedef {import("./recipeTypes.js").ExtendedIngredient} ExtendedIngredient
- * @typedef {import('./ingredientTypes.js').IngredientResultCard} IngredientResultCard
+ * @typedef {import("./recipeTypes.js").Measures} Measures
+ * @typedef {import('./ingredientTypes.js').IngredientResultCard} ShoppingListItem
  * @typedef {import("./routerTypes.js").RouteEntry} RouteEntry
  * @typedef {import(
  * 		"../components/error-message/errorMessage.controller.js"
@@ -21,13 +21,21 @@ export {};
  */
 
 /**
- * @typedef {object} ShoppingListItem
+ * @typedef {object} ShoppingListItemOld
+ * @property {number} [linkedRecipeId]
+ * @property {string} [linkedRecipe]
  * @property {number} [id]
- * @property {string} name
- * @property {number} [amount]
- * @property {string} [unit]
  * @property {string} [image]
- * @property {number}[recipeId] - optional to track which recipe the ingredient came from
+ * @property {string} [consistency]
+ * @property {string} [nameClean]
+ * @property {string} aisle
+ * @property {number}amount
+ * @property {Measures} measures
+ * @property {string[]} meta
+ * @property {string} name
+ * @property {string} original
+ * @property {string} originalName
+ * @property {string} unit
  */
 
 /**
@@ -43,7 +51,7 @@ export {};
  * @property {boolean} [loading] - Loading flag
  * @property {RouteEntry} [route]
  * @property {ErrorConfig|null} [error] - Current error, if any
- * @property {ExtendedIngredient[]} [shoppingList]
+ * @property {ShoppingListItem[]} [shoppingList]
  *
  */
 /**
@@ -60,7 +68,7 @@ export {};
  * @property {boolean} [loading] - Loading flag *
  * @property {RouteEntry} [route]
  * @property {ErrorConfig|null} [error] - Current error, if any
- * @property {ExtendedIngredient[]} [shoppingList]
+ * @property {ShoppingListItem[]} [shoppingList]
  *
  */
 
@@ -70,7 +78,7 @@ export {};
  * @typedef {object} PersistableState
  * @property {RecipeCard[]} [likedRecipes]
  * @property {UnitLocale} [unitLocale]
- * @property {ExtendedIngredient[]} [shoppingList]
+ * @property {ShoppingListItem[]} [shoppingList]
  */
 
 /**

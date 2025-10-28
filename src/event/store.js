@@ -1,6 +1,7 @@
 /**
  * @typedef {import('../types/recipeTypes.js').RecipeCard} RecipeCard
  * @typedef {import('../types/recipeTypes.js').ExtendedIngredient} ExtendedIngredient
+ * @typedef {import('../types/stateTypes.js').ShoppingListItem} ShoppingListItem
  */
 
 /**
@@ -129,7 +130,7 @@ export function createStateStore(initialState = {}) {
 
 	/**
 	 *
-	 * @param {ExtendedIngredient} ingredient
+	 * @param {ShoppingListItem} ingredient
 	 */
 	function addToCart(ingredient) {
 		const { shoppingList = [] } = state;
@@ -140,7 +141,7 @@ export function createStateStore(initialState = {}) {
 
 	/**
 	 *
-	 * @param {ExtendedIngredient} ingredient
+	 * @param {ShoppingListItem} ingredient
 	 */
 	function removeFromCart(ingredient) {
 		const { shoppingList = [] } = state;
@@ -151,7 +152,7 @@ export function createStateStore(initialState = {}) {
 
 	/**
 	 *
-	 * @param {ExtendedIngredient} ingredient
+	 * @param {ShoppingListItem} ingredient
 	 */
 	function toggleIngredientInCart(ingredient) {
 		const { shoppingList = [] } = state;
@@ -303,10 +304,10 @@ export function createStateStore(initialState = {}) {
 	}
 
 	function persistState() {
-		const { likedRecipes, unitLocale } = state;
+		const { likedRecipes, unitLocale, shoppingList } = state;
 		localStorage.setItem(
 			CAYENNE_STATE,
-			JSON.stringify({ likedRecipes, unitLocale })
+			JSON.stringify({ likedRecipes, unitLocale, shoppingList })
 		);
 	}
 

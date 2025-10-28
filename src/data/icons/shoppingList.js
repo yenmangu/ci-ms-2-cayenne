@@ -26,12 +26,14 @@ function buildCartOptions(
 		disabled: false,
 		buttonAttrs: {
 			ariaLabel: 'Shopping list',
-			title: 'View shopping list',
+			title: isNavLink ? 'View Shopping list' : 'Add to shopping list',
 			tabIndex: 0
 		},
 		buttonToggledAttrs: {
 			ariaLabel: 'Shopping list (selected)',
-			title: 'Shopping list (selected)',
+			title: isNavLink
+				? 'Shopping list (selected)'
+				: 'Remove from shopping list',
 			tabIndex: 0
 		},
 		iconAttrs: {

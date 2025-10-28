@@ -14,6 +14,8 @@ import { ENV } from '../../env.js';
 import { getIconRegistry } from '../../util/icon/icon-component/icon.service.js';
 import { IconButton } from '../../util/icon/icon-component/iconButton.controller.js';
 import { routerService } from '../../router/routerService.js';
+import { buildCartOptions } from '../../data/icons/shoppingList.js';
+import { iconButtonConfigs } from '../../data/icons/index.js';
 
 export class AppHeader {
 	/**
@@ -161,39 +163,41 @@ export class AppHeader {
 	 */
 
 	#_renderIconLinks() {
+		const homeOpts = iconButtonConfigs.home(true, routeMap['/'].path, 'solid');
 		const home = new IconButton(this.iconRegistry, {
-			icon: 'house-regular',
-			toggledIcon: 'house-solid',
-			isNavLink: true,
-			routeKey: routeMap['/'].path,
-			ariaLabel: 'Home',
+			...homeOpts,
 			onClick: (e, btn) => {
 				e.preventDefault();
 				routerService.navigateHome();
 			}
 		});
+
+		const savedRecipesOpts = iconButtonConfigs.savedRecipes(
+			true,
+			routeMap['/liked-recipes'].path,
+			'solid'
+		);
 		const savedRecipes = new IconButton(this.iconRegistry, {
-			icon: 'bookmark-regular',
-			toggledIcon: 'bookmark-solid',
-			isNavLink: true,
-			routeKey: routeMap['/liked-recipes'].path,
-			ariaLabel: 'Saved Recipes',
+			...savedRecipesOpts,
 			onClick: (e, btn) => {
 				e.preventDefault();
 				routerService.navigateLikedRecipes();
 			}
 		});
+
+		const shoppingListOps = iconButtonConfigs.cart(
+			true,
+			routeMap['/shopping-list'].path,
+			'solid'
+		);
 		const shoppingList = new IconButton(this.iconRegistry, {
-			icon: 'cart-regular',
-			toggledIcon: 'cart-solid',
-			isNavLink: true,
-			routeKey: routeMap['/shopping-list'].path,
-			ariaLabel: 'Shopping list',
+			...shoppingListOps,
 			onClick: (e, btn) => {
 				e.preventDefault();
 				routerService.navigateShoppingList();
 			}
 		});
+
 		this.iconButtons.push(home, savedRecipes, shoppingList);
 	}
 

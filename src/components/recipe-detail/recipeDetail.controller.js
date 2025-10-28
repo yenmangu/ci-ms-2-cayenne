@@ -14,6 +14,7 @@ import { ToggleComponent } from '../toggle-component/toggleComponent.controller.
 import { appStore } from '../../appStore.js';
 import { config } from '../../config/stateConfigs.js';
 import { stringToHtml } from '../../util/htmlToElement.js';
+import { IngredientMiniCard } from '../ingredient-mini-card/ingredientMiniCard.controller.js';
 
 /**
  * @component
@@ -61,6 +62,9 @@ export class RecipeDetail {
 
 		/** @type {ToggleComponent} */
 		this.unitLengthToggle = null;
+
+		/** @type {IngredientMiniCard[]} */
+		this.ingredientCardInstances = [];
 
 		this.lastState = null;
 		this.subscription = null;
@@ -110,8 +114,12 @@ export class RecipeDetail {
 		if (this.recipeDetailComponent instanceof HTMLElement) {
 			// console.log('Is Instance of HTMLElement');
 		}
-		if (this.appRoot) this.appRoot.append(this.recipeDetailComponent);
-		else console.warn('No App root');
+		if (this.appRoot) {
+			this.appRoot.append(this.recipeDetailComponent);
+			this.#_buildIngredientCards();
+		} else {
+			console.warn('No App root');
+		}
 
 		this.toggleContainer = document.getElementById('toggleContainer');
 
@@ -148,6 +156,36 @@ export class RecipeDetail {
 		throw new Error('Method not implemented.');
 	}
 
+	#_buildIngredientCards() {
+		if (this.fetchedRecipe && this.fetchedRecipe.extendedIngredients) {
+			if (!Array.isArray(this.fetchedRecipe.extendedIngredients)) {
+				// Handle no ingredients
+				console.log('Ingredients not array');
+			}
+			const ingredients = this.fetchedRecipe.extendedIngredients;
+			const ingredientsContainer =
+				document.getElementById('recipe-ingredients');
+
+			ingredientsContainer.innerHTML = '';
+
+			ingredients.forEach(i => {
+				// debugger;
+				const wrapper = document.createElement('div');
+				const card = new IngredientMiniCard(i, {
+					linkedRecipeId: this.recipeId,
+					linkedRecipe: this.fetchedRecipe.title,
+					inRecipeDetail: true
+				});
+				card.render();
+				this.ingredientCardInstances.push(card);
+				ingredientsContainer.appendChild(card.el);
+			});
+		} else {
+			// handle no ingredients
+			console.log('No ingredients in recipe');
+		}
+	}
+
 	#_hydrate(state) {
 		// this.#_updateToggleLabels();
 		this.#_handleIngredientUpdate();
@@ -163,11 +201,6 @@ export class RecipeDetail {
 			throw new Error('Error, no IngredientCards found in DOM');
 		}
 	}
-
-	// #_updateToggleLabels() {
-	// 	this.unitLocaleToggle.toggleText = this.unitLocale;
-	// 	this.unitLengthToggle.toggleText = this.unitLength;
-	// }
 
 	#_handleIngredientUpdate() {
 		const cards = this.#_getIngredientCards();
@@ -221,35 +254,6 @@ export class RecipeDetail {
 			console.warn('recipeContainer not found: toggles not rendered');
 		}
 	}
-
-	// #_renderUnitLocaleToggle() {
-	// 	if (this.unitLocaleToggle) {
-	// 		console.log('measure toggle exists');
-	// 		this.unitLocale = null;
-	// 	}
-	// 	this.unitLocaleToggle = new ToggleComponent(this.toggleContainer, {
-	// 		key: 'unitLocale',
-	// 		onValue: 'us',
-	// 		offValue: 'metric',
-	// 		initialValue: this.unitLocale ?? 'metric'
-	// 	});
-	// 	this.unitLocaleToggle.render();
-	// }
-
-	// #_renderUnitLengthToggle() {
-	// 	if (this.unitLengthToggle) {
-	// 		console.log('unit length toggle exists');
-	// 		this.unitLengthToggle = null;
-	// 	}
-	// 	this.unitLengthToggle = new ToggleComponent(this.toggleContainer, {
-	// 		key: 'unitLength',
-	// 		onValue: 'unitLong',
-	// 		offValue: 'unitShort',
-	// 		initialValue: this.unitLength ?? 'unitShort'
-	// 	});
-	// 	if (this.unitLengthToggle.toggleConfig.label)
-	// 		this.unitLengthToggle.render();
-	// }
 
 	destroy() {
 		if (this.subscription) {

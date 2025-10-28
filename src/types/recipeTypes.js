@@ -42,7 +42,6 @@ export {};
  * @property {string} original
  * @property {string} originalName
  * @property {string} unit
-
  */
 
 /**
@@ -152,4 +151,10 @@ export {};
  * @property {string} [spoonacularSourceUrl]
  * @property {number} [healthScore]
  * @property {WinePairing} [winePairing]
+ */
+
+/**
+ * @typedef {object} IngredientMiniCardOpts
+ * @property {'metric'|'us'} system
+ * @property {'unitShort'|'unitLong'} unitLength
  */

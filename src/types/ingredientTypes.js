@@ -24,4 +24,6 @@ export {};
  * @property {number} [id]
  * @property {string} [name]
  * @property {string} [image]
+ * @property {number} [linkedRecipeId]
+ * @property {string} [linkedRecipe]
  */
