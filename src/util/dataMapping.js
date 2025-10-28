@@ -1,5 +1,7 @@
 /**
- * @typedef {import("../types/ingredientTypes.js").IngredientResultCard} Ingredient
+ * @typedef {import("../types/stateTypes.js").ShoppingListItem} ShoppingListItem
+ * @typedef {import('../types/ingredientTypes.js').IngredientResultCard} Ingredient
+ * @typedef {import('../types/recipeTypes.js').ExtendedIngredient} ExtendedIngredient
  */
 
 /**
@@ -17,9 +19,9 @@ const imageBase = (path, size) => {
 
 /**
  *
- * @param {Ingredient[]} ingredients
+ * @param {ShoppingListItem[]} ingredients
  * @param {number} [size=100]
- * @returns {Ingredient[]}
+ * @returns {ShoppingListItem[]}
  */
 export function mapFullImageUrl(ingredients, size = 100) {
 	return ingredients.map(v => {
