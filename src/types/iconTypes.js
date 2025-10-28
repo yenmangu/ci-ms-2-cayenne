@@ -12,10 +12,11 @@ export {};
  * @property {string} [ariaLabel] - Accessibility label (maps to aria-label)
  * @property {boolean} [ariaPressed] - Accessibility: toggled state for buttons (maps to aria-pressed)
  * @property {boolean} [ariaDisabled] - Accessibility: disables interaction (maps to aria-disabled)
- * @property {string} [tabIndex] - Tab navigation order
+ * @property {number} [tabIndex] - Tab navigation order
  * @property {string} [class] - CSS class(es)
  * @property {string[]} [classList] - Array of CSS classes
  * @property {string} [style] - Inline style
+ * @property {boolean} [focusable]
  * @property {Object.<string, string|number>} [styleObj] - Inline style as object
  * @property {string} [id] - HTML id
  * @property {string} [dataTestid] - For test selectors (e.g. data-testid)
@@ -39,6 +40,7 @@ export {};
  * @property {string} [title] - <title> element for accessibility
  * @property {string} [desc] - <desc> element for accessibility
  * @property {number} [tabIndex] - Tab navigation for icon (rare)
+ * @property {boolean} [focusable]
  * @property {string} [class] - CSS class(es)
  * @property {string[]} [classList] - Array of CSS classes
  * @property {string} [style] - Inline style
@@ -62,7 +64,7 @@ export {};
 /**
  * @typedef {object} IconButtonOptions
  * @property {string} icon
- * @property {boolean} toggled
+ * @property {boolean} [toggled]
  * @property {boolean} isNavLink
  * @property {IconButtonOnClick} [onClick]
  * @property {boolean} [disabled]

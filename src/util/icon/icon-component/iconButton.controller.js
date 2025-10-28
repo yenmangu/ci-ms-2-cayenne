@@ -29,11 +29,14 @@
 import { IconRegistry } from '../iconRegistry.js';
 import { Icon } from './icon.controller.js';
 
-const LABELLED_ATTRS = {
+const ARIA_ATTRS = {
 	title: 'title',
 	ariaLabel: 'aria-label',
 	ariaLabelledBy: 'aria-labelledby',
-	ariaDescribedBy: 'aria-describedby'
+	ariaDescribedBy: 'aria-describedby',
+	ariaHidden: 'aria-hidden',
+	focusable: 'focusable',
+	tabIndex: 'tabindex'
 };
 
 /**
@@ -67,11 +70,17 @@ export class IconButton {
 		if (!registry) throw new Error('IconButton: registry is required');
 		if (!opts?.icon) throw new Error('IconButton: "icon" is required');
 
+		this.#registry = registry;
+		this.#opts = { variant: 'ghost', size: 'md', toggled: false, ...opts };
+		if (opts.routeKey) this.#routeKey = opts.routeKey;
+
 		// New attributes
 		this.#iconAttrs = opts.iconAttrs || {};
 		this.#iconToggledAttrs = opts.iconToggledAttrs || {};
 		this.#buttonAttrs = opts.buttonAttrs || {};
 		this.#buttonToggledAttrs = opts.buttonToggledAttrs || {};
+
+		// debugger;
 
 		// Label/ARIA Validation - checking ONLY if one exists
 		const initialLabel =
@@ -90,14 +99,14 @@ export class IconButton {
 			throw new Error('IconButton: routeKey must be set when isNavLink true');
 		}
 
-		this.#registry = registry;
-		this.#opts = { variant: 'ghost', size: 'md', toggled: false, ...opts };
-		if (opts.routeKey) this.#routeKey = opts.routeKey;
-
 		// Create DOM Elements
 		this.#el = document.createElement('button');
 		this.#el.type = 'button';
 		this.#el.className = this.#classList();
+		// -- Create #iconHost
+		this.#iconHost = document.createElement('span');
+		this.#iconHost.className = 'icon-button__icon';
+		this.#el.appendChild(this.#iconHost);
 
 		// If label is present in either state, add the label span (text set in render)
 		if (this.#buttonAttrs.label || this.#buttonToggledAttrs.label) {
@@ -134,7 +143,7 @@ export class IconButton {
 	 * @param {object} attrs
 	 */
 	#setLabelAttributes(el, attrs) {
-		for (const [key, attrName] of Object.entries(LABELLED_ATTRS)) {
+		for (const [key, attrName] of Object.entries(ARIA_ATTRS)) {
 			const value = attrs[key];
 			if (value != null && value !== false) {
 				el.setAttribute(attrName, value);
