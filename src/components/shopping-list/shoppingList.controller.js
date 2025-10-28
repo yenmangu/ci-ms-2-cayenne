@@ -1,6 +1,6 @@
 /**
  * @typedef {import('../../types/stateTypes.js').PartialAppState} PartialState
- * @typedef {import('../../types/ingredientTypes.js').IngredientResultCard} IngredientResult
+ * @typedef {import('../../types/stateTypes.js').ShoppingListItem} ShoppingListItem
  */
 
 import { appStore } from '../../appStore.js';
@@ -21,7 +21,7 @@ export class ShoppingList {
 
 		this.dev = params.dev;
 
-		/** @type {IngredientResult[]} */
+		/** @type {ShoppingListItem[]} */
 		this.currentList = [];
 
 		/** @type {Record<number,HTMLButtonElement>} */
@@ -55,7 +55,7 @@ export class ShoppingList {
 			}
 		}, 'shoppingList');
 		if (this.dev) {
-			appStore.setState({ shoppingList: [...bananas, ...bananas] });
+			// appStore.setState({ shoppingList: [...bananas, ...bananas] });
 		}
 	}
 
@@ -107,7 +107,7 @@ export class ShoppingList {
 
 	/**
 	 *
-	 * @param {IngredientResult} item
+	 * @param {ShoppingListItem} item
 	 */
 	#_addItem(item) {
 		const state = appStore.getState();

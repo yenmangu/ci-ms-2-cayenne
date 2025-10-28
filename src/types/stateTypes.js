@@ -3,6 +3,7 @@ export {};
 /**
  * @typedef {import("./recipeTypes.js").RecipeCard} RecipeCard
  * @typedef {import("./recipeTypes.js").RecipeFull} RecipeFull
+ * @typedef {import("./recipeTypes.js").ExtendedIngredient} ExtendedIngredient
  * @typedef {import('./ingredientTypes.js').IngredientResultCard} IngredientResultCard
  * @typedef {import("./routerTypes.js").RouteEntry} RouteEntry
  * @typedef {import(
@@ -25,6 +26,7 @@ export {};
  * @property {string} name
  * @property {number} [amount]
  * @property {string} [unit]
+ * @property {string} [image]
  * @property {number}[recipeId] - optional to track which recipe the ingredient came from
  */
 
@@ -41,7 +43,7 @@ export {};
  * @property {boolean} [loading] - Loading flag
  * @property {RouteEntry} [route]
  * @property {ErrorConfig|null} [error] - Current error, if any
- * @property {ShoppingListItem[]} [shoppingList]
+ * @property {ExtendedIngredient[]} [shoppingList]
  *
  */
 /**
@@ -58,7 +60,7 @@ export {};
  * @property {boolean} [loading] - Loading flag *
  * @property {RouteEntry} [route]
  * @property {ErrorConfig|null} [error] - Current error, if any
- * @property {ShoppingListItem[]} [shoppingList]
+ * @property {ExtendedIngredient[]} [shoppingList]
  *
  */
 
@@ -68,7 +70,7 @@ export {};
  * @typedef {object} PersistableState
  * @property {RecipeCard[]} [likedRecipes]
  * @property {UnitLocale} [unitLocale]
- * @property {ShoppingListItem[]} [shoppingList]
+ * @property {ExtendedIngredient[]} [shoppingList]
  */
 
 /**

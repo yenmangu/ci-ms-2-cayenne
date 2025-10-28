@@ -1,5 +1,6 @@
 /**
  * @typedef {import('../types/recipeTypes.js').RecipeCard} RecipeCard
+ * @typedef {import('../types/recipeTypes.js').ExtendedIngredient} ExtendedIngredient
  */
 
 /**
@@ -123,6 +124,42 @@ export function createStateStore(initialState = {}) {
 			}
 		} else {
 			emitter.publish('state:change', { ...state });
+		}
+	}
+
+	/**
+	 *
+	 * @param {ExtendedIngredient} ingredient
+	 */
+	function addToCart(ingredient) {
+		const { shoppingList = [] } = state;
+		if (!shoppingList.some(i => i.id === ingredient.id)) {
+			setState({ shoppingList: [...shoppingList, ingredient] });
+		}
+	}
+
+	/**
+	 *
+	 * @param {ExtendedIngredient} ingredient
+	 */
+	function removeFromCart(ingredient) {
+		const { shoppingList = [] } = state;
+		setState({
+			shoppingList: shoppingList.filter(i => i.id !== ingredient.id)
+		});
+	}
+
+	/**
+	 *
+	 * @param {ExtendedIngredient} ingredient
+	 */
+	function toggleIngredientInCart(ingredient) {
+		const { shoppingList = [] } = state;
+		const exists = shoppingList.some(i => i.id === ingredient.id);
+		if (exists) {
+			removeFromCart(ingredient);
+		} else {
+			addToCart(ingredient);
 		}
 	}
 
@@ -292,6 +329,7 @@ export function createStateStore(initialState = {}) {
 		saveRecipe,
 		removeLikedRecipe,
 		toggleLikedrecipe,
-		addSearchString
+		addSearchString,
+		toggleIngredientInCart
 	};
 }
