@@ -42,8 +42,6 @@ export class LikedRecipes {
 		this.grid = new RecipeGrid(this.container, this.recipes, {
 			title: this.title
 		});
-
-		// console.log('Recipes in likedRecipes: ', this.recipes);
 		this.grid.render();
 	}
 

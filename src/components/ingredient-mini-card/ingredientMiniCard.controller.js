@@ -111,9 +111,6 @@ export class IngredientMiniCard {
 			}
 		});
 		this.icon.mount(container);
-		// const textSpan = document.createElement('span')
-
-		// container.prepend
 	}
 
 	/**

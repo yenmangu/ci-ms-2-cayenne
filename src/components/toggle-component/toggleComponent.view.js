@@ -23,7 +23,6 @@ import { config as stateConfig } from '../../config/stateConfigs.js';
  *
  */
 export function renderToggleComponent(config) {
-	// TODO: implment view logic
 	if (!config || config == undefined) {
 		throw new Error('Toggle config undefined');
 	}

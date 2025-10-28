@@ -1,3 +1,7 @@
+/**
+ * Comments here are specifically for enabling different env configs
+ */
+
 import { appStore } from './appStore.js';
 
 const PROD_HOSTNAMES = ['yenmangu.github.io'];

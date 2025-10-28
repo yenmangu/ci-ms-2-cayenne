@@ -56,8 +56,6 @@ export function createStateStore(initialState = {}) {
 			return;
 		}
 
-		// debugger;
-
 		// emitter.publish(STATE_CHANGE, { ...updates });
 		// return;
 
@@ -235,9 +233,6 @@ export function createStateStore(initialState = {}) {
 	 * @returns {StoreChainApi}
 	 */
 	function subscribe(listener, key = null) {
-		// console.log('Subscribing with: ', key);
-
-		// debugger;
 		const event = key ? `state:${key}` : STATE_CHANGE;
 
 		const emitterChain = emitter.subscribe(

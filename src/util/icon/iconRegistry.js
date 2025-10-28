@@ -35,15 +35,15 @@
  * @property {string|number} [strokeWidth]
  * @property {string} [fill]
  * @property {string} [vectorEffect]
- * @property {string} [role]                 // usually 'img'
- * @property {string} [ariaLabel]            // accessible name
- * @property {boolean} [ariaHidden]          // mark decorative
- * @property {string} [labelledBy]           // idref to <title> or external label
- * @property {string} [describedBy]          // idref to <desc> or external hint
- * @property {string} [title]                // creates/updates <title>
+ * @property {string} [role] - usually 'img'
+ * @property {string} [ariaLabel] - accessible name
+ * @property {boolean} [ariaHidden] - mark decorative
+ * @property {string} [labelledBy] - idref to <title> or external label
+ * @property {string} [describedBy] - idref to <desc> or external hint
+ * @property {string} [title] - creates/updates <title>
  * @property {string} [toggledTitle]
- * @property {string} [desc]                 // creates/updates <desc>
- * @property {number} [tabIndex]             // focus management (defaults: no tab stop)
+ * @property {string} [desc] - creates/updates <desc>
+ * @property {number} [tabIndex] - focus management (defaults: no tab stop)
  * @property {string} [class]
  * @property {string[]} [classList]
  * @property {string} [style]

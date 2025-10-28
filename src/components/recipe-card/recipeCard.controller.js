@@ -42,8 +42,6 @@ export class RecipeCard {
 		this.init();
 	}
 	init() {
-		// console.log('Init in card component');
-
 		this.cardEl = stringToHtml(renderRecipeCard(this.recipe));
 		const cardElementMapping = {
 			title: /** @type {HTMLElement} */ (
@@ -61,7 +59,7 @@ export class RecipeCard {
 			// Subscribe immediately to the state
 			.subscribe(state => {
 				console.log('state: ', state);
-				// debugger;
+
 				let found;
 				if (state && state.likedRecipes) {
 					console.log('SANITY DEBUG in CARD CONTROLLER');

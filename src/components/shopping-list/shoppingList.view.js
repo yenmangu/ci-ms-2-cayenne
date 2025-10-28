@@ -71,7 +71,6 @@ export function renderDropdownItem(item, opts = {}) {
 export function renderShoppingListItem(item) {
 	const { name, id } = item;
 
-	// TODO: implment view logic
 	return `<li class="shopping-list__item d-flex align-items-center justify-content-between py-2 px-3 border-bottom"
 		data-shopping-item-id="${id}">
   <div class="shopping-list__info d-flex flex-column flex-grow-1">

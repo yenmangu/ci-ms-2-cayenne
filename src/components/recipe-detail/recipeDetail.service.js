@@ -73,7 +73,7 @@ export async function fetchRecipeDetail(recipeId) {
 		} else {
 			recipe = await client.getRecipeInformation(recipeId);
 			// summary = recipe.summary
-			// debugger;
+
 			summary = await client.getRecipeSummary(recipeId);
 		}
 

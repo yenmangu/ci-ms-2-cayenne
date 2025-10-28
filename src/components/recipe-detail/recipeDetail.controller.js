@@ -92,7 +92,6 @@ export class RecipeDetail {
 		this.recipeDetailComponent = stringToHtml(
 			renderRecipeDetail(this.fetchedRecipe, this.summary)
 		);
-		// console.log('Component: ', this.recipeDetailComponent);
 		this.componentReady = true;
 	}
 
@@ -110,9 +109,7 @@ export class RecipeDetail {
 	}
 
 	render() {
-		// console.log('Implementing render()');
 		if (this.recipeDetailComponent instanceof HTMLElement) {
-			// console.log('Is Instance of HTMLElement');
 		}
 		if (this.appRoot) {
 			this.appRoot.append(this.recipeDetailComponent);
@@ -120,23 +117,12 @@ export class RecipeDetail {
 		} else {
 			console.warn('No App root');
 		}
-
-		this.toggleContainer = document.getElementById('toggleContainer');
-
-		if (this.toggleContainer) {
-			this.#_renderToggles();
-		} else {
-			console.warn('No toggle container');
-		}
-		// Other UI render methods
 	}
 
 	async fetchRecipe() {
 		await this.service.fetchRecipeById(this.recipeId, {});
 		this.fetchedRecipe = this.service.fetchedRecipe;
 		this.summary = this.service.recipeSummary;
-
-		// console.log('RecipeDetailController: ', this);
 	}
 
 	async publicTest() {
@@ -169,7 +155,6 @@ export class RecipeDetail {
 			ingredientsContainer.innerHTML = '';
 
 			ingredients.forEach(i => {
-				// debugger;
 				const wrapper = document.createElement('div');
 				const card = new IngredientMiniCard(i, {
 					linkedRecipeId: this.recipeId,
@@ -187,7 +172,6 @@ export class RecipeDetail {
 	}
 
 	#_hydrate(state) {
-		// this.#_updateToggleLabels();
 		this.#_handleIngredientUpdate();
 	}
 
@@ -242,17 +226,6 @@ export class RecipeDetail {
 					amount.toString() ?? 'Not available';
 			}
 		});
-	}
-
-	#_renderToggles() {
-		if (this.toggleContainer) {
-			console.log('Found toggleContainer');
-
-			// this.#_renderUnitLocaleToggle();
-			// this.#_renderUnitLengthToggle();
-		} else {
-			console.warn('recipeContainer not found: toggles not rendered');
-		}
 	}
 
 	destroy() {

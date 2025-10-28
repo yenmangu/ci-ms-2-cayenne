@@ -80,8 +80,6 @@ export class IconButton {
 		this.#buttonAttrs = opts.buttonAttrs || {};
 		this.#buttonToggledAttrs = opts.buttonToggledAttrs || {};
 
-		// debugger;
-
 		// Label/ARIA Validation - checking ONLY if one exists
 		const initialLabel =
 			this.#buttonAttrs.label ||
@@ -262,7 +260,6 @@ export class IconButton {
 	setToggled(on) {
 		this.toggled = !!on;
 		this.#opts.toggled = !!on;
-		// this.#setToggledAttrs(on);
 		void this.render();
 	}
 

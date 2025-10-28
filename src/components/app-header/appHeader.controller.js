@@ -27,7 +27,6 @@ export class AppHeader {
 
 		/** @type {HTMLElement} */
 		this.header = stringToHtml(renderAppHeader(ENV.HOME_URL));
-		// this.setOffset();
 
 		/** @type {HTMLElement} */
 		this.navWrapper = null;
@@ -84,7 +83,6 @@ export class AppHeader {
 	 */
 	#_handleRouteChange(path) {
 		if (!this.iconButtons) return;
-		// debugger;
 
 		this.iconButtons.forEach(btn => {
 			console.log(
@@ -250,7 +248,6 @@ export class AppHeader {
 		});
 		this.unitLocaleToggleComponent.render();
 		this.#_updateColours();
-		// this.unitLengthToggleComponent.render();
 	}
 	#_updateColours() {
 		if (this.unitLocaleToggleComponent) {

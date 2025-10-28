@@ -70,7 +70,6 @@ export class LandingPage {
 		if (this.landingPageComponent) {
 			this.container.appendChild(this.landingPageComponent);
 			this.landingAppended = true;
-			// console.log(this.landingAppended);
 			this.#_coordinateLanding();
 		} else {
 			throw new Error('Landing component not initialised');
@@ -88,8 +87,6 @@ export class LandingPage {
 
 	#_renderSearch() {
 		if (this.landingAppended && this.landingSearch) {
-			// console.log('Rendering search');
-
 			this.landingSearch.init();
 		}
 	}

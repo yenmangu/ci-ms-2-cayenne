@@ -6,11 +6,8 @@ import { initNavbar } from './global-ui/navbar.js';
 import { ErrorMessage } from './components/error-message/errorMessage.controller.js';
 import { startRouter } from './router/appRouter.js';
 import { AppHeader } from './components/app-header/appHeader.controller.js';
-
 import { isProd } from './env.js';
-import { startPaddingProbe } from './util/dev/probes.js';
 import { initAppHeader } from './util/responsiveHeader.js';
-import { ensureDev, getDevWindow } from './util/dev/devWindow.js';
 import { initDevBootstrap } from './util/dev/devBoostrap.js';
 import { initStickyFooter } from './util/footerOffsets.js';
 
@@ -18,11 +15,13 @@ import {
 	configureIconBaseDir,
 	preloadIcons
 } from './util/icon/icon-component/icon.service.js';
-// import { initStateStore } from './appStore.js';
+
+// Dev
+import { ensureDev, getDevWindow } from './util/dev/devWindow.js';
+import { startPaddingProbe } from './util/dev/probes.js';
 
 let appHeader = null;
 
-// import { updateMainOffset } from './util/headerOffsets.js';
 /**
  * Single point of logic for collecting 'appRoot' element.
  * Injects appRoot into the rest of the cayenne app.

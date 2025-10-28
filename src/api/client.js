@@ -126,7 +126,6 @@ export class SpoonacularClient {
 			if (!response.ok) {
 				if (response.status === 402) {
 					console.log('Hit paywalll');
-					// TODO: implement some sort of paywall fallback
 				}
 				if (retries > 0) {
 					console.warn(`[RETRYING] ${url} (${retries} retries remaining)`);
