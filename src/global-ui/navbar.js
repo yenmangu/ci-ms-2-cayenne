@@ -1,10 +1,7 @@
 import { createNavbar } from '../templates/header.js';
 import { navConfig } from './navbarConfig.js';
 
-import {
-	getActivePageLink,
-	resolveActiveTitleFromBody
-} from '../navigation.js';
+import { resolveActiveTitleFromBody } from '../navigation.js';
 
 export function initNavbar() {
 	const currentPageLink = resolveActiveTitleFromBody(navConfig.links);
