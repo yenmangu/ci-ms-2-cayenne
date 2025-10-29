@@ -26,7 +26,7 @@ export async function loadRecipes(appRoot, path, params) {
 	const recipes = await client.findByIngredients(array, 10, true);
 
 	// const recipes = getRecipes()
-	const grid = new RecipeGrid(appRoot, recipes);
+	const grid = new RecipeGrid(appRoot, recipes, { search: array });
 	grid.render();
 	return grid;
 }
