@@ -24,3 +24,5 @@ cloudinary_python.txt
 *.ts
 # /src/util/dev
 src/util/svg.js
+images.html
+images.css
