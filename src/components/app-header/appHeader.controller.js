@@ -125,8 +125,6 @@ export class AppHeader {
 			this.header.querySelector('.app-header__nav-wrapper')
 		);
 		if (this.navWrapper instanceof HTMLElement) {
-			console.log('rendering nav');
-
 			this.#_renderNav();
 		}
 		this.toggleContainer = /** @type {HTMLElement} */ (
@@ -172,7 +170,7 @@ export class AppHeader {
 
 		const savedRecipesOpts = iconButtonConfigs.savedRecipes(
 			true,
-			routeMap['/liked-recipes'].path,
+			routeMap['/saved-recipes'].path,
 			'solid'
 		);
 		const savedRecipes = new IconButton(this.iconRegistry, {
