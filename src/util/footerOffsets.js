@@ -2,7 +2,8 @@ const FOOTER_OFFSET_VAR = '--footer-offset-height';
 
 export function initStickyFooter() {
 	const footer = document.getElementById('site-footer');
-	const main = document.getElementById('cayenne-main');
+	const main =
+		document.getElementById('cayenne-main') || document.querySelector('main');
 
 	if (!footer || !main) throw new Error('Footer or main not found');
 
