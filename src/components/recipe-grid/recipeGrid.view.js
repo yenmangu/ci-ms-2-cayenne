@@ -1,12 +1,19 @@
 /**
  * Returns the recipe grid container HTML string.
  *
+ * @param {string} [title='']
+ * @param {string[]} [search=[]]
  * @returns {string}
  */
-export function renderGridContainer(title = '') {
+export function renderGridContainer(title = '', search = []) {
+	const displayTitle =
+		Array.isArray(search) && search.length
+			? `Searching for ingredients: ${search.join(', ')}`
+			: title || 'Cayenne Recipes';
+
 	return `
 		<section class="container py-4">
-			<h1 class="text-center mb-4">${title ? title : 'Cayenne Recipes'}</h1>
+			<h1 class="text-center mb-4">${displayTitle}</h1>
 			<div id="recipeGrid" class="row g-3"></div>
 		</section>
 	`;

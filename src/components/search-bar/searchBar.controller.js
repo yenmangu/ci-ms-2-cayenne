@@ -74,6 +74,7 @@ export class SearchBar {
 		// const string = value.join(',');
 
 		if (!value) return;
+		appStore.setState({ searchQuery: [this.searchBarInput.value] });
 
 		AppRouter.navigate('/recipe-grid', { search: value });
 	}

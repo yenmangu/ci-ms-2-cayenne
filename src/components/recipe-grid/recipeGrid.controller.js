@@ -16,7 +16,9 @@ export class RecipeGrid {
 	/**
 	 * @param {HTMLElement} appRoot
 	 * @param {RecipeCardObject[]} recipes
-	 * @param {Object} opts
+	 * @param {object} [opts={}]
+	 * @param {string[]} [opts.search=[]]
+	 * @param {string} [opts.title]
 	 */
 	constructor(appRoot, recipes, opts = {}) {
 		this.appRoot = appRoot;
@@ -32,6 +34,9 @@ export class RecipeGrid {
 
 		/** @type {string} */
 		this.title = opts?.title;
+
+		/** @type {string[]} */
+		this.search = opts.search ?? [];
 
 		/** @type {RecipeCard[]} */
 		this.cardInstances = [];
@@ -106,7 +111,7 @@ export class RecipeGrid {
 	 * @returns {void}
 	 */
 	render() {
-		this.appRoot.innerHTML = renderGridContainer(this.title);
+		this.appRoot.innerHTML = renderGridContainer(this.title, this.search);
 		this.grid = document.getElementById('recipeGrid');
 		if (!this.grid) {
 			throw new Error(`[Recipe Grid Controller] Recipe grid not found`);
