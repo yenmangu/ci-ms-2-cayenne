@@ -64,6 +64,10 @@ h2 {
 	color: var(--site-heading-colour);
 }
 
+h2.inverse {
+	color: var(--site-heading-secondary-colour);
+}
+
 h5,
 .card-title {
 	color: var(--site-heading-secondary-colour);
