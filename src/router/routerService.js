@@ -23,7 +23,7 @@ export const routerService = {
 	},
 
 	navigateLikedRecipes() {
-		window.location.hash = '#/liked-recipes';
+		window.location.hash = '#/saved-recipes';
 	},
 
 	navigate(path, params) {

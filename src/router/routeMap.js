@@ -41,10 +41,10 @@ export const routeMap = {
 		icon: 'basket-shopping'
 	},
 
-	'/liked-recipes': {
+	'/saved-recipes': {
 		handler: loadLikedRecipes,
-		path: '/liked-recipes',
-		title: 'Liked Recipes',
+		path: '/saved-recipes',
+		title: 'Saved Recipes',
 		domain: true,
 		showInNav: true,
 		useOwnIcon: true,
