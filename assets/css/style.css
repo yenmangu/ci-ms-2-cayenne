@@ -45,6 +45,12 @@ body {
 	flex-direction: column;
 }
 
+body:not([data-page='cayenne']) {
+	overflow: scroll;
+	justify-content: space-between;
+	display: block;
+}
+
 a div {
 	text-decoration: none;
 	color: inherit;
@@ -100,15 +106,28 @@ textarea {
 	border-radius: 0.35em;
 }
 
+/* Non app main */
+
 main:not(#cayenne-main) {
 	display: flex;
 	flex-direction: column;
 	flex: 1 1 auto;
-	min-height: 0;
-	overflow-y: auto;
 	justify-content: space-between;
 	align-items: center;
 	max-width: none;
+}
+
+/* Footer */
+
+.app-footer {
+	position: fixed;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	z-index: 1098;
+	background: var(--colour-surface);
+	/* border-top: 1px solid var(--border-subtle); */
+	padding-bottom: max(1rem, env(safe-area-inset-bottom));
 }
 
 /* Custom header/ app-stack styles */
@@ -184,20 +203,6 @@ main:not(#cayenne-main) {
 	top: 0;
 }
 
-.site-footer {
-	position: fixed;
-	bottom: 0;
-	left: 0;
-	right: 0;
-
-	z-index: 1098;
-
-	background: var(--colour-surface);
-	border-top: 1px solid var(--border-subtle);
-
-	padding-bottom: max(1rem, env(safe-area-inset-bottom));
-}
-
 /* Main Scrollable Content (App) */
 main#cayenne-main {
 	box-sizing: border-box;
@@ -227,6 +232,10 @@ main#cayenne-main[data-ready='true'] {
 .navbar {
 	width: 100%;
 	z-index: 1099;
+}
+
+.navbar-nav .nav-link.active {
+	color: var(--cayenne-colour-red);
 }
 
 /* Bootstrap Override */
@@ -533,6 +542,34 @@ main.recipe-detail {
 	width: 100%;
 }
 
+/* Non app styles */
+
+/* index.html */
+
+body[data-page='index'] a {
+	text-decoration: none;
+}
+
+body[data-page='index'] h2,
+body[data-page='index'] h3,
+body[data-page='index'] h4 {
+	color: var(--colour-surface);
+}
+
+.row.row__top-row {
+	align-items: center;
+}
+
+.row.row__top-row div:last-child img {
+}
+
+img.shakshuka {
+	/* display: block; */
+	width: 80%;
+	/* margin: 0 auto;
+	margin-left: auto;
+	margin-right: auto; */
+}
 /* Media Queries */
 
 @media (max-width: 480px) {

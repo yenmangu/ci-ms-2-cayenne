@@ -37,7 +37,7 @@
 					integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB"
 					crossorigin="anonymous" />
 		<link rel="stylesheet"
-					href="./assets/css/style.css">
+					href="./assets/css/site.css">
 	</head>
 	<body data-page="features">
 		<header id="header"
@@ -47,7 +47,7 @@
 				<p class="lead">Explore how Cayenne helps you cook smarter, faster, and with more flavour.</p>
 			</div>
 		</header>
-		<main class="container py-5">
+		<main class="container py-5 features">
 			<!-- Search by Ingredient -->
 			<section id="search"
 							 class="mb-5">
@@ -57,31 +57,61 @@
 						<p> Cayenne allows you to search recipes based on ingredients you already have at home. Just enter what’s in
 							your fridge or pantry and discover delicious recipes that reduce food waste and inspire creative cooking.
 						</p>
-						<p> Use filters for dietary needs, cuisine types, and preparation time to refine your results and find
-							exactly what you’re craving. </p>
 					</div>
 					<div class="col-md-6">
-						<img src="https://source.unsplash.com/600x400/?ingredients,pantry"
-								 class="img-fluid rounded shadow-sm"
-								 alt="Ingredients search" />
+						<img src="assets/images/site/search-results.png"
+								 class="img-fluid d-block mx-auto rounded shadow-sm app__search-results"
+								 alt="A screenshot of the cayenne app search results page" />
 					</div>
 				</div>
 			</section>
-			<!-- Save Your Favourites -->
+			<!-- Recipe Detail -->
+			<section id="full-recipe"
+							 class="mb-5">
+				<div class="row align-items-center flex-md-row-reverse">
+					<div class="col-md-6">
+						<h2>Recipe Details & Features</h2>
+						<p> The recipe detail page gives you everything you need to cook with confidence. Here you'll find a full
+							breakdown for each dish, including a photo, clear instructions, and ingredients. </p>
+						<ul>
+							<li>
+								<strong>Step-by-step Instructions:</strong> Easy-to-follow cooking steps, with ingredient amounts shown
+								in your preferred units (metric or US). Switch units at any time using the toggle in the app
+								header—amounts and labels update instantly. </li>
+							<li>
+								<strong>Smart Ingredient List:</strong> Each ingredient is shown as a mini card, with an image, amount,
+								and unit. Tap the basket icon to add any item directly to your shopping list</li>
+							<li>
+								<strong>Save Your Favourites:</strong> Like what you see? Tap the heart icon to add the recipe to your
+								personal favourites. Your saved recipes are stored locally and always available. </li>
+							<li>
+								<strong>Mobile-Friendly Design:</strong> All detail pages are designed mobile-first, so you can check
+								recipes in the kitchen or on the go. </li>
+						</ul>
+						<p> Need to come back to a recipe? All your saved favourites can be accessed anytime via the favourites tab
+							in the header. </p>
+					</div>
+					<div class="col-md-6">
+						<img src="assets/images/site/saved-recipes.png"
+								 class="img-fluid d-block mx-auto rounded shadow-sm app__liked-recipes"
+								 alt="A screenshot of the cayenne app saved recipes page" />
+					</div>
+				</div>
+			</section>
 			<section id="favourites"
 							 class="mb-5">
 				<div class="row align-items-center flex-md-row-reverse">
 					<div class="col-md-6">
 						<h2>Save Your Favourites</h2>
 						<p> Found something you love? Tap the heart icon on any recipe to save it to your personal collection.
-							Favourites are stored in your browser and persist between visits — no login required. </p>
+							Favourites are stored in your browser and persist between visits - no login required. </p>
 						<p> Access all your saved dishes from the favourites tab. Perfect for meal planning or revisiting
 							tried-and-true meals. </p>
 					</div>
 					<div class="col-md-6">
-						<img src="https://source.unsplash.com/600x400/?meal,cookbook"
-								 class="img-fluid rounded shadow-sm"
-								 alt="Saved favourites" />
+						<img src="assets/images/site/saved-recipes.png"
+								 class="img-fluid d-block mx-auto rounded shadow-sm app__liked-recipes"
+								 alt="A screenshot of the cayenne app saved recipes page" />
 					</div>
 				</div>
 			</section>
@@ -97,9 +127,9 @@
 							shop prepared. </p>
 					</div>
 					<div class="col-md-6">
-						<img src="https://source.unsplash.com/600x400/?shopping,list"
-								 class="img-fluid rounded shadow-sm"
-								 alt="Shopping list" />
+						<img src="assets/images/site/shopping-list.png"
+								 class="img-fluid d-block mx-auto rounded shadow-sm app__shopping-list"
+								 alt="A screenshot of the cayenne app shopping list page" />
 					</div>
 				</div>
 			</section>

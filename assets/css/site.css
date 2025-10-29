@@ -1,0 +1,96 @@
+@import './theme.css';
+
+/* Site root vars */
+:root {
+	--site-text-colour: #1a1a1a;
+	--site-heading-colour: var(--cayenne-colour-red-dark);
+	--site-heading-secondary-colour: var(--cayenne-colour-green-dark);
+	--site-heading-p: var(--cayenne-colour-green-light);
+	--site-background-main: #f2f2f2;
+	--site-background-secondary: #555555;
+}
+
+/* Remove default styles applied by browser */
+* {
+	padding: 0;
+	margin: 0;
+	box-sizing: border-box;
+	/* background: #000; */
+}
+
+html,
+body {
+	height: 100%;
+	width: 100%;
+	/* iOS 100vh bug fix */
+	block-size: 100dvb;
+	margin: 0;
+	padding: 0;
+}
+
+body {
+	display: flex;
+	flex-direction: column;
+}
+
+main {
+	display: flex;
+	flex-direction: column;
+	flex: 1 1 auto;
+	justify-content: space-between;
+	align-items: center;
+	max-width: none;
+}
+a {
+	text-decoration: none;
+}
+a div {
+	text-decoration: none;
+	color: inherit;
+}
+
+button,
+input,
+select,
+textarea {
+	font: inherit;
+}
+
+p {
+	color: var(--site-text-colour);
+}
+
+h2 {
+	color: var(--site-heading-colour);
+}
+
+h5,
+.card-title {
+	color: var(--site-heading-secondary-colour);
+}
+
+#header {
+	width: 100%;
+}
+
+.navbar {
+	width: 100%;
+	z-index: 1099;
+}
+
+#header p {
+	color: var(--cayenne-colour-green-light);
+}
+
+.navbar-nav .nav-link.active {
+	color: var(--cayenne-colour-red);
+}
+
+/* index.html */
+.index.section__top .row__top-row {
+	align-items: center;
+}
+
+/* features.html */
+section#favourites {
+}
