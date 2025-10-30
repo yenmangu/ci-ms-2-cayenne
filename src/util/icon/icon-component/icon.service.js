@@ -15,13 +15,13 @@ let _baseDir = null;
 export function configureIconBaseDir(relative) {
 	if (_registry) return;
 	// _baseDir = getPublicUrl(dirRel.replace(/\/+$/, ''));
-	_baseDir = relative.replace(/\+$/, '');
+	_baseDir = relative;
 }
 
 export function getIconRegistry() {
 	if (!_registry) {
 		// const dir = _baseDir ?? getPublicUrl('/assets/images/icon');
-		const dir = _baseDir ?? '/assets/images/icon';
+		const dir = _baseDir ?? 'assets/images/icon';
 		_registry = new IconRegistry(dir);
 	}
 	return _registry;
