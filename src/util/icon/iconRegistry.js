@@ -90,8 +90,9 @@ export class IconRegistry {
 	async register(name, options = {}) {
 		if (this.#icons.has(name)) return;
 		const base = this.baseDir.endsWith('/') ? this.baseDir : this.baseDir + '/';
+		const absolute = new URL(base, window.location.href);
 		const file = `${encodeURIComponent(name)}.svg`;
-		const url = new URL(file, base).toString();
+		const url = new URL(file, absolute).toString();
 
 		console.log('URL IN ICON REG: ', url);
 
