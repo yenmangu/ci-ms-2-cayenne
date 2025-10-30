@@ -20,7 +20,8 @@ export function configureIconBaseDir(dirRel) {
 
 export function getIconRegistry() {
 	if (!_registry) {
-		const dir = _baseDir ?? getPublicUrl('/assets/images/icon');
+		// const dir = _baseDir ?? getPublicUrl('/assets/images/icon');
+		const dir = _baseDir ?? '/assets/images/icon';
 		_registry = new IconRegistry(dir);
 	}
 	return _registry;
