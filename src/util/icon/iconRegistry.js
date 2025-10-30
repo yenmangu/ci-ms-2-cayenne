@@ -89,9 +89,9 @@ export class IconRegistry {
 	 */
 	async register(name, options = {}) {
 		if (this.#icons.has(name)) return;
-
-		const url = `${this.baseDir}/${encodeURIComponent(name)}.svg`;
-		console.log('URL FROM ICON REG: ', url);
+		const base = this.baseDir.endsWith('/') ? this.baseDir : this.baseDir + '/';
+		const file = `${encodeURIComponent(name)}.svg`;
+		const url = new URL(file, base).toString();
 
 		const res = await fetch(url, { cache: 'force-cache' });
 		if (!res.ok) {
