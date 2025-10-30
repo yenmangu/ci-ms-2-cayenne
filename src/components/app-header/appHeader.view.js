@@ -3,14 +3,6 @@
  *
  */
 
-import { escapeHtml } from '../../util/escapeHtml.js';
-import {
-	buildIconHtml,
-	buildSpriteUseControls,
-	buildSvgControls,
-	registerIconAsSymbol
-} from '../../util/svg.js';
-
 export function renderAppHeader(homeLink) {
 	return `<!-- App Header Slice -->
 <div class="app-header shadow-sm">
