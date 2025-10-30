@@ -91,6 +91,8 @@ export class IconRegistry {
 		if (this.#icons.has(name)) return;
 
 		const url = `${this.baseDir}/${encodeURIComponent(name)}.svg`;
+		console.log('URL FROM ICON REG: ', url);
+
 		const res = await fetch(url, { cache: 'force-cache' });
 		if (!res.ok) {
 			throw new Error(`IconRegistry: failed to fetch ${url} (${res.status})`);
@@ -131,6 +133,11 @@ export class IconRegistry {
 		const entry = this.#icons.get(name);
 		if (!entry) throw new Error(`Icon "${name}" not registered`);
 		return new Icon(entry, attrs);
+	}
+
+	#buildUrl(name) {
+		const base = this.baseDir.endsWith('/') ? this.baseDir : this.baseDir + '/';
+		return new URL(`${name}.svg`, base).toString();
 	}
 
 	/**

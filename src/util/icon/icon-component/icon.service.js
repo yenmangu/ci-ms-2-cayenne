@@ -1,4 +1,5 @@
 import { IconRegistry } from '../iconRegistry.js';
+import { getPublicUrl } from '../../publicPath.js';
 
 /** @type {IconRegistry|null} */
 let _registry = null;
@@ -8,17 +9,18 @@ let _baseDir = null;
 
 /**
  *
- * @param {string} baseDir
+ * @param {string} dirRel
  * @returns
  */
-export function configureIconBaseDir(baseDir) {
+export function configureIconBaseDir(dirRel) {
 	if (_registry) return;
-	_baseDir = baseDir.replace(/\+$/, '');
+	// _baseDir = getPublicUrl(dirRel.replace(/\/+$/, ''));
+	_baseDir = dirRel.replace(/\$/, '');
 }
 
 export function getIconRegistry() {
 	if (!_registry) {
-		const dir = _baseDir ?? '/assets/images/icon';
+		const dir = _baseDir ?? getPublicUrl('/assets/images/icon');
 		_registry = new IconRegistry(dir);
 	}
 	return _registry;
