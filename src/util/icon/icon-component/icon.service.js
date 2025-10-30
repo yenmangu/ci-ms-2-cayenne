@@ -9,13 +9,13 @@ let _baseDir = null;
 
 /**
  *
- * @param {string} dirRel
+ * @param {string} relative
  * @returns
  */
-export function configureIconBaseDir(dirRel) {
+export function configureIconBaseDir(relative) {
 	if (_registry) return;
 	// _baseDir = getPublicUrl(dirRel.replace(/\/+$/, ''));
-	_baseDir = dirRel.replace(/\$/, '');
+	_baseDir = relative.replace(/\+$/, '');
 }
 
 export function getIconRegistry() {
