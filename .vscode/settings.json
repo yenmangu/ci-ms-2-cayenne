@@ -23,5 +23,6 @@
 	"javascript.preferences.importModuleSpecifierEnding": "js",
 	"postman.settings.dotenv-detection-notification-visibility": false,
 	"editor.hover.sticky": true,
-	"typescript.tsdk": "node_modules/typescript/lib"
+	"typescript.tsdk": "node_modules/typescript/lib",
+	"markdown.preview.doubleClickToSwitchToEditor": true
 }
