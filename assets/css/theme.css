@@ -17,6 +17,7 @@
 	--colour-text: #1a1a1a;
 	--colour-muted-text: #555555;
 	--border-subtle: #e5e7eb;
+	--border-subtle-static: #e5e7eb;
 	--colour-app-header: var(--colour-surface);
 
 	--skeleton-base: var(--border-subtle);
@@ -34,6 +35,8 @@
 
 	--bs-link-color: var(--colour-accent);
 	--bs-link-hover-color: var(--colour-accent-hover);
+
+	--bs-secondary-color: var(var(--border-subtle)) !important;
 
 	/* Subtle backgrounds & borders */
 	--bs-primary-bg-subtle: color-mix(in oklab, var(--colour-accent) 15%, white);

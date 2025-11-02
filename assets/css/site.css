@@ -8,6 +8,8 @@
 	--site-heading-p: var(--cayenne-colour-green-light);
 	--site-background-main: #f2f2f2;
 	--site-background-secondary: #555555;
+	--site-section-bg-even: var(--cayenne-colour-red-light);
+	--site-section-bg-odd: var(--cayenne-colour-green-light);
 }
 
 /* Remove default styles applied by browser */
@@ -56,6 +58,41 @@ textarea {
 	font: inherit;
 }
 
+footer p {
+	color: var(--site-background-main);
+}
+
+footer small {
+	color: var(--border-subtle-static);
+}
+
+/*
+ * Using Bootstraps own gutter variable to show responsive gutter widths;
+ * Bumping specificity to ensure Bootstrap's on margin-inline rule does not 'win'
+ */
+section > .row {
+	margin-left: 0;
+	margin-right: 0;
+	padding-left: calc(var(--bs-gutter-x) * 0.5);
+	padding-right: calc(var(--bs-gutter-x) * 0.5);
+	margin-inline: 0;
+}
+
+section.index .row:nth-of-type(even) {
+	background-color: var(--site-section-bg-even);
+}
+
+section.index .row:nth-of-type(odd) {
+	background-color: var(--site-section-bg-odd);
+}
+
+main.features section:nth-of-type(odd) {
+	background-color: var(--site-section-bg-even);
+}
+main.features section:nth-of-type(even) {
+	background-color: var(--site-section-bg-odd);
+}
+
 p {
 	color: var(--site-text-colour);
 }
@@ -71,6 +108,10 @@ h2.inverse {
 h5,
 .card-title {
 	color: var(--site-heading-secondary-colour);
+}
+
+.card.ingredient h5.card-title {
+	color: var(--site-heading-colour);
 }
 
 #header {
@@ -91,10 +132,42 @@ h5,
 }
 
 /* index.html */
+
 .index.section__top .row__top-row {
 	align-items: center;
 }
 
-/* features.html */
-section#favourites {
+section.index .card-body {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
 }
+
+.card {
+	border: none;
+}
+
+section.index .card.ingredient {
+	background-color: var(--site-section-bg-odd);
+}
+
+section.index .card.favourites {
+	background-color: var(--site-section-bg-even);
+}
+/* features.html */
+section#features {
+	background-color: var(--cayenne-colour-red-light);
+}
+
+/* @media only screen and( min-width: 768px) {
+	section.section {
+		max-width: 720px;
+	}
+}
+
+@media only screen and (min-width: 576px) {
+	section.section {
+		max-width: 540px;
+	}
+} */
