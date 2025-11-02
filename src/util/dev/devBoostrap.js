@@ -25,6 +25,7 @@ function getDev() {
  */
 export function initDevBootstrap(options = {}) {
 	if (!getDev()) return;
+	// console.log('dev');
 
 	if (options.forceView) {
 		const params = getUnifiedParams();

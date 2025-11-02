@@ -58,14 +58,9 @@ export class RecipeCard {
 		this.subscription = appStore
 			// Subscribe immediately to the state
 			.subscribe(state => {
-				console.log('state: ', state);
-
 				let found;
 				if (state && state.likedRecipes) {
-					console.log('SANITY DEBUG in CARD CONTROLLER');
-
 					found = state.likedRecipes.some(r => r.id === this.recipe.id);
-					console.log('Found: ', found);
 				}
 
 				this.icon = this.cardElementMapping.likeBtn?.querySelector('i');
