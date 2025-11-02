@@ -3,9 +3,8 @@
  * @typedef {import('../types/recipeTypes.js').RecipeCard} RecipeCard
  */
 
-import { multipleRecipes } from '../data/multipleRecipes.js';
 import { RecipeGrid } from '../components/recipe-grid/recipeGrid.controller.js';
-import { SpoonacularClient } from '../api/client.js';
+import { getClient } from '../api/client.singleton.js';
 
 export async function recipes(appRoot, path, params) {
 	const grid = await loadRecipes(appRoot, path, params);
@@ -19,7 +18,7 @@ export async function recipes(appRoot, path, params) {
  */
 export async function loadRecipes(appRoot, path, params) {
 	console.log('loadRecipes params: ', params);
-	const client = new SpoonacularClient();
+	const client = getClient();
 	const array = params.search.split(',');
 	console.log('Array: ', array);
 
@@ -30,10 +29,3 @@ export async function loadRecipes(appRoot, path, params) {
 	grid.render();
 	return grid;
 }
-
-// /**
-//  * @returns {RecipeCard[]}
-//  */
-// function getRecipes() {
-
-// }

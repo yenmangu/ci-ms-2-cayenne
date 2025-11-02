@@ -2,7 +2,7 @@
  * @typedef {import("../../types/recipeTypes.js").RecipeCard} RecipeCard
  */
 
-import { SpoonacularClient } from '../../api/client.js';
+import { getClient } from '../../api/client.singleton.js';
 
 /**
  * @typedef {object} GridService
@@ -19,7 +19,7 @@ import { SpoonacularClient } from '../../api/client.js';
  */
 
 export const createGridService = (opts = {}) => {
-	const client = new SpoonacularClient();
+	const client = getClient();
 	const service = {
 		opts: {},
 		filters: {},

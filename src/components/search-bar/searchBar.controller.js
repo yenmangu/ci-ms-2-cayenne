@@ -8,7 +8,6 @@ import { appStore } from '../../appStore.js';
 import { AppRouter } from '../../router/appRouter.js';
 import { stringToHtml } from '../../util/htmlToElement.js';
 import { renderNoResults } from './noResults.view.js';
-import * as service from './searchBar.service.js';
 import { renderSearchBar } from './searchBar.view.js';
 
 export class SearchBar {
@@ -18,9 +17,6 @@ export class SearchBar {
 	constructor(container) {
 		/** @type {HTMLElement} */
 		this.container = container;
-
-		/** @type {Service} */
-		this.service = service.createSearchService();
 
 		/** @type {string} */
 		this.htmlString = renderSearchBar();

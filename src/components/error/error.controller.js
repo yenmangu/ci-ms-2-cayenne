@@ -9,7 +9,7 @@ import * as service from './error.service.js';
 import { renderError } from './error.view.js';
 import { resolveError } from './error.model.js';
 import { reportError } from '../../error/errorReporter.js';
-import { SpoonacularClient } from '../../api/client.js';
+import { getClient } from '../../api/client.singleton.js';
 
 /**
  * ErrorController class renders latest error for a given scope.
@@ -81,8 +81,7 @@ export class ErrorController {
 				}
 				if (meta.endpoint) {
 					return async () => {
-						const client = new SpoonacularClient();
-						client.refetch(meta.endpoint, meta.params);
+						await getClient().refetch(meta.endpoint, meta.params);
 					};
 				}
 				return null;

@@ -16,13 +16,16 @@
  *
  */
 
+import { getClient } from '../../api/client.singleton.js';
+import { testRecipe, testRecipeSummary } from '../../data/testRecipe.js';
+
 /**
  *
  * @param {*} opts
  * @returns {DetailService}
  */
 export const createDetailService = opts => {
-	const client = new SpoonacularClient();
+	const client = getClient();
 	/** @type {DetailService} */
 	const service = {
 		opts: {},
@@ -49,11 +52,6 @@ export const createDetailService = opts => {
 	return service;
 };
 
-// Service logic for recipeDetail goes here.
-
-import { SpoonacularClient } from '../../api/client.js';
-import { testRecipe, testRecipeSummary } from '../../data/testRecipe.js';
-
 /**
  *
  * @param {number} recipeId
@@ -61,7 +59,7 @@ import { testRecipe, testRecipeSummary } from '../../data/testRecipe.js';
  * @returns {Promise<{recipe:RecipeFull, summary:Summary}>}
  */
 export async function fetchRecipeDetail(recipeId) {
-	const client = new SpoonacularClient();
+	const client = getClient();
 	try {
 		/** @type {RecipeFull} */ let recipe;
 		/** @type {Summary} */ let summary;

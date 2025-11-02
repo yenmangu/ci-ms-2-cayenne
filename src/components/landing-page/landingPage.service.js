@@ -1,6 +1,7 @@
 /**
  * @typedef {import('../../types/recipeTypes.js').RecipeFull} RecipeFull
  * @typedef {import('../../types/recipeTypes.js').RecipeCard} RecipeCardObject
+ * @typedef {import('../../api/client.js').SpoonacularClient} SpoonacularClient
  */
 
 /**
@@ -13,7 +14,7 @@
  * @property {function(RecipeFull): RecipeCardObject} extractCard
  *
  */
-import { SpoonacularClient } from '../../api/client.js';
+import { getClient } from '../../api/client.singleton.js';
 import { appStore } from '../../appStore.js';
 
 /**
@@ -22,7 +23,7 @@ import { appStore } from '../../appStore.js';
  */
 
 export const createLandingService = opts => {
-	const client = new SpoonacularClient();
+	const client = getClient();
 
 	/** @type {LandingService} */
 	const service = {
