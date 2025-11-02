@@ -1,18 +1,18 @@
 {
 	"compilerOptions": {
-		"target": "ES2020",
-		"module": "nodenext",
-		"moduleResolution": "nodenext",
+		"target": "ES2022",
+		"module": "esnext",
+		"moduleResolution": "node",
 		"resolveJsonModule": true,
 
 		"checkJs": true,
 		"strict": false,
 
 		"baseUrl": "./src",
-		"lib": ["ES2020", "DOM", "DOM.Iterable"],
+		"lib": ["ES2022", "DOM", "DOM.Iterable"],
 
 		"allowSyntheticDefaultImports": true,
-		"types": ["node"]
+		"types": ["node", "@types/jest", "jest"]
 	},
 	"include": [
 		"src/**/*",

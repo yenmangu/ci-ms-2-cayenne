@@ -26,3 +26,4 @@ cloudinary_python.txt
 src/util/svg.js
 images.html
 images.css
+publicPath.js
