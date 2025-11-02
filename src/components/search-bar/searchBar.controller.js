@@ -1,5 +1,4 @@
 /**
- * @typedef {import('./searchBar.service.js').SearchService} Service
  * @typedef {import('../../types/responseTypes.js').SearchResponse} SearchResponse
  * @typedef {import('../../types/recipeTypes.js').RecipeCard} RecipeCard
  */
