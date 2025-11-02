@@ -6,10 +6,45 @@ export {};
  * @typedef {import("./recipeTypes.js").Measures} Measures
  * @typedef {import('./ingredientTypes.js').IngredientResultCard} ShoppingListItem
  * @typedef {import("./routerTypes.js").RouteEntry} RouteEntry
- * @typedef {import(
- * 		"../components/error-message/errorMessage.controller.js"
- * 	).ErrorMessageConfig} ErrorConfig
+ * @typedef {import("./errorTypes.js").ErrorType} ErrorType
  *
+ */
+
+/**
+ * @typedef {'global'|`route:${string}`| `section:${string}`} ErrorScope
+ * @typedef {import("./errorTypes.js").ErrorCommand} ErrorCommand
+ */
+
+/**
+ * @typedef {object} ErrorMeta
+ * @property {ErrorCommand} [cmd]
+ * @property {string} [endpoint]
+ * @property {string} [url]
+ * @property {Record<string, any>} [params]
+ * @property {RequestInit} [opts]
+ */
+
+/**
+ * Serialisable error store in the state (no function)
+ * @typedef {object} ErrorEntry
+ * @property {string} id
+ * @property {ErrorType} type
+ * @property {string} code
+ * @property {string} userMessage
+ * @property {number} [status]
+ * @property {string} [message]
+ * @property {ErrorScope} scope
+ * @property {'error'|'warning'|'info'} [severity]
+ * @property {boolean} [sticky]
+ * @property {number} ts
+ * @property {ErrorMeta} [meta]
+ */
+
+/**
+ * Error slice state (dedupe is runtime only, not persisted)
+ * @typedef {object} ErrorState
+ * @property {ErrorEntry[]} items
+ * @property {Set<string>} dedupe
  */
 
 /**
@@ -50,8 +85,8 @@ export {};
  * @property {RecipeCard[]} [likedRecipes] - List of user-favourited recipes
  * @property {boolean} [loading] - Loading flag
  * @property {RouteEntry} [route]
- * @property {ErrorConfig|null} [error] - Current error, if any
  * @property {ShoppingListItem[]} [shoppingList]
+ * @property {ErrorEntry[]} [errors]
  *
  */
 /**
@@ -67,8 +102,8 @@ export {};
  * @property {object} [activeFilters] - Structured object for filters (diets, cook time etc)
  * @property {boolean} [loading] - Loading flag *
  * @property {RouteEntry} [route]
- * @property {ErrorConfig|null} [error] - Current error, if any
  * @property {ShoppingListItem[]} [shoppingList]
+ * @property {ErrorEntry[]} [errors]
  *
  */
 
@@ -92,6 +127,22 @@ export {};
  * 	'likedRecipes' |
  * 	'shoppingList' |
  *  'route'|
- *  'error'
+ *  'errors'
  * } StateKey
  */
+
+/**
+ * @typedef {ReturnType<import('../event/store.js').createStateStore>} AppStore
+ */
+
+/**
+ * @typedef {{
+ *   setState: (updates: PartialAppState, opts?: {global?: boolean}) => void,
+ *   getState: () => PartialAppState,
+ *   subscribe: AppStore['subscribe'],
+ *   dispatch: AppStore['dispatch'],
+ *   resetState: AppStore['resetState']
+ * }} ThunkContext
+ */
+
+/** @typedef {(ctx: ThunkContext) => any} StoreAction */
