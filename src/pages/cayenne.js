@@ -1,10 +1,5 @@
-/**
- * @typedef {import('../components/error-message/errorMessage.controller.js').ErrorMessageConfig} ErrorConfig
- */
-
 import { multipleRecipes } from '../data/multipleRecipes.js';
 import { RecipeGrid } from '../components/recipe-grid/recipeGrid.controller.js';
-import { ErrorMessage } from '../components/error-message/errorMessage.controller.js';
 import { RecipeDetail } from '../components/recipe-detail/recipeDetail.controller.js';
 import { LandingPage } from '../components/landing-page/landingPage.controller.js';
 
@@ -59,18 +54,6 @@ export async function initCayenneApp(appRoot, pathName, params) {
 
 	try {
 	} catch (error) {
-		showErrorMessage(appRoot, error);
+		throw error;
 	}
-}
-
-/**
- *
- * @param {HTMLElement} appRoot
- * @param {any} err // 'any' for now
- */
-function showErrorMessage(appRoot, err) {
-	const config = /** @type {ErrorConfig} */ ({});
-	config.container = appRoot;
-	const error = new ErrorMessage(config);
-	error.render();
 }

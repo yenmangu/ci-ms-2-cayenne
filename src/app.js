@@ -1,9 +1,4 @@
-/**
- * @typedef {import('./components/error-message/errorMessage.controller.js').ErrorMessageConfig} ErrorConfig
- */
-
 import { initNavbar } from './global-ui/navbar.js';
-import { ErrorMessage } from './components/error-message/errorMessage.controller.js';
 import { startRouter } from './router/appRouter.js';
 import { AppHeader } from './components/app-header/appHeader.controller.js';
 import { isProd } from './env.js';
