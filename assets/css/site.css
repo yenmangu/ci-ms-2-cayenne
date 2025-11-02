@@ -70,6 +70,11 @@ section {
 	max-width: 100%;
 }
 
+nav .container-fluid {
+	padding-right: calc(var(--bs-gutter-x) * 0.5);
+	padding-left: calc(var(--bs-gutter-x) * 0.5);
+}
+
 /*
  * Using Bootstraps own gutter variable to show responsive gutter widths;
  * Bumping specificity to ensure Bootstrap's on margin-inline rule does not 'win'
@@ -140,6 +145,7 @@ h5,
 
 .index.section__top .row__top-row {
 	align-items: center;
+	text-align: center;
 }
 
 section.index .card-body {
@@ -147,6 +153,10 @@ section.index .card-body {
 	flex-direction: column;
 	justify-content: center;
 	align-items: center;
+}
+
+section.index .card-body p {
+	text-align: center;
 }
 
 .card {
@@ -165,29 +175,30 @@ section#features {
 	background-color: var(--cayenne-colour-red-light);
 }
 
+/* Media queries keep emulate bootstraps own layout and responsiveness */
 @media only screen and (min-width: 576px) {
-	nav,
+	nav > div.container-fluid,
 	section .row {
 		padding-inline: calc((100vw - 540px) / 2);
 	}
 }
 
 @media only screen and (min-width: 768px) {
-	nav,
+	nav > div.container-fluid,
 	section .row {
 		padding-inline: calc((100vw - 720px) / 2);
 	}
 }
 
 @media only screen and (min-width: 1200px) {
-	nav,
+	nav > div.container-fluid,
 	section .row {
 		padding-inline: calc((100vw - 1140px) / 2);
 	}
 }
 
 @media only screen and (min-width: 1440px) {
-	nav,
+	nav > div.container-fluid,
 	section .row {
 		padding-inline: calc((100vw - 1320px) / 2);
 	}
