@@ -1,11 +1,14 @@
 /**
  * @typedef {import('../config/endpoints.js').EndpointKey} EndpointKey
  * @typedef {import('../types/recipeTypes.js').RecipeFull} RecipeFull
+ *
+ * @typedef {import('../types/stateTypes.js').ErrorMeta} ErrorMeta
  */
 
 // import { ENV } from '../config/env.js';
 import { ENV } from '../env.js';
 import { SPOONACULAR_ENDPOINTS, buildEndpoint } from '../config/endpoints.js';
+import { safeText } from '../util/safeText.js';
 
 /**
  * @class SpoonacularClient
@@ -19,6 +22,38 @@ export class SpoonacularClient {
 			);
 		}
 		this.apiUrl = ENV.API_URL;
+	}
+
+	/**
+	 *
+	 * @param {EndpointKey | string} endpointKeyOrPath
+	 * @param {Record<string, any>} [params={}]
+	 * @param {object} [opts={}]
+	 */
+	async refetch(endpointKeyOrPath, params = {}, opts = {}) {
+		const endpoint =
+			endpointKeyOrPath in SPOONACULAR_ENDPOINTS
+				? this._buildEndpointWithParameters(
+						/** @type {EndpointKey} */ (endpointKeyOrPath),
+						params
+				  )
+				: /** @type {string} */ (endpointKeyOrPath);
+		return this._fetch(endpoint, params, 0, opts);
+	}
+
+	/**
+	 *
+	 * @param {ErrorMeta} meta
+	 * @returns {Promise<any>}
+	 */
+	async refetchFromMeta(meta) {
+		if (meta?.url) {
+			return this._fetchAbsolute(meta.url, meta.opts);
+		}
+		if (meta?.endpoint) {
+			return this.refetch(meta.endpoint, meta.params, meta.opts);
+		}
+		throw new Error('[REFETCH] Missing url/endpoint in meta');
 	}
 
 	/**
@@ -114,11 +149,12 @@ export class SpoonacularClient {
 	/**
 	 *
 	 * @param {string} endpoint - Spoonacular path, e.g. "/recipes/complexSearch"
-	 * @param {Object} params - Query Params as key-value pairs
+	 * @param {Record<string, any>} params - Query Params as key-value pairs
 	 * @param {number} [retries=0]
+	 * @param {RequestInit} [opts]
 	 * @returns {Promise<any>}
 	 */
-	async _fetch(endpoint, params = {}, retries = 0) {
+	async _fetch(endpoint, params = {}, retries = 0, opts = {}) {
 		const url = this._buildUrl(endpoint, params);
 
 		try {
@@ -130,7 +166,7 @@ export class SpoonacularClient {
 				if (retries > 0) {
 					console.warn(`[RETRYING] ${url} (${retries} retries remaining)`);
 					await this._delay();
-					return await this._fetch(endpoint, retries - 1, params);
+					return await this._fetch(endpoint, params, retries - 1);
 				}
 				const message = `[API ERROR] ${response.status} ${response.statusText}`;
 				throw new Error(message);
@@ -141,6 +177,31 @@ export class SpoonacularClient {
 			console.error(`[FETCH FAIL] ${url}`, error);
 
 			throw error;
+		}
+	}
+
+	/**
+	 * Absolute URL variant (used when meta.url already includes full path+query).
+	 * @param {string} url
+	 * @param {RequestInit} [opts]
+	 */
+	async _fetchAbsolute(url, opts) {
+		try {
+			const res = await fetch(url, opts);
+			if (!res.ok) {
+				const detail = await safeText(res);
+				const err = new Error(
+					`[API ERROR] ${res.status} ${res.statusText}${
+						detail ? ` — ${detail}` : ''
+					}`
+				);
+				/** @type {any} */ (err).status = res.status;
+				throw err;
+			}
+			return await res.json();
+		} catch (e) {
+			console.error('[FETCH ABS FAIL]', url, e);
+			throw e;
 		}
 	}
 

@@ -12,6 +12,10 @@
  */
 
 /**
+ * @typedef {import('../types/errorTypes.js').NormalisedError} NormalisedError
+ */
+
+/**
  * @callback StoreListener
  * @param {PartialAppState} state
  * @param {...*} [args]
@@ -34,6 +38,7 @@ import CayenneEventEmitter from './eventEmitter.js';
 
 const STATE_CHANGE = 'state:change';
 const CAYENNE_STATE = 'cayenneUserState';
+
 export function createStateStore(initialState = {}) {
 	console.log('Creating state store:');
 
@@ -115,8 +120,8 @@ export function createStateStore(initialState = {}) {
 						[key]: state.loading
 					});
 					break;
-				case 'error':
-					emitter.publish('state:error', { [key]: state.error });
+				case 'errors':
+					emitter.publish('state:errors', { [key]: state.errors });
 					break;
 				default:
 					emitter.publish('state:change', { ...state });
