@@ -66,6 +66,10 @@ footer small {
 	color: var(--border-subtle-static);
 }
 
+section {
+	max-width: 100%;
+}
+
 /*
  * Using Bootstraps own gutter variable to show responsive gutter widths;
  * Bumping specificity to ensure Bootstrap's on margin-inline rule does not 'win'
@@ -75,6 +79,7 @@ section > .row {
 	margin-right: 0;
 	padding-left: calc(var(--bs-gutter-x) * 0.5);
 	padding-right: calc(var(--bs-gutter-x) * 0.5);
+	padding-inline: calc(var(--bs-gutter-x) * 0.5);
 	margin-inline: 0;
 }
 
@@ -160,14 +165,30 @@ section#features {
 	background-color: var(--cayenne-colour-red-light);
 }
 
-/* @media only screen and( min-width: 768px) {
-	section.section {
-		max-width: 720px;
+@media only screen and (min-width: 576px) {
+	nav,
+	section .row {
+		padding-inline: calc((100vw - 540px) / 2);
 	}
 }
 
-@media only screen and (min-width: 576px) {
-	section.section {
-		max-width: 540px;
+@media only screen and (min-width: 768px) {
+	nav,
+	section .row {
+		padding-inline: calc((100vw - 720px) / 2);
 	}
-} */
+}
+
+@media only screen and (min-width: 1200px) {
+	nav,
+	section .row {
+		padding-inline: calc((100vw - 1140px) / 2);
+	}
+}
+
+@media only screen and (min-width: 1440px) {
+	nav,
+	section .row {
+		padding-inline: calc((100vw - 1320px) / 2);
+	}
+}
