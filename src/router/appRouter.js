@@ -4,7 +4,7 @@
 
 import { appStore } from '../appStore.js';
 import { parseHashRoute } from './parseHashRoute.js';
-import { routeMap } from './routeMap.js';
+import { NOT_FOUND, routeMap } from './routeMap.js';
 import { routerService } from './routerService.js';
 
 export function startRouter(appRoot) {
@@ -47,7 +47,7 @@ export const AppRouter = {
 
 		const isDev = params['dev'] === 'true' || params['dev'] === '1';
 
-		const entry = routeMap[path] || routeMap['/404'];
+		const entry = routeMap[path] || routeMap[NOT_FOUND];
 		routerService.setActiveRouteKey(path); // NOW HERE
 
 		// Handle automatic teardown to avoid memory leak

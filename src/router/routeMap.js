@@ -2,11 +2,14 @@
  * @typedef {import("../types/routerTypes.js").RouteMap} RouteMap
  */
 
+import { loadNotFoundPage } from '../pages/404.js';
 import { loadHome } from '../pages/cayenne.js';
 import { loadLikedRecipes } from '../pages/likedRecipes.js';
 import { loadRecipeDetail } from '../pages/recipe.js';
 import { loadRecipes, recipes } from '../pages/recipes.js';
 import { loadShoppingList } from '../pages/shoppingList.js';
+
+export const NOT_FOUND = '/not-found';
 
 /** @type {RouteMap} */
 export const routeMap = {
@@ -51,11 +54,9 @@ export const routeMap = {
 		icon: 'wishlist.svg'
 	},
 
-	'/404': {
-		handler: (appRoot, pathName, params) => {
-			console.log('Route handler triggered with: ', pathName);
-		},
-		path: '/404',
+	NOT_FOUND: {
+		handler: loadNotFoundPage,
+		path: '/not-found',
 		title: 'Not Found',
 		domain: true
 	}
