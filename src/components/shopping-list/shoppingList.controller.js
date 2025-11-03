@@ -8,7 +8,6 @@ import { appStore } from '../../appStore.js';
 import { banana, bananas } from '../../data/banana.js';
 import { stringToHtml } from '../../util/htmlToElement.js';
 import { IngredientMiniCard } from '../ingredient-mini-card/ingredientMiniCard.controller.js';
-import * as service from './shoppingList.service.js';
 import {
 	renderInput,
 	renderShoppingList,
