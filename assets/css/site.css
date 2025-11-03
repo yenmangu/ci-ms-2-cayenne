@@ -70,6 +70,23 @@ section {
 	max-width: 100%;
 }
 
+/* 404 */
+body[data-page='not-found'] main.not-found {
+	justify-content: center;
+}
+
+body[data-page='not-found'] .row {
+	text-align: center;
+	flex-direction: column;
+	align-items: center;
+}
+body[data-page='not-found'] h2 {
+	font-size: 4rem;
+}
+body[data-page='not-found'] h4 {
+	font-size: 2rem;
+}
+
 nav .container-fluid {
 	padding-right: calc(var(--bs-gutter-x) * 0.5);
 	padding-left: calc(var(--bs-gutter-x) * 0.5);
@@ -107,11 +124,13 @@ p {
 	color: var(--site-text-colour);
 }
 
-h2 {
+h2,
+h4.inverse {
 	color: var(--site-heading-colour);
 }
 
-h2.inverse {
+h2.inverse,
+h4 {
 	color: var(--site-heading-secondary-colour);
 }
 
