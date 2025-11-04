@@ -34,6 +34,21 @@
  */
 
 /**
+ * Minimal shape of every component instance.
+ * @typedef {{render(): void, destroy(): void}} ComponentLike
+ */
+
+/**
+ * Generic constructor type returning T.
+ * @template T
+ * @typedef {new (appRoot: HTMLElement, pathName?: string, params?: object) => T} Ctor
+ */
+
+/**
+ * @template T extents ComponentLike
+ */
+
+/**
  * @typedef {object} RecipeGridParams
  * @property {RecipeCard[]} recipes
  */

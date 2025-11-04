@@ -7,6 +7,13 @@
  */
 
 /**
+ * Callback to validate params in
+ * @callback ValidateParams
+ * @param {Record<string, any>} [params]
+ * @returns {boolean}
+ */
+
+/**
  * Represents a route entry in the route map
  * @typedef {object} RouteEntry
  * @property {RouteHandler} handler - Function called when route is matched
@@ -17,6 +24,7 @@
  * @property {boolean} [showInNav]
  * @property  {boolean} [useOwnIcon] - Flag to specify if own icon is to be used
  * @property {string} [icon] - Either a font-awesome icon name or SVG file
+ * @property {ValidateParams} [validate]
  */
 
 /**
@@ -25,8 +33,11 @@
  */
 
 /**
- * @typedef {object} ComponentInstance
- * @property {function(): void } destroy
+ * @typedef {{
+ * id?: string,
+ * search?: string[],
+ * [key: string]: any
+ * }} NormalisedParams
  */
 
 export {};

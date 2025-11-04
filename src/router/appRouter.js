@@ -74,8 +74,6 @@ export const AppRouter = {
 
 		const { entry, resolvedPath, params } = resolveRoute(path, raw);
 
-		console.log(entry, '\n', resolvedPath, '\n', params);
-
 		routerService.setActiveRouteKey(path);
 
 		const last = this.currentInstances[this.lastActivePath];
