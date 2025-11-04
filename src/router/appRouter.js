@@ -18,14 +18,8 @@ import { routerService } from './routerService.js';
  */
 function resolveRoute(path, rawParams = {}) {
 	const params = normaliseParams(rawParams);
-	console.log('[normalisedParams]: ', params);
-
 	const fallback = routeMap[NOT_FOUND];
-	if (fallback) {
-		console.log('fallback entry: ', NOT_FOUND);
-	} else {
-		console.log('fallback not found');
-	}
+
 	const entry = routeMap[path] || fallback;
 	const direct = routeMap[path];
 
@@ -80,8 +74,6 @@ export const AppRouter = {
 		const isDev = raw['dev'] === 'true' || raw['dev'] === '1';
 
 		const { entry, resolvedPath, params } = resolveRoute(path, raw);
-		console.log(resolveRoute(path, raw));
-
 		routerService.setActiveRouteKey(path);
 
 		const last = this.currentInstances[this.lastActivePath];
