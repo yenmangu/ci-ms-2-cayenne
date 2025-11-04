@@ -15,8 +15,6 @@ export async function loadRecipeDetail(container, pathName, params = {}) {
 	container.innerHTML = '';
 
 	const { id } = params;
-	console.log('ID from recipe domain: ', id);
-
 	const recipeId = typeof id === 'string' ? parseInt(id) : id;
 
 	/**
@@ -29,8 +27,6 @@ export async function loadRecipeDetail(container, pathName, params = {}) {
 		await recipeDetail.init();
 
 		if (recipeDetail.componentReady) {
-			console.log('Component ready');
-
 			recipeDetail.render();
 		}
 		return recipeDetail || null;

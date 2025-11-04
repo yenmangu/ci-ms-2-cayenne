@@ -1,22 +1,49 @@
 /**
- * @typedef {import('../types/routerTypes.js').ComponentInstance} Component
+ * @typedef {import('../types/componentTypes.js').ComponentLike} ComponentLike
+ * @typedef {import('../types/componentTypes.js').Ctor<ComponentLike>} ComponentCtor
+ * - aliased from Ctor
+ * @typedef {import('../types/routerTypes.js').RouteHandler} RouteHandler
  */
 
 import { appStore } from '../appStore.js';
+import { normaliseParams } from './paramValidator.js';
 import { parseHashRoute } from './parseHashRoute.js';
 import { NOT_FOUND, routeMap } from './routeMap.js';
 import { routerService } from './routerService.js';
 
-export function startRouter(appRoot) {
-	console.log('Init appRouter');
+/**
+ *
+ * @param {string} path
+ * @param {Record<string, any>} [rawParams]
+ */
+function resolveRoute(path, rawParams = {}) {
+	const params = normaliseParams(rawParams);
+	const fallback = routeMap[NOT_FOUND];
+	const entry = routeMap[path] || fallback;
+	const direct = routeMap[path];
 
-	AppRouter.init(appRoot);
+	// Does validate exist and is type 'function'
+	if (entry && typeof entry.validate === 'function') {
+		const ok = entry.validate(params);
+		if (!ok)
+			return {
+				entry: fallback,
+				resolvedPath: NOT_FOUND,
+				params
+			};
+	}
+	const resolvedPath = direct ? path : NOT_FOUND;
+	return {
+		entry,
+		resolvedPath,
+		params
+	};
 }
+
+export const startRouter = appRoot => AppRouter.init(appRoot);
 
 export const AppRouter = {
 	init(appRoot) {
-		console.log('inside init(appRouter)');
-
 		// Handle first render
 		this.handleRouteChange(appRoot);
 
@@ -29,7 +56,7 @@ export const AppRouter = {
 	// Track last active route and current instances
 	/** @type {string} */
 	lastActivePath: '',
-	/** @type {Record<string,Component>} */
+	/** @type {Record<string, ComponentLike | null>} */
 	currentInstances: {},
 
 	/**
@@ -37,37 +64,32 @@ export const AppRouter = {
 	 * @param {HTMLElement} appRoot
 	 */
 	handleRouteChange(appRoot) {
-		console.log('Handling route change');
-
 		const hash = window.location.hash;
 		/** @type {{path: string, params: Record<string,string> | {}}} */
-		const { path, params } = parseHashRoute(hash);
-		console.log('Params: ', params);
-		console.log('path: ', path);
+		const { path, params: raw } = parseHashRoute(hash);
 
-		const isDev = params['dev'] === 'true' || params['dev'] === '1';
+		const isDev = raw['dev'] === 'true' || raw['dev'] === '1';
 
-		const entry = routeMap[path] || routeMap[NOT_FOUND];
-		routerService.setActiveRouteKey(path); // NOW HERE
+		const { entry, resolvedPath, params } = resolveRoute(path, raw);
 
-		// Handle automatic teardown to avoid memory leak
-		let lastPath = AppRouter.lastActivePath;
-		const lastInstance = AppRouter.currentInstances[lastPath];
-		if (lastInstance && typeof lastInstance.destroy === 'function') {
-			console.log('Destroying instance: ', lastInstance);
-			lastInstance.destroy();
+		routerService.setActiveRouteKey(path);
 
-			delete AppRouter.currentInstances[lastPath];
-		}
+		const last = this.currentInstances[this.lastActivePath];
+		if (last?.destroy) last.destroy();
+
+		delete this.currentInstances[this.lastActivePath];
 
 		appStore.setState({ route: entry });
 
-		const component = entry.handler(appRoot, path, { ...params, dev: isDev });
+		const maybeInstance = entry.handler(appRoot, resolvedPath, {
+			...params,
+			dev: isDev
+		});
 
 		// Ensure all return values are treated as resolves promises.
 
-		Promise.resolve(component).then(
-			/** @param {Component} instance */ instance => {
+		Promise.resolve(maybeInstance).then(
+			/** @param {ComponentLike} instance */ instance => {
 				if (instance && typeof instance.destroy === 'function')
 					AppRouter.currentInstances[path] = instance || null;
 			}
@@ -100,9 +122,6 @@ export const AppRouter = {
 	navigate(path, params = {}) {
 		/** @type {Record<string, *>} */
 		const serialised = params;
-		// for (const [k, v] of Object.entries(params)) {
-		// 	serialised[k] = Array.isArray(v) ? v.join(',') : v;
-		// }
 
 		const qs = Object.keys(serialised).length
 			? '?' + new URLSearchParams(serialised).toString()
@@ -114,17 +133,12 @@ export const AppRouter = {
 
 /**
  *
- * @param {(
- * 	appRoot: HTMLElement,
- * 	params: Record<string,string> |{},
- * 	pathName: string,
- * 	)=> void
- * } ComponentClass
- * @returns {import('../types/routerTypes.js').RouteHandler}
+ * @param {ComponentCtor} ComponentClass
  */
 export function withComponent(ComponentClass) {
-	return (appRoot, pathName, params = {}) => {
-		const instance = new ComponentClass(appRoot, params, pathName);
+	return (appRoot, pathName = '', params = {}) => {
+		const instance = new ComponentClass(appRoot, pathName, params);
 		instance.render();
+		return instance;
 	};
 }

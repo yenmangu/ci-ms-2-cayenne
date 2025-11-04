@@ -54,10 +54,10 @@ function ingredientMiniCard(item, system = 'metric', unitLength = 'unitShort') {
  * 	}} [opts]
  */
 export function renderRecipeDetail(recipe, summaryObj, opts) {
-	console.log('Recipe passed to view: ', recipe);
 	const { system = 'metric', unitType = 'unitShort' } = opts || {};
-
-	console.log('Opts passed to view: ', opts);
+	// Dev logging
+	// console.log('Recipe passed to view: ', recipe);
+	// console.log('Opts passed to view: ', opts);
 
 	const {
 		title,

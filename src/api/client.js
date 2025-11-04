@@ -130,9 +130,6 @@ export class SpoonacularClient {
 			id
 		});
 
-		console.log('Endpoint for testing: ', endpoint);
-		// return;
-
 		const responseJson = await this._fetch(endpoint);
 		return responseJson;
 	}

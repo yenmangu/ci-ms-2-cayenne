@@ -45,8 +45,6 @@ export async function initCayenneApp(appRoot, pathName, params) {
 
 	const landing = new LandingPage(appRoot);
 	if (landing) {
-		console.log('Landing found');
-
 		await landing.init();
 		landing.render();
 		return landing;
