@@ -411,6 +411,14 @@ button.btn--like:focus {
 	margin-top: 1rem;
 }
 
+/* Loading Component */
+
+.loading-container {
+	margin: auto;
+	display: flex;
+	justify-content: center;
+}
+
 /* Cards - Recipe Cards, Ingredient Cards etc */
 
 .card-img-top {
