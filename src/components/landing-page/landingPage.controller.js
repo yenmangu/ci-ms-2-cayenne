@@ -9,6 +9,7 @@ import { RecipeCard } from '../recipe-card/recipeCard.controller.js';
 import { SearchBar } from '../search-bar/searchBar.controller.js';
 import * as service from './landingPage.service.js';
 import { renderLandingPage } from './landingPage.view.js';
+import { Loading } from '../loading/loading.controller.js';
 
 export class LandingPage {
 	/**
@@ -36,11 +37,16 @@ export class LandingPage {
 		/** @type {HTMLButtonElement} */
 		this.randomButton = null;
 
+		/** @type {Loading} */
+		this.loadingComponent = null;
+
 		this.subscription = appStore.subscribe(state => {
 			if (state.currentRandom) {
-				console.log('New random: ', state.currentRandom);
-
 				this.randomRecipe = this.service.extractCard(state.currentRandom);
+				if (this.loadingComponent) {
+					this.loadingComponent.destroy();
+				}
+
 				this.#_renderRandomRecipe();
 			}
 		});
@@ -51,7 +57,7 @@ export class LandingPage {
 		this.landingPageComponent = stringToHtml(renderLandingPage());
 
 		this.#_collectContainers();
-		this.service.updateStoreRandomRecipe();
+		this.#_onFetchNewRandom();
 
 		this.landingSearch = new SearchBar(this.searchBarContainer);
 		this.randomRecipeContainer =
@@ -68,7 +74,7 @@ export class LandingPage {
 
 	render() {
 		if (this.landingPageComponent) {
-			this.container.appendChild(this.landingPageComponent);
+			this.container.prepend(this.landingPageComponent);
 			this.landingAppended = true;
 			this.#_coordinateLanding();
 		} else {
@@ -135,6 +141,8 @@ export class LandingPage {
 	}
 
 	#_onFetchNewRandom() {
+		this.loadingComponent = new Loading(this.container);
+		this.loadingComponent.render();
 		this.service.updateStoreRandomRecipe();
 	}
 
