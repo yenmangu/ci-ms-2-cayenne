@@ -1,5 +1,6 @@
 /**
  * @typedef {import('../../types/recipeTypes.js').RecipeFull} RecipeFull
+ * @typedef {import('../../types/recipeTypes.js').SingleRecipeEnvelope} SingleRecipeEnvelope
  * @typedef {import('../../types/recipeTypes.js').RecipeCard} RecipeCardObject
  * @typedef {import('../../api/client.js').SpoonacularClient} SpoonacularClient
  */
@@ -12,6 +13,7 @@
  * @property {RecipeCardObject} recipeCard
  * @property {function(): void} updateStoreRandomRecipe
  * @property {function(RecipeFull): RecipeCardObject} extractCard
+ * @property {function(RecipeFull | SingleRecipeEnvelope): RecipeFull} toRecipeCard
  *
  */
 import { getClient } from '../../api/client.singleton.js';
@@ -38,6 +40,7 @@ export const createLandingService = opts => {
 		 * @returns {RecipeCardObject}
 		 */
 		extractCard: recipe => {
+			recipe = service.toRecipeCard(recipe);
 			if (recipe.id === undefined) throw new Error('Error recipe not found');
 			return {
 				id: recipe.id,
@@ -49,6 +52,16 @@ export const createLandingService = opts => {
 		updateStoreRandomRecipe: async () => {
 			const recipe = await client.getRandomRecipe();
 			appStore.setState({ currentRandom: recipe });
+		},
+
+		/**
+		 *
+		 * @param {RecipeFull | SingleRecipeEnvelope} input
+		 * @returns {RecipeFull}
+		 */
+		toRecipeCard(input) {
+			const recipe = 'recipes' in input ? input.recipes[0] : input;
+			return recipe;
 		}
 	};
 
