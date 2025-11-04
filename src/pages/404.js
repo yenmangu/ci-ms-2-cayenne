@@ -56,8 +56,7 @@ export function renderNotFound(opts = {}) {
           ${detail}
           <div class="d-grid gap-2 d-sm-flex justify-content-sm-center mb-4">
             <a class="btn btn-primary btn-lg" href="#/">Back to Home</a>
-            <a class="btn btn-outline-secondary btn-lg" href="#/recipes">Browse Recipes</a>
-            <a class="btn btn-outline-secondary btn-lg" href="#/liked-recipes">Saved Recipes</a>
+
           </div>
           <p class="small text-muted">
             If you typed the address, double-check the spelling.
@@ -67,3 +66,6 @@ export function renderNotFound(opts = {}) {
     </section>
   `;
 }
+
+`<a class="btn btn-outline-secondary btn-lg" href="#/recipes">Browse Recipes</a>
+            <a class="btn btn-outline-secondary btn-lg" href="#/liked-recipes">Saved Recipes</a>`;
