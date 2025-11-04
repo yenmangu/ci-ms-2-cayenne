@@ -23,8 +23,9 @@ let appHeader = null;
  *
  */
 async function initCayenne() {
-	console.log('isProd? ', isProd);
-	// initStateStore();
+	// Dev logging
+	// console.log('isProd? ', isProd);
+
 	initNavbar();
 	// Main injection site
 	const appRoot = document.getElementById('app-root');
@@ -47,8 +48,6 @@ async function initCayenne() {
 	if (appHeader) appHeader.init();
 
 	// Start the client-side routing
-	console.log('Starting router');
-
 	startRouter(appRoot);
 }
 

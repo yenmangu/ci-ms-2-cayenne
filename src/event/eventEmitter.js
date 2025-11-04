@@ -79,9 +79,11 @@ export default class CayenneEventEmitter {
 	 * @returns
 	 */
 	publish(event, data, ...args) {
-		if (this.debug) {
-			console.log('Publishing: ', event, 'with: ', data);
-		}
+		// Dev logging
+		// if (this.debug) {
+		// 	console.log('Publishing: ', event, 'with: ', data);
+		// }
+
 		(this.events[event] || []).forEach(callback =>
 			callback(event, data, ...args)
 		);

@@ -31,14 +31,19 @@ export class ToggleComponent {
 	}
 
 	init() {
-		console.debug(`ToggleComponent: ${this.toggleConfig.key}`);
+		// Dev debugging
+		// console.debug(`ToggleComponent: ${this.toggleConfig.key}`);
+
 		this.toggleConfig.label =
 			config[this.toggleConfig.initialValue] ??
 			`No value found for ${this.toggleConfig.initialValue}`;
-		console.log(
-			'[SANITY CHECK]: ToggleConfig label: ',
-			this.toggleConfig.label
-		);
+
+		// Dev logging
+		// console.log(
+		// 	'[SANITY CHECK]: ToggleConfig label: ',
+		// 	this.toggleConfig.label
+		// );
+
 		this.toggleWithWrapper = stringToHtml(
 			renderToggleComponent(this.toggleConfig)
 		);

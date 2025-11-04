@@ -70,7 +70,6 @@ export class AppHeader {
 			this.unitLocale = state.unitLocale ?? 'metric';
 		});
 		this.routeSubscription = appStore.subscribe(state => {
-			console.log('ROUTE: ', state);
 			const { route } = state;
 			this.#_handleRouteChange(route.path);
 		}, 'route');
@@ -85,14 +84,15 @@ export class AppHeader {
 		if (!this.iconButtons) return;
 
 		this.iconButtons.forEach(btn => {
-			console.log(
-				'Button:',
-				btn.routeKey,
-				'Active:',
-				routerService.activeRouteKey,
-				'IsActive:',
-				routerService.isActiveRoute(btn.routeKey)
-			);
+			// Dev logging
+			// console.log(
+			// 	'Button:',
+			// 	btn.routeKey,
+			// 	'Active:',
+			// 	routerService.activeRouteKey,
+			// 	'IsActive:',
+			// 	routerService.isActiveRoute(btn.routeKey)
+			// );
 
 			btn.setToggled(routerService.isActiveRoute(btn.routeKey));
 		});

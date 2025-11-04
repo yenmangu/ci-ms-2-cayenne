@@ -94,8 +94,6 @@ export class IconRegistry {
 		const file = `${encodeURIComponent(name)}.svg`;
 		const url = new URL(file, absolute).toString();
 
-		console.log('URL IN ICON REG: ', url);
-
 		const res = await fetch(url, { cache: 'force-cache' });
 		if (!res.ok) {
 			throw new Error(`IconRegistry: failed to fetch ${url} (${res.status})`);

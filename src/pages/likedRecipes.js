@@ -11,7 +11,6 @@ export function loadLikedRecipes(container, pathName, params) {
 	// _devStoreRecipes();
 	const fromStorage = loadRecipesFromStorage();
 	const fromState = appStore.getState().likedRecipes || fromStorage; // DEV
-	console.log('From storage: ', fromStorage);
 
 	const likedComponent = initLikedRecipes(container, pathName, {
 		recipes: fromState
@@ -25,10 +24,12 @@ export function loadLikedRecipes(container, pathName, params) {
  */
 function loadRecipesFromStorage() {
 	let toCheck = localStorage.getItem(likedRecipeKey);
-	console.log('toCheck string: ', toCheck);
 
 	toCheck = JSON.parse(toCheck);
-	console.log('toCheck JSON: ', toCheck);
+
+	// Dev logging
+	// console.log('toCheck string: ', toCheck);
+	// console.log('toCheck JSON: ', toCheck);
 
 	if (toCheck)
 		if (Array.isArray(toCheck) && toCheck.length) {

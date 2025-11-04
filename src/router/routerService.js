@@ -2,8 +2,6 @@ export const routerService = {
 	activeRouteKey: null,
 
 	setActiveRouteKey(newKey) {
-		console.log('Setting active route key: ', newKey);
-
 		this.activeRouteKey = newKey;
 	},
 

@@ -40,8 +40,6 @@ const STATE_CHANGE = 'state:change';
 const CAYENNE_STATE = 'cayenneUserState';
 
 export function createStateStore(initialState = {}) {
-	console.log('Creating state store:');
-
 	const emitter = new CayenneEventEmitter();
 
 	/** @type {PartialAppState} */
@@ -318,8 +316,6 @@ export function createStateStore(initialState = {}) {
 		});
 		// localStorage.removeItem(CAYENNE_STATE);
 	}
-
-	console.log('State store created');
 
 	return {
 		setState,
