@@ -28,7 +28,7 @@ export class SpoonacularClient {
 	 *
 	 * @param {EndpointKey | string} endpointKeyOrPath
 	 * @param {Record<string, any>} [params={}]
-	 * @param {object} [opts={}]
+	 * @param {RequestInit} [opts={}]
 	 */
 	async refetch(endpointKeyOrPath, params = {}, opts = {}) {
 		const endpoint =
