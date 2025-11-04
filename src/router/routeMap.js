@@ -25,14 +25,29 @@ export const routeMap = {
 	'/recipe-grid': {
 		handler: recipes,
 		path: '/recipe-grid',
-		title: 'Recipe Results'
+		title: 'Recipe Results',
+		validate(params) {
+			return Boolean(params.id);
+		}
 	},
 
 	'/recipe': {
 		handler: loadRecipeDetail,
 		path: '/recipe',
 		title: 'Recipe Detail',
-		domain: true
+		domain: true,
+
+		validate(params) {
+			const allowed = ['id'];
+
+			for (const key of Object.keys(params)) {
+				if (!allowed.includes(key)) {
+					return false;
+				}
+			}
+
+			return Boolean(params.id);
+		}
 	},
 
 	'/shopping-list': {
@@ -54,7 +69,7 @@ export const routeMap = {
 		icon: 'wishlist.svg'
 	},
 
-	NOT_FOUND: {
+	[NOT_FOUND]: {
 		handler: loadNotFoundPage,
 		path: '/not-found',
 		title: 'Not Found',
