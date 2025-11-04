@@ -3,9 +3,9 @@
  * @typedef {import('../../types/stateTypes.js').ErrorScope} ErrorScope
  * @typedef {import('./error.view.js').ErrorRenderMode} ErrorRenderMode
  * @typedef {import('../../types/stateTypes.js').ErrorEntry}ErrorEntry
+ * @typedef {import('../../event/store.js').StoreChainApi} StoreChainApi
  */
 
-import * as service from './error.service.js';
 import { renderError } from './error.view.js';
 import { resolveError } from './error.model.js';
 import { reportError } from '../../error/errorReporter.js';
@@ -17,6 +17,7 @@ import { getClient } from '../../api/client.singleton.js';
  *
  */
 export class ErrorController {
+	/** @type {StoreChainApi} */
 	#_sub;
 
 	/**
@@ -35,6 +36,9 @@ export class ErrorController {
 
 		/** @type {AppStore}*/ this.store = store;
 		/** @type {ErrorScope} */ this.scope = scope;
+		if (!this.store) throw new Error('[ErrorController] store is required');
+		if (!this.scope) throw new Error('[ErrorController] scope is required');
+
 		/** @type {ErrorRenderMode} */ this.mode = mode;
 		/** @type {string|undefined} */ this.title = title;
 
@@ -64,6 +68,18 @@ export class ErrorController {
 		}
 
 		const onRetry = this.#_deriveRetry(entry);
+
+		this.el.innerHTML = renderError(
+			{
+				type: entry.type,
+				code: entry.code,
+				userMessage: entry.userMessage,
+				message: entry.message,
+				retry: !!onRetry
+			},
+			{ mode: this.mode, title: this.title }
+		);
+		this.#_wireHandlers(entry, onRetry);
 	}
 
 	/**
@@ -74,23 +90,15 @@ export class ErrorController {
 		const meta = entry.meta || {};
 		switch (meta.cmd) {
 			case 'refetch':
-				if (meta.url) {
-					return async () => {
-						await fetch(meta.url, meta.opts);
-					};
-				}
-				if (meta.endpoint) {
-					return async () => {
-						await getClient().refetch(meta.endpoint, meta.params);
-					};
-				}
-				return null;
+				return async () => {
+					await getClient().refetchFromMeta(meta);
+				};
 			case 'reloadRoute':
 				return async () => {
 					window.location.reload();
 				};
 			case 'retryAction':
-				// future action registry
+				// future action registry hook
 				return null;
 			default:
 				return null;
@@ -100,7 +108,7 @@ export class ErrorController {
 	/**
 	 *
 	 * @param {ErrorEntry} entry
-	 * @param {()=> any} onRetry
+	 * @param {(()=> Promise<any|null>)} onRetry
 	 */
 	#_wireHandlers(entry, onRetry) {
 		const root = this.el.querySelector('[data-error-root]');
@@ -122,7 +130,7 @@ export class ErrorController {
 		const retryBtn = /** @type {HTMLElement} */ (
 			root.querySelector('[data-error-retry]')
 		);
-		if (retryBtn && dismissBtn) {
+		if (retryBtn && onRetry) {
 			retryBtn.addEventListener(
 				'click',
 				async () => {
@@ -142,6 +150,8 @@ export class ErrorController {
 	}
 
 	destroy() {
-		console.warn('Function destroy() not yet implemented.');
+		this.#_sub?.unsubscribe();
+		this.#_sub = null;
+		this.el.innerHTML = '';
 	}
 }

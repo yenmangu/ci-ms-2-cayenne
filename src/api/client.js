@@ -157,7 +157,7 @@ export class SpoonacularClient {
 		const url = this._buildUrl(endpoint, params);
 
 		try {
-			const response = await fetch(url);
+			const response = await fetch(url, opts);
 			if (!response.ok) {
 				if (response.status === 402) {
 					console.log('Hit paywalll');
@@ -165,7 +165,8 @@ export class SpoonacularClient {
 				if (retries > 0) {
 					console.warn(`[RETRYING] ${url} (${retries} retries remaining)`);
 					await this._delay();
-					return await this._fetch(endpoint, params, retries - 1);
+
+					return await this._fetch(endpoint, params, retries - 1, opts);
 				}
 				const message = `[API ERROR] ${response.status} ${response.statusText}`;
 				throw new Error(message);

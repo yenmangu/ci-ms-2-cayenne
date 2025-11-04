@@ -134,5 +134,9 @@ export class IngredientMiniCard {
 		appStore.toggleIngredientInCart(itemToStore);
 	}
 
-	destroy() {}
+	destroy() {
+		this.subscription.unsubscribe();
+		this.subscription = null;
+		this.el.innerHTML = '';
+	}
 }

@@ -9,6 +9,10 @@ function _create(env = ENV) {
 	return c;
 }
 
+/**
+ *
+ * @returns {SpoonacularClient}
+ */
 export function getClient() {
 	if (!_client) _client = _create();
 	return _client;
