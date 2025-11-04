@@ -18,13 +18,22 @@ import { routerService } from './routerService.js';
  */
 function resolveRoute(path, rawParams = {}) {
 	const params = normaliseParams(rawParams);
+	console.log('[normalisedParams]: ', params);
+
 	const fallback = routeMap[NOT_FOUND];
+	if (fallback) {
+		console.log('fallback entry: ', NOT_FOUND);
+	} else {
+		console.log('fallback not found');
+	}
 	const entry = routeMap[path] || fallback;
 	const direct = routeMap[path];
 
 	// Does validate exist and is type 'function'
 	if (entry && typeof entry.validate === 'function') {
 		const ok = entry.validate(params);
+		console.log('[resolveRoute]: ', 'okay: ', ok);
+
 		if (!ok)
 			return {
 				entry: fallback,
@@ -71,6 +80,9 @@ export const AppRouter = {
 		const isDev = raw['dev'] === 'true' || raw['dev'] === '1';
 
 		const { entry, resolvedPath, params } = resolveRoute(path, raw);
+		console.log(resolveRoute(path, raw));
+
+		console.log(entry, '\n', resolvedPath, '\n', params);
 
 		routerService.setActiveRouteKey(path);
 
