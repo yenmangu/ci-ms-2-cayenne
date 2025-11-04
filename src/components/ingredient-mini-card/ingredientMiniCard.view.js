@@ -54,8 +54,7 @@ export function renderIngredientMiniCard(
 				}</span>
 				<div class="ingredient-mini-card__units-amounts ingredient-units-amounts">
 					<span class="text-muted small"
-						data-label="amounts">${measureAmount !== null ? measureAmount : ''}
-					</span>
+						data-label="amounts">${measureAmount !== null ? measureAmount : ''}</span>
 					<span class="ingredient-mini-card__units text-muted small"
 						data-label="units">${measureUnit}
 					</span>

@@ -504,6 +504,10 @@ main.recipe-detail {
 	display: flex;
 }
 
+.ingredient-mini-card__label-wrapper > span {
+	margin-right: 0.6rem;
+}
+
 .ingredient-mini-card__item-label {
 	text-align: left;
 }
