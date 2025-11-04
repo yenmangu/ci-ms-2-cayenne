@@ -71,7 +71,7 @@ export class RecipeDetail {
 
 		this.componentReady = false;
 
-		this.lastState = appStore.getState();
+		this.lastState = null;
 		// this.init();
 	}
 
@@ -123,6 +123,7 @@ export class RecipeDetail {
 		await this.service.fetchRecipeById(this.recipeId, {});
 		this.fetchedRecipe = this.service.fetchedRecipe;
 		this.summary = this.service.recipeSummary;
+		appStore.setState({ currentRecipe: this.fetchedRecipe });
 	}
 
 	async publicTest() {
