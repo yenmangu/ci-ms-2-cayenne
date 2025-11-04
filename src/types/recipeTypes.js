@@ -154,6 +154,10 @@ export {};
  */
 
 /**
+ * @typedef {{recipes: [RecipeFull]}} SingleRecipeEnvelope
+ */
+
+/**
  * @typedef {object} IngredientMiniCardOpts
  * @property {'metric'|'us'} system
  * @property {'unitShort'|'unitLong'} unitLength
