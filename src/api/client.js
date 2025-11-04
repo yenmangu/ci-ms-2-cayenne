@@ -79,8 +79,6 @@ export class SpoonacularClient {
 		const key = /** @type {EndpointKey} */ ('getRandomRecipes');
 		const endpoint = this._buildEndpointWithParameters(key);
 		const responseJson = await this._fetch(endpoint);
-		console.log(responseJson);
-
 		return responseJson;
 	}
 
@@ -107,9 +105,8 @@ export class SpoonacularClient {
 	 *
 	 * @param {string[]} ingredients
 	 * @param {number} recipes - Max num of recipes to return between 1 and 100
-	 * @param {boolean} [ignorePantry]
 	 */
-	async findByIngredients(ingredients, recipes, ignorePantry = true) {
+	async findByIngredients(ingredients, recipes) {
 		const searchString = this._buildSearchString(ingredients);
 		const queryParams = {
 			ingredients: searchString,
@@ -168,14 +165,18 @@ export class SpoonacularClient {
 
 					return await this._fetch(endpoint, params, retries - 1, opts);
 				}
-				const message = `[API ERROR] ${response.status} ${response.statusText}`;
-				throw new Error(message);
+				const detail = await safeText(response);
+				const err = new Error(
+					`[API ERROR] ${response.status} ${response.statusText}${
+						detail ? ` - ${detail}` : ''
+					}`
+				);
+				/** @type {any} */ (err).status = response.status;
+				throw err;
 			}
-
 			return await response.json();
 		} catch (error) {
 			console.error(`[FETCH FAIL] ${url}`, error);
-
 			throw error;
 		}
 	}
@@ -192,7 +193,7 @@ export class SpoonacularClient {
 				const detail = await safeText(res);
 				const err = new Error(
 					`[API ERROR] ${res.status} ${res.statusText}${
-						detail ? ` — ${detail}` : ''
+						detail ? ` - ${detail}` : ''
 					}`
 				);
 				/** @type {any} */ (err).status = res.status;
@@ -246,7 +247,7 @@ export class SpoonacularClient {
 		const query = new URLSearchParams({
 			...params
 		}).toString();
-
-		return `${this.apiUrl}${endpoint}?${query}`;
+		const base = this.apiUrl.replace(/\/$/, '');
+		return query ? `${base}${endpoint}?${query}` : `${base}${endpoint}`;
 	}
 }
