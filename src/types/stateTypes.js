@@ -87,6 +87,7 @@ export {};
  * @property {RouteEntry} [route]
  * @property {ShoppingListItem[]} [shoppingList]
  * @property {ErrorEntry[]} [errors]
+ * @property {boolean} [useLive] - flag to indicate if app should use live
  *
  */
 /**
@@ -104,6 +105,8 @@ export {};
  * @property {RouteEntry} [route]
  * @property {ShoppingListItem[]} [shoppingList]
  * @property {ErrorEntry[]} [errors]
+ * @property {boolean} [useLive] - flag to indicate if app should use live
+
  *
  */
 
@@ -114,6 +117,7 @@ export {};
  * @property {RecipeCard[]} [likedRecipes]
  * @property {UnitLocale} [unitLocale]
  * @property {ShoppingListItem[]} [shoppingList]
+ * @property {boolean} [useLive]
  */
 
 /**
@@ -127,7 +131,8 @@ export {};
  * 	'likedRecipes' |
  * 	'shoppingList' |
  *  'route'|
- *  'errors'
+ *  'errors'|
+ *  'useLive'
  * } StateKey
  */
 

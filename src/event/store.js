@@ -32,7 +32,6 @@
  * *Tap* into the subscription pipeline
  * - Returns a new subscription pipeline
  */
-import { constants } from '../env.js';
 
 import CayenneEventEmitter from './eventEmitter.js';
 
@@ -116,6 +115,11 @@ export function createStateStore(initialState = {}) {
 				case 'loading':
 					emitter.publish('state:loading', {
 						[key]: state.loading
+					});
+					break;
+				case 'useLive':
+					emitter.publish('state:useLive', {
+						[key]: state.useLive
 					});
 					break;
 				case 'errors':
@@ -260,12 +264,13 @@ export function createStateStore(initialState = {}) {
 				listener(getListenerArg(state, key));
 				return chain;
 			},
+
+			once: () => makeStoreApi(emitterChain.once(), listener, key),
 			/**
 			 *
 			 * @param {Listener} fn
 			 * @returns
 			 */
-			once: () => makeStoreApi(emitterChain.once(), listener, key),
 			tap: fn => makeStoreApi(emitterChain.tap(fn), listener, key),
 			unsubscribe: () => {
 				emitterChain.unsubscribe();
@@ -302,10 +307,10 @@ export function createStateStore(initialState = {}) {
 	}
 
 	function persistState() {
-		const { likedRecipes, shoppingList, unitLocale } = state;
+		const { likedRecipes, shoppingList, unitLocale, useLive } = state;
 		localStorage.setItem(
 			CAYENNE_STATE,
-			JSON.stringify({ likedRecipes, shoppingList, unitLocale })
+			JSON.stringify({ likedRecipes, shoppingList, unitLocale, useLive })
 		);
 	}
 

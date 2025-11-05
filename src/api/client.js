@@ -6,8 +6,9 @@
  */
 
 // import { ENV } from '../config/env.js';
-import { ENV } from '../env.js';
+import { appStore } from '../appStore.js';
 import { SPOONACULAR_ENDPOINTS, buildEndpoint } from '../config/endpoints.js';
+import { ENV } from '../env.js';
 import { safeText } from '../util/safeText.js';
 
 /**
@@ -15,13 +16,18 @@ import { safeText } from '../util/safeText.js';
  * Handles API calls to the Spoonacular REST API
  */
 export class SpoonacularClient {
+	#sub = null;
 	constructor() {
 		if (!ENV.API_URL) {
 			throw new Error(
 				'[MISSING ENV] - Missing API config please consult README "Troubleshooting" section.'
 			);
 		}
+		this.useLive = true;
 		this.apiUrl = ENV.API_URL;
+		this.#sub = appStore.subscribe(state => {
+			this.useLive = state.useLive;
+		}, 'useLive');
 	}
 
 	/**
@@ -155,11 +161,14 @@ export class SpoonacularClient {
 	 * @returns {Promise<RecipeFull>}
 	 */
 	async getRandomRecipe() {
-		// return await this.getTestApiRecipes(true);
-		const key = /** @type {EndpointKey} */ ('getRandomRecipes');
-		const endpoint = this._buildEndpointWithParameters(key);
-		const responseJson = await this._fetch(endpoint);
-		return responseJson;
+		if (this.useLive) {
+			const key = /** @type {EndpointKey} */ ('getRandomRecipes');
+			const endpoint = this._buildEndpointWithParameters(key);
+			const responseJson = await this._fetch(endpoint);
+			return responseJson;
+		} else {
+			return await this.getTestApiRecipes(true);
+		}
 	}
 
 	/**

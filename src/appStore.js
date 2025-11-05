@@ -17,6 +17,7 @@ const initialState = {
 	shoppingList: [],
 	unitLength: 'unitShort',
 	unitLocale: 'metric',
+	useLive: true,
 	...userState
 };
 
