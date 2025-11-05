@@ -41,6 +41,16 @@ export function normaliseError(err, hints = {}) {
 				...hints
 			};
 		}
+		if (hints?.code === 'API_QUOTA_EXCEEDED' || hints?.status === 402) {
+			return {
+				code: 'API_QUOTA_EXCEEDED',
+				context: hints?.context || { scope: hints.context.scope ?? 'global' },
+				retry: true,
+				type: 'network',
+				userMessage:
+					'Live API quota reached. Switched to test data — try again.'
+			};
+		}
 		if (s === 429) {
 			return {
 				code: 'HTTP_429',
