@@ -9,8 +9,8 @@ import { buildCartOptions } from './shoppingList.js';
 
 export const iconButtonConfigs = {
 	cart: buildCartOptions,
-	savedRecipes: buildSavedRecipesOptions,
-	home: buildHomeOptions
+	home: buildHomeOptions,
+	savedRecipes: buildSavedRecipesOptions
 };
 
 // example: const cartNav = iconButtonConfigs.cart(true)

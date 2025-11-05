@@ -219,13 +219,15 @@ I've decomposed my Epics into User Stories for prioritizing and implementing the
 | **Ingredient-Based Recipe Search**   | Users can discover recipes by entering the ingredients they have, reducing waste and increasing convenience.  | [Home/Search](#home)                                                        |
 | **Random Recipe Inspiration**        | The landing page displays a random featured recipe; users can click "New Random" for more ideas instantly.    | ![Random Recipe](./documentation/ux/features/user/home-screen.png)          |
 | **Detailed Recipe Pages**            | Each recipe has a dedicated page with images, ingredient cards, steps, and nutrition info where available.    | [Recipe Detail](#recipe-detail)                                             |
-| **Favourites / Saved Recipes**       | Users can "heart" recipes to save them in their browser for future visits; works across sessions, no login.   | [Favourites Tab](#favourites), [Persistence](#state-management)             |
+| **Favourites / Saved Recipes**       | Users can "heart" recipes to save them in their browser for future visits; works across sessions, no login.   | [Favourites Tab](#saved-recipes), [Persistence](#state-management)          |
 | **Shopping List Management**         | Easily add ingredients or whole recipes to a shopping list for grocery planning; check off items as you shop. | [Shopping List](#shopping-list)                                             |
-| **Unit System Toggle (US/Metric)**   | Instantly switch ingredient units to match user preference; works globally across recipes.                    | [Header Toggle](#unit-toggle), [theme.css](./assets/css/theme.css)          |
+| **Unit System Toggle (US/Metric)**   | Instantly switch ingredient units to match user preference; works globally across recipes.                    | [Header Toggle](#header-toggle), [theme.css](./assets/css/theme.css)        |
 | **Mobile-First Responsive Design**   | The app adapts seamlessly to mobile, tablet, and desktop, ensuring usability on any device.                   | ![Mobile Layout](./documentation/ux/features/user/mobile-shopping-list.png) |
 | **Accessible Navigation & Controls** | All navigation and actions are keyboard accessible and ARIA labelled for users with assistive technology.     | [Accessibility Commitment](#accessibility)                                  |
 | **Animated UI Feedback**             | Visual feedback for actions (e.g., recipe card being removed with animation) for an engaging experience.      | ![Like Animation](./documentation/ux/features/user/remove-liked.gif)        |
 | **Dark Mode Support**                | App automatically adapts to user's system theme (light/dark) for comfort and accessibility.                   | ![Dark Mode](./documentation/ux/features/user/dark-light-scheme.png)        |
+| **Image Preloader**                  | Asynchronously verifies recipe images before rendering and swaps in a placeholder if the image fails to load. | [Image Preloader](#image-preloader)                                         |
+|                                      |
 
 #### Development Features
 
@@ -243,6 +245,38 @@ I've decomposed my Epics into User Stories for prioritizing and implementing the
 | **Mobile-First Responsive Design** | All wireframes and layouts prioritise mobile experience, with scalable components for tablet/desktop.                              | [theme.css](./assets/css/theme.css), [wireframes](./documentation/ux/wireframes/) |
 | **Asset Management & Attribution** | All static assets and icons are clearly organised and credited, supporting both licensing and future asset updates.                | [assets/](./assets/), [README.md](#credits)                                       |
 | **Error Handling & User Feedback** | Friendly, branded error messages, loading indicators, and retry options for failed API or network calls.                           | ![Error Message](documentation/screenshots/error-message.png)                     |
+
+### Image Preloader
+
+The `imagePreloader` utility is a lightweight helper used throughout the app to verify image availability and prevent broken image links (for example, when a Spoonacular CDN image returns a 404). It works entirely on native browser APIs — no external dependencies — and resolves a Promise indicating whether the image loaded successfully.
+
+#### Implementation Notes
+
+The preloader uses the standard `HTMLImageElement` interface to create an off-DOM `<img>` element, attaches `load` and `error` listeners, and sets the `src` attribute to trigger download. The Promise resolves with `{ ok, width, height }` once loading completes or times out.
+For performance, results are cached to avoid duplicate network requests, and the `decoding="async"` hint is applied to off-thread image decoding.
+
+Because cross-origin requests to the Spoonacular CDN do not return CORS headers, direct `fetch()` or `HEAD` checks are not possible. The `<img>` element approach avoids this limitation by relying on event signals instead of response inspection.
+
+#### Key References
+
+- **MDN Web Docs** – [HTMLImageElement / Image() constructor](https://developer.mozilla.org/en-US/docs/Web/API/HTMLImageElement/Image)
+  Defines how detached image objects initiate requests and expose `onload` / `onerror` events.
+- **MDN Web Docs** – [HTMLImageElement.decoding](https://developer.mozilla.org/en-US/docs/Web/API/HTMLImageElement/decoding)
+  Describes the `async` decoding hint used to improve paint performance.
+- **MDN Web Docs** – [CORS settings attributes](https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_settings_attributes)
+  Explains why cross-origin images cannot be verified with `fetch()` in client-side code.
+- **CSS-Tricks** – [Better Image Loading with Promises](https://css-tricks.com/better-image-loading-with-promises/)
+  Demonstrates wrapping image loading in Promises for modern async workflows.
+- **Stack Overflow** – [How to preload images in JavaScript](https://stackoverflow.com/questions/3646036/preloading-images-with-javascript)
+  Discusses the canonical `new Image()` pattern and event handling.
+- **Stack Overflow** – [Check if image exists without CORS](https://stackoverflow.com/questions/18837735/check-if-image-exists-on-server-using-javascript)
+  Confirms that `onerror` and `naturalWidth === 0` are the only reliable cross-origin failure checks.
+
+This combination of sources underpins the final implementation used in `imagePreloader.js`, ensuring a reliable, CORS-safe method of confirming image availability before rendering.
+
+### Header Toggle
+
+### Saved Recipes
 
 ### Future Features
 
@@ -491,9 +525,9 @@ All custom CSS adopts the BEM (Block, Element, Modifier) naming convention for m
 
 **BEM** stands for:
 
-- **Block** – The standalone component (`recipe-card`)
-- **Element** – A child part of that component (`recipe-card__title`)
-- **Modifier** – A variation of the block or element (`recipe-card--featured`)
+- **Block** - The standalone component (`recipe-card`)
+- **Element** - A child part of that component (`recipe-card__title`)
+- **Modifier** - A variation of the block or element (`recipe-card--featured`)
 
 ```
 .block {}
@@ -666,16 +700,49 @@ You can override this in your environment if running your own version.
 
 ## Browser Compatibility
 
+<!-- TODO: browser-compatibility -->
+
 Cayenne is written in modern JavaScript (ES modules) without build tools or transpilation.
 Browser support details and feature compatibility are documented in [DEVELOPMENT.md](./DEVELOPMENT.md#browser-compatibility).
+
+## Accessibility
+
+Cayenne was designed and developed with accessibility as a fundamental requirement, not an afterthought.
+All visual, navigational, and interactive elements follow recognised accessibility and UX best practices to ensure that every user — regardless of device or ability — can fully experience the site.
+
+### Approach
+
+The app adheres to [WCAG 2.1 AA](https://www.w3.org/TR/WCAG21/) principles, prioritising clarity, contrast, and consistent interaction patterns.
+Keyboard navigation, ARIA labelling, and semantic HTML were implemented across all pages to support screen readers and alternative input devices.
+Focus states are always visible, and users can operate all controls — including toggles and navigation — without a mouse.
+
+### Testing
+
+Accessibility was evaluated throughout development using:
+
+- **Manual keyboard testing** to confirm tab order and logical navigation flow.
+- **Automated audits** via Lighthouse and WAVE to detect colour-contrast or ARIA issues.
+- **HTML / CSS validation** using W3C validators to maintain semantic integrity.
+
+### Outcome
+
+The result is a mobile-first web application that meets modern accessibility expectations:
+
+- Fully navigable and operable by keyboard alone
+- Screen-reader friendly through meaningful structure and ARIA support
+- Clear focus indicators and responsive, legible typography
+- Accessible colour contrast and error feedback messaging
+
+Cayenne’s accessibility implementation satisfies the Code Institute Level 5 requirements for an interactive front-end project and demonstrates professional, user-centred design practice.
 
 ## Credits
 
 ### Credits For Specific Features
 
-| Feature      | Source                                                                                                                              | Notes                                                                                                                                                        |
-| ------------ | ----------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| Hash routing | [Medium - Hash routing](https://thedevdrawer.medium.com/single-page-application-routing-using-hash-or-url-d6d1e2adcde/Hash_routing) | Inspiration for using `hashchange` because GitHub pages does not support History API [GitHub Community](https://github.com/orgs/community/discussions/64096) |
+| Feature         | Source                                                                                                                                 | Notes                                                                                                                                                                                                                                                                                               |
+| --------------- | -------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Hash routing    | [Medium - Hash routing](https://thedevdrawer.medium.com/single-page-application-routing-using-hash-or-url-d6d1e2adcde/Hash_routing)    | Inspiration for using `hashchange` because GitHub pages does not support History API [GitHub Community](https://github.com/orgs/community/discussions/64096)                                                                                                                                        |
+| Image Preloader | [Kitty Giraudel - Preloading Images in Parallel with Promises](https://www.sitepoint.com/preloading-images-in-parallel-with-promises/) | Inspiration for using a pre loader for images, Because cross-origin requests to the Spoonacular CDN do not return CORS headers, direct `fetch()` or `HEAD` checks are not possible. The `<img>` element approach avoids this limitation by relying on event signals instead of response inspection. |
 
 ### Other Credits
 
@@ -704,3 +771,47 @@ Browser support details and feature compatibility are documented in [DEVELOPMENT
 - I would like to thank the [Code Institute](https://codeinstitute.net) Tutor Team for their assistance with troubleshooting and debugging some project issues.
 - I would like to thank the [Code Institute Slack community](https://code-institute-room.slack.com) for the moral support; it kept me going during periods of self doubt and impostor syndrome.
 - I would like to thank my employer, for supporting me in my career development change towards becoming a software developer.
+
+---
+
+<!-- TODO: Evaluate Accesibility Blocks -->
+
+## Accessibility
+
+Cayenne follows a user-centred, inclusive design philosophy in line with both [WCAG 2.1 AA](https://www.w3.org/TR/WCAG21/) standards and the Code Institute Level 5 specification for _Interactive Front-End Development_.
+
+### Design & Layout
+
+- Colour palette verified for WCAG AA contrast compliance.
+- Mobile-first responsive layout ensures all users can navigate effectively on any device.
+- Legible typography and clear information hierarchy improve readability and comprehension.
+
+### Navigation & Controls
+
+- Every navigation link, toggle, and button is fully keyboard accessible.
+- Logical tab order and persistent focus indicators support users with motor or visual impairments.
+- All icons and controls include descriptive `aria-label` or `aria-expanded` attributes.
+
+### Media & Feedback
+
+- Images include meaningful `alt` text; decorative elements use empty alt attributes or `aria-hidden="true"`.
+- Live content updates use ARIA live regions to announce changes to screen-reader users.
+- Error states and progress indicators provide clear, plain-language feedback.
+
+### Validation & Testing
+
+Accessibility was verified through:
+
+- **Manual keyboard testing** and **screen-reader checks**.
+- **Automated audits** using Lighthouse, WAVE, and axe DevTools.
+- **HTML / CSS validation** with W3C tools to maintain semantic accuracy.
+
+### Reference
+
+Based on _WCAG 2.1 AA_ guidelines and Code Institute Unit 2: Interactive Front End Development,
+Criterion 1.1 — “Design a web application that meets accessibility guidelines, follows UX principles, and presents a structured layout and navigation model.”
+
+---
+
+**Result:**
+Cayenne delivers a consistent, accessible, and intuitive experience that upholds professional web-accessibility standards across all devices and interaction modes.

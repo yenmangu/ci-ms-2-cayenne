@@ -14,28 +14,19 @@ export const NOT_FOUND = '/not-found';
 /** @type {RouteMap} */
 export const routeMap = {
 	'/': {
-		handler: loadHome,
-		path: '/',
-		title: 'Home',
 		domain: true,
+		handler: loadHome,
+		icon: 'house',
+		path: '/',
 		showInNav: true,
-		icon: 'house'
-	},
-
-	'/recipe-grid': {
-		handler: recipes,
-		path: '/recipe-grid',
-		title: 'Recipe Results',
-		validate(params) {
-			return Boolean(params.id);
-		}
+		title: 'Home'
 	},
 
 	'/recipe': {
+		domain: true,
 		handler: loadRecipeDetail,
 		path: '/recipe',
 		title: 'Recipe Detail',
-		domain: true,
 
 		validate(params) {
 			const allowed = ['id'];
@@ -50,29 +41,38 @@ export const routeMap = {
 		}
 	},
 
-	'/shopping-list': {
-		handler: loadShoppingList,
-		path: '/shopping-list',
-		title: 'Shopping List',
-		domain: true,
-		showInNav: true,
-		icon: 'basket-shopping'
+	'/recipe-grid': {
+		handler: recipes,
+		path: '/recipe-grid',
+		title: 'Recipe Results',
+		validate(params) {
+			return Boolean(params.id);
+		}
 	},
 
 	'/saved-recipes': {
-		handler: loadLikedRecipes,
-		path: '/saved-recipes',
-		title: 'Saved Recipes',
 		domain: true,
+		handler: loadLikedRecipes,
+		icon: 'wishlist.svg',
+		path: '/saved-recipes',
 		showInNav: true,
-		useOwnIcon: true,
-		icon: 'wishlist.svg'
+		title: 'Saved Recipes',
+		useOwnIcon: true
+	},
+
+	'/shopping-list': {
+		domain: true,
+		handler: loadShoppingList,
+		icon: 'basket-shopping',
+		path: '/shopping-list',
+		showInNav: true,
+		title: 'Shopping List'
 	},
 
 	[NOT_FOUND]: {
+		domain: true,
 		handler: loadNotFoundPage,
 		path: '/not-found',
-		title: 'Not Found',
-		domain: true
+		title: 'Not Found'
 	}
 };

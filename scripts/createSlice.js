@@ -73,12 +73,12 @@ export function render${className}() {
 const serviceContent = `export {};`;
 
 const files = [
-	{ name: controllerFile, content: controllerContent },
-	{ name: viewFile, content: viewContent },
-	{ name: serviceFile, content: serviceContent }
+	{ content: controllerContent, name: controllerFile },
+	{ content: viewContent, name: viewFile },
+	{ content: serviceContent, name: serviceFile }
 ];
 
-files.forEach(({ name, content }) => {
+files.forEach(({ content, name }) => {
 	const filePath = path.join(baseDir, name);
 	if (!fs.existsSync(filePath)) {
 		fs.writeFileSync(filePath, content);

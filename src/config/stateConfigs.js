@@ -1,8 +1,8 @@
 const toggleValToUserText = {
 	metric: 'Metric',
-	us: 'US',
 	unitLong: 'Full',
-	unitShort: 'Short'
+	unitShort: 'Short',
+	us: 'US'
 };
 
 function createNewMap() {

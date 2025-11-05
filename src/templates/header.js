@@ -80,7 +80,7 @@ const createNavbarInner = config => {
 			</ul>
 		</div>
 	</div>`;
-	return { navInner, navClasses };
+	return { navClasses, navInner };
 };
 
 /**
@@ -89,7 +89,7 @@ const createNavbarInner = config => {
  * @returns {HTMLElement}
  */
 export const createNavbar = navConfig => {
-	const { navInner, navClasses } = createNavbarInner(navConfig);
+	const { navClasses, navInner } = createNavbarInner(navConfig);
 	const navEl = document.createElement('nav');
 	navEl.id = 'cayenne-nav';
 	navEl.classList = navClasses;

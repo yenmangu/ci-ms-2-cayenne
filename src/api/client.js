@@ -25,123 +25,50 @@ export class SpoonacularClient {
 	}
 
 	/**
-	 *
-	 * @param {EndpointKey | string} endpointKeyOrPath
-	 * @param {Record<string, any>} [params={}]
-	 * @param {RequestInit} [opts={}]
+	 * @param {keyof typeof SPOONACULAR_ENDPOINTS | 'test'} path - Endpoint key
+	 * @param {Record<string, string | number>} [params={}] - Path replacements
+	 * @returns {string} Full endpoint path with injected values
 	 */
-	async refetch(endpointKeyOrPath, params = {}, opts = {}) {
-		const endpoint =
-			endpointKeyOrPath in SPOONACULAR_ENDPOINTS
-				? this._buildEndpointWithParameters(
-						/** @type {EndpointKey} */ (endpointKeyOrPath),
-						params
-				  )
-				: /** @type {string} */ (endpointKeyOrPath);
-		return this._fetch(endpoint, params, 0, opts);
-	}
-
-	/**
-	 *
-	 * @param {ErrorMeta} meta
-	 * @returns {Promise<any>}
-	 */
-	async refetchFromMeta(meta) {
-		if (meta?.url) {
-			return this._fetchAbsolute(meta.url, meta.opts);
+	_buildEndpointWithParameters(path, params = {}) {
+		const foundPath = SPOONACULAR_ENDPOINTS[path];
+		if (foundPath) {
+			return buildEndpoint(foundPath, params);
+		} else {
+			throw new Error(`[API_ERROR]: Unknown endpoint key: "${path}"`);
 		}
-		if (meta?.endpoint) {
-			return this.refetch(meta.endpoint, meta.params, meta.opts);
-		}
-		throw new Error('[REFETCH] Missing url/endpoint in meta');
-	}
-
-	/**
-	 *
-	 * @returns
-	 */
-	async getTestApiRecipes(single = false) {
-		const queryParams = { test: true };
-		const endpoint = single ? '/recipes/test-random' : '/recipes/test';
-		try {
-			const responseJson = await this._fetch(endpoint, queryParams);
-			return responseJson;
-		} catch (error) {
-			throw error;
-		}
-	}
-
-	/**
-	 * @returns {Promise<RecipeFull>}
-	 */
-	async getRandomRecipe() {
-		// return await this.getTestApiRecipes(true);
-		const key = /** @type {EndpointKey} */ ('getRandomRecipes');
-		const endpoint = this._buildEndpointWithParameters(key);
-		const responseJson = await this._fetch(endpoint);
-		return responseJson;
-	}
-
-	/**
-	 *
-	 * @param {string[]} searchTerms
-	 * @param {Object} params
-	 * @returns
-	 */
-	async searchRecipes(searchTerms, params = {}) {
-		// const urlParams =
-		const searchTermStr = searchTerms.join(',');
-		const queryParams = {
-			query: searchTermStr,
-			...params
-		};
-		const key = /** @type {EndpointKey} */ ('searchRecipes');
-		const endpoint = this._buildEndpointWithParameters(key);
-		const responseJson = await this._fetch(endpoint, queryParams);
-		return responseJson;
 	}
 
 	/**
 	 *
 	 * @param {string[]} ingredients
-	 * @param {number} recipes - Max num of recipes to return between 1 and 100
 	 */
-	async findByIngredients(ingredients, recipes) {
-		const searchString = this._buildSearchString(ingredients);
-		const queryParams = {
-			ingredients: searchString,
-			number: recipes.toString()
-		};
-		const key = /** @type {EndpointKey} */ ('searchRecipesByIngredients');
-		const endpoint = this._buildEndpointWithParameters(key);
-
-		const responseJson = await this._fetch(endpoint, queryParams);
-		return responseJson;
+	_buildSearchString(ingredients) {
+		return ingredients.map(ingredient => ingredient.trim()).join(',+');
 	}
 
 	/**
 	 *
-	 * @param {number} id
-	 * @returns {Promise<RecipeFull>}
+	 * @param {string} endpoint - Spoonacular path, e.g. "/recipes/complexSearch"
+	 * @param {Object} [params={}] - Query Params as key-value pairs
+	 * @returns {string} Full endpoint
 	 */
-	async getRecipeInformation(id) {
-		const endpoint = this._buildEndpointWithParameters('getRecipeInformation', {
-			id
-		});
-
-		const responseJson = await this._fetch(endpoint);
-		return responseJson;
+	_buildUrl(endpoint, params = {}) {
+		const query = new URLSearchParams({
+			...params
+		}).toString();
+		const base = this.apiUrl.replace(/\/$/, '');
+		return query ? `${base}${endpoint}?${query}` : `${base}${endpoint}`;
 	}
 
-	async getRecipeSummary(id) {
-		const endpoint = this._buildEndpointWithParameters('summarizeRecipe', {
-			id
-		});
-		const responseJson = await this._fetch(endpoint);
-		return responseJson;
+	/**
+	 * @private
+	 * @param {number} [ms=500] - Milliseconds to wait (Half a second default)
+	 * @returns
+	 */
+	_delay(ms = 500) {
+		return new Promise(resolve => setTimeout(resolve, ms));
 	}
 
-	async searchIngredients(query) {}
 	/**
 	 *
 	 * @param {string} endpoint - Spoonacular path, e.g. "/recipes/complexSearch"
@@ -207,47 +134,120 @@ export class SpoonacularClient {
 	}
 
 	/**
-	 * @private
-	 * @param {number} [ms=500] - Milliseconds to wait (Half a second default)
-	 * @returns
+	 *
+	 * @param {string[]} ingredients
+	 * @param {number} recipes - Max num of recipes to return between 1 and 100
 	 */
-	_delay(ms = 500) {
-		return new Promise(resolve => setTimeout(resolve, ms));
+	async findByIngredients(ingredients, recipes) {
+		const searchString = this._buildSearchString(ingredients);
+		const queryParams = {
+			ingredients: searchString,
+			number: recipes.toString()
+		};
+		const key = /** @type {EndpointKey} */ ('searchRecipesByIngredients');
+		const endpoint = this._buildEndpointWithParameters(key);
+
+		const responseJson = await this._fetch(endpoint, queryParams);
+		return responseJson;
+	}
+
+	/**
+	 * @returns {Promise<RecipeFull>}
+	 */
+	async getRandomRecipe() {
+		// return await this.getTestApiRecipes(true);
+		const key = /** @type {EndpointKey} */ ('getRandomRecipes');
+		const endpoint = this._buildEndpointWithParameters(key);
+		const responseJson = await this._fetch(endpoint);
+		return responseJson;
 	}
 
 	/**
 	 *
-	 * @param {string[]} ingredients
+	 * @param {number} id
+	 * @returns {Promise<RecipeFull>}
 	 */
-	_buildSearchString(ingredients) {
-		return ingredients.map(ingredient => ingredient.trim()).join(',+');
+	async getRecipeInformation(id) {
+		const endpoint = this._buildEndpointWithParameters('getRecipeInformation', {
+			id
+		});
+
+		const responseJson = await this._fetch(endpoint);
+		return responseJson;
+	}
+	async getRecipeSummary(id) {
+		const endpoint = this._buildEndpointWithParameters('summarizeRecipe', {
+			id
+		});
+		const responseJson = await this._fetch(endpoint);
+		return responseJson;
 	}
 
 	/**
-	 * @param {keyof typeof SPOONACULAR_ENDPOINTS | 'test'} path - Endpoint key
-	 * @param {Record<string, string | number>} [params={}] - Path replacements
-	 * @returns {string} Full endpoint path with injected values
+	 *
+	 * @returns
 	 */
-	_buildEndpointWithParameters(path, params = {}) {
-		const foundPath = SPOONACULAR_ENDPOINTS[path];
-		if (foundPath) {
-			return buildEndpoint(foundPath, params);
-		} else {
-			throw new Error(`[API_ERROR]: Unknown endpoint key: "${path}"`);
+	async getTestApiRecipes(single = false) {
+		const queryParams = { test: true };
+		const endpoint = single ? '/recipes/test-random' : '/recipes/test';
+		try {
+			const responseJson = await this._fetch(endpoint, queryParams);
+			return responseJson;
+		} catch (error) {
+			throw error;
 		}
 	}
 
 	/**
 	 *
-	 * @param {string} endpoint - Spoonacular path, e.g. "/recipes/complexSearch"
-	 * @param {Object} [params={}] - Query Params as key-value pairs
-	 * @returns {string} Full endpoint
+	 * @param {EndpointKey | string} endpointKeyOrPath
+	 * @param {Record<string, any>} [params={}]
+	 * @param {RequestInit} [opts={}]
 	 */
-	_buildUrl(endpoint, params = {}) {
-		const query = new URLSearchParams({
+	async refetch(endpointKeyOrPath, params = {}, opts = {}) {
+		const endpoint =
+			endpointKeyOrPath in SPOONACULAR_ENDPOINTS
+				? this._buildEndpointWithParameters(
+						/** @type {EndpointKey} */ (endpointKeyOrPath),
+						params
+				  )
+				: /** @type {string} */ (endpointKeyOrPath);
+		return this._fetch(endpoint, params, 0, opts);
+	}
+
+	/**
+	 *
+	 * @param {ErrorMeta} meta
+	 * @returns {Promise<any>}
+	 */
+	async refetchFromMeta(meta) {
+		if (meta?.url) {
+			return this._fetchAbsolute(meta.url, meta.opts);
+		}
+		if (meta?.endpoint) {
+			return this.refetch(meta.endpoint, meta.params, meta.opts);
+		}
+		throw new Error('[REFETCH] Missing url/endpoint in meta');
+	}
+
+	async searchIngredients(query) {}
+
+	/**
+	 *
+	 * @param {string[]} searchTerms
+	 * @param {Object} params
+	 * @returns
+	 */
+	async searchRecipes(searchTerms, params = {}) {
+		// const urlParams =
+		const searchTermStr = searchTerms.join(',');
+		const queryParams = {
+			query: searchTermStr,
 			...params
-		}).toString();
-		const base = this.apiUrl.replace(/\/$/, '');
-		return query ? `${base}${endpoint}?${query}` : `${base}${endpoint}`;
+		};
+		const key = /** @type {EndpointKey} */ ('searchRecipes');
+		const endpoint = this._buildEndpointWithParameters(key);
+		const responseJson = await this._fetch(endpoint, queryParams);
+		return responseJson;
 	}
 }

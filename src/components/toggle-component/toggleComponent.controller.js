@@ -30,6 +30,36 @@ export class ToggleComponent {
 		this.init();
 	}
 
+	#_hydrateToggle() {
+		this.#_updateToggleState();
+		this.#_updateToggleText();
+	}
+
+	#_updateToggleState() {
+		this.toggle.checked =
+			this.latestState[this.key] === this.toggleConfig.onValue;
+	}
+
+	/**
+	 *
+	 * @param {string} key
+	 * @param {*} val
+	 */
+	#_updateToggleText() {
+		console.log(this.toggle.id);
+
+		const label = document.querySelector(
+			`label[for="${this.toggleConfig.key}"]`
+		);
+		if (!label) {
+			throw new Error(`Label for toggle: ${this.key} not found`);
+		}
+
+		label.textContent = config[this.latestState[this.key]];
+	}
+
+	destroy() {}
+
 	init() {
 		// Dev debugging
 		// console.debug(`ToggleComponent: ${this.toggleConfig.key}`);
@@ -73,37 +103,7 @@ export class ToggleComponent {
 		});
 	}
 
-	#_updateToggleState() {
-		this.toggle.checked =
-			this.latestState[this.key] === this.toggleConfig.onValue;
-	}
-
-	#_hydrateToggle() {
-		this.#_updateToggleState();
-		this.#_updateToggleText();
-	}
-
-	/**
-	 *
-	 * @param {string} key
-	 * @param {*} val
-	 */
 	setStateProp(key, val) {
 		appStore.setState({ [key]: val }, { global: true });
 	}
-
-	#_updateToggleText() {
-		console.log(this.toggle.id);
-
-		const label = document.querySelector(
-			`label[for="${this.toggleConfig.key}"]`
-		);
-		if (!label) {
-			throw new Error(`Label for toggle: ${this.key} not found`);
-		}
-
-		label.textContent = config[this.latestState[this.key]];
-	}
-
-	destroy() {}
 }

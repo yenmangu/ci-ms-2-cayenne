@@ -31,34 +31,21 @@ function resolveRoute(path, rawParams = {}) {
 		if (!ok)
 			return {
 				entry: fallback,
-				resolvedPath: NOT_FOUND,
-				params
+				params,
+				resolvedPath: NOT_FOUND
 			};
 	}
 	const resolvedPath = direct ? path : NOT_FOUND;
 	return {
 		entry,
-		resolvedPath,
-		params
+		params,
+		resolvedPath
 	};
 }
 
 export const startRouter = appRoot => AppRouter.init(appRoot);
 
 export const AppRouter = {
-	init(appRoot) {
-		// Handle first render
-		this.handleRouteChange(appRoot);
-
-		// Handle future hash changes
-		window.addEventListener('hashchange', () =>
-			this.handleRouteChange(appRoot)
-		);
-	},
-
-	// Track last active route and current instances
-	/** @type {string} */
-	lastActivePath: '',
 	/** @type {Record<string, ComponentLike | null>} */
 	currentInstances: {},
 
@@ -66,14 +53,22 @@ export const AppRouter = {
 	 * Handle hash changes
 	 * @param {HTMLElement} appRoot
 	 */
+	destroyAllInstances() {
+		Object.values(AppRouter.currentInstances).forEach(instance => {
+			if (instance && typeof instance.destroy === 'function') {
+				instance.destroy();
+			}
+		});
+		AppRouter.currentInstances = {};
+	},
 	handleRouteChange(appRoot) {
 		const hash = window.location.hash;
 		/** @type {{path: string, params: Record<string,string> | {}}} */
-		const { path, params: raw } = parseHashRoute(hash);
+		const { params: raw, path } = parseHashRoute(hash);
 
 		const isDev = raw['dev'] === 'true' || raw['dev'] === '1';
 
-		const { entry, resolvedPath, params } = resolveRoute(path, raw);
+		const { entry, params, resolvedPath } = resolveRoute(path, raw);
 		routerService.setActiveRouteKey(path);
 
 		const last = this.currentInstances[this.lastActivePath];
@@ -107,14 +102,19 @@ export const AppRouter = {
 		// routerService.setActiveRouteKey(path); WAS HERE
 	},
 
-	destroyAllInstances() {
-		Object.values(AppRouter.currentInstances).forEach(instance => {
-			if (instance && typeof instance.destroy === 'function') {
-				instance.destroy();
-			}
-		});
-		AppRouter.currentInstances = {};
+	init(appRoot) {
+		// Handle first render
+		this.handleRouteChange(appRoot);
+
+		// Handle future hash changes
+		window.addEventListener('hashchange', () =>
+			this.handleRouteChange(appRoot)
+		);
 	},
+
+	// Track last active route and current instances
+	/** @type {string} */
+	lastActivePath: '',
 
 	/**
 	 *

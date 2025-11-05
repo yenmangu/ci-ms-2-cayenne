@@ -36,6 +36,41 @@ export class SearchBar {
 		this.noResultsEl = null;
 	}
 
+	/**
+	 *
+	 * @param {string} string
+	 */
+	#_addToState(string) {
+		appStore.addSearchString(string);
+	}
+
+	/**
+	 *
+	 * @param {RecipeCard[]} recipeArray
+	 */
+	#_handleResponse(recipeArray) {}
+
+	#_wireEventListeners() {
+		this.searchComponent.addEventListener('submit', e => {
+			e.preventDefault();
+			this.handleSubmit();
+		});
+	}
+
+	destroy() {
+		console.warn('Function destroy() not yet implemented.');
+	}
+
+	handleSubmit() {
+		const value = this.searchBarInput.value.trim().split(' ');
+		// const string = value.join(',');
+
+		if (!value) return;
+		appStore.setState({ searchQuery: [this.searchBarInput.value] });
+
+		AppRouter.navigate('/recipe-grid', { search: value });
+	}
+
 	init() {
 		if (!this.searchComponent) {
 			throw new Error('Search component not initialised as HTMLElement');
@@ -57,42 +92,7 @@ export class SearchBar {
 		this.render();
 	}
 
-	#_wireEventListeners() {
-		this.searchComponent.addEventListener('submit', e => {
-			e.preventDefault();
-			this.handleSubmit();
-		});
-	}
-
-	handleSubmit() {
-		const value = this.searchBarInput.value.trim().split(' ');
-		// const string = value.join(',');
-
-		if (!value) return;
-		appStore.setState({ searchQuery: [this.searchBarInput.value] });
-
-		AppRouter.navigate('/recipe-grid', { search: value });
-	}
-
-	/**
-	 *
-	 * @param {RecipeCard[]} recipeArray
-	 */
-	#_handleResponse(recipeArray) {}
-
-	/**
-	 *
-	 * @param {string} string
-	 */
-	#_addToState(string) {
-		appStore.addSearchString(string);
-	}
-
 	render() {
 		this.container.appendChild(this.searchComponent);
-	}
-
-	destroy() {
-		console.warn('Function destroy() not yet implemented.');
 	}
 }

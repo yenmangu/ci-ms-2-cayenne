@@ -53,35 +53,18 @@ export class RecipeGrid {
 	}
 
 	/**
-	 * Set the loading state
 	 *
-	 * @param {boolean} isLoading
+	 * @param {number} id
+	 * @returns {RecipeCard | undefined}
 	 */
-	setLoading(isLoading) {
-		this.loading = isLoading;
-	}
-
-	/**
-	 *
-	 * @param {RecipeCardObject[]} updatedRecipes
-	 * @param {boolean} animate
-	 */
-	onGridUpdate(updatedRecipes, animate = false) {
-		if (!animate) {
-			this.updateCards(updatedRecipes);
-			this.render();
-		} else {
-			const toRemoveIds = this.recipes
-				.filter(prev => !updatedRecipes.some(next => next.id === prev.id))
-				.map(r => r.id);
-			toRemoveIds.forEach(id => {
-				const cardInstance = this.getCardById(id);
-				if (cardInstance && cardInstance.parent)
-					this._removeCardWithAnimation(cardInstance.parent, () => {
-						this.updateCards(updatedRecipes);
-					});
-			});
-		}
+	_preRenderCardInstances() {
+		this.cardInstances = this.recipes.map(recipe => {
+			const wrapper = document.createElement('div');
+			wrapper.className = getCardWrapperClassName();
+			const card = new RecipeCard(wrapper, recipe);
+			// card.render()
+			return card;
+		});
 	}
 
 	/**
@@ -101,114 +84,6 @@ export class RecipeGrid {
 			},
 			{ once: true }
 		);
-	}
-
-	/**
-	 * Renders the grid and
-	 * either skeletons if loading === true,
-	 * or live recipe cards if loading === false
-	 *
-	 * @returns {void}
-	 */
-	render() {
-		this.appRoot.innerHTML = renderGridContainer(this.title, this.search);
-		this.grid = document.getElementById('recipeGrid');
-		if (!this.grid) {
-			throw new Error(`[Recipe Grid Controller] Recipe grid not found`);
-		}
-
-		if (this.loading) {
-			this._renderSkeletons();
-			return;
-		} else {
-			this._renderRecipeCards();
-		}
-	}
-
-	/**
-	 *
-	 * @param {RecipeCardObject[]} updatedRecipes
-	 */
-	updateCards(updatedRecipes) {
-		this.recipes = updatedRecipes;
-		this.render();
-	}
-
-	/**
-	 *
-	 * @param {string | number} field
-	 */
-	sortBy(field) {
-		const sorted = [...this.recipes].sort((a, b) => {
-			const aVal = a[field];
-			const bVal = b[field];
-
-			if (typeof aVal === 'string') {
-				return aVal.localeCompare(bVal);
-			} else {
-				return aVal - bVal;
-			}
-		});
-
-		this.updateCards(sorted);
-	}
-
-	/**
-	 *
-	 * @param {()=> boolean | null} [fn]
-	 * @param {Object} [filters]
-	 */
-	filter(fn = null, filters = {}) {
-		let filtered = /** @type {RecipeCardObject[]} */ ([]);
-		if (typeof fn === 'function') {
-			filtered = this.recipes.filter(fn);
-		} else {
-			filtered = this.applyFilters(filters);
-		}
-
-		this.updateCards(filtered);
-	}
-
-	/**
-	 *
-	 * @param {Object} filters
-	 * @returns {RecipeCardObject[]}
-	 */
-	applyFilters(filters) {
-		const keys = Object.keys(filters);
-		if (keys.length === 0) return this.recipes;
-
-		return this.recipes.filter(recipe => {
-			return keys.every(key => {
-				const value = filters[key];
-				const recipeVal = recipe[key];
-
-				if (Array.isArray(recipeVal)) {
-					return recipeVal.includes(value);
-				} else {
-					return recipeVal === value;
-				}
-			});
-		});
-	}
-
-	/**
-	 *
-	 * @param {number} id
-	 * @returns {RecipeCard | undefined}
-	 */
-	getCardById(id) {
-		return this.cardInstances.find(card => card.recipe.id === id);
-	}
-
-	_preRenderCardInstances() {
-		this.cardInstances = this.recipes.map(recipe => {
-			const wrapper = document.createElement('div');
-			wrapper.className = getCardWrapperClassName();
-			const card = new RecipeCard(wrapper, recipe);
-			// card.render()
-			return card;
-		});
 	}
 
 	_renderInstances() {
@@ -248,6 +123,29 @@ export class RecipeGrid {
 		}
 	}
 
+	/**
+	 *
+	 * @param {Object} filters
+	 * @returns {RecipeCardObject[]}
+	 */
+	applyFilters(filters) {
+		const keys = Object.keys(filters);
+		if (keys.length === 0) return this.recipes;
+
+		return this.recipes.filter(recipe => {
+			return keys.every(key => {
+				const value = filters[key];
+				const recipeVal = recipe[key];
+
+				if (Array.isArray(recipeVal)) {
+					return recipeVal.includes(value);
+				} else {
+					return recipeVal === value;
+				}
+			});
+		});
+	}
+
 	destroy() {
 		this.appRoot.innerHTML = '';
 		this.cardInstances = [];
@@ -256,5 +154,107 @@ export class RecipeGrid {
 			this.subscription.unsubscribe();
 			this.subscription = null;
 		}
+	}
+
+	/**
+	 *
+	 * @param {()=> boolean | null} [fn]
+	 * @param {Object} [filters]
+	 */
+	filter(fn = null, filters = {}) {
+		let filtered = /** @type {RecipeCardObject[]} */ ([]);
+		if (typeof fn === 'function') {
+			filtered = this.recipes.filter(fn);
+		} else {
+			filtered = this.applyFilters(filters);
+		}
+
+		this.updateCards(filtered);
+	}
+
+	getCardById(id) {
+		return this.cardInstances.find(card => card.recipe.id === id);
+	}
+
+	/**
+	 *
+	 * @param {RecipeCardObject[]} updatedRecipes
+	 * @param {boolean} animate
+	 */
+	onGridUpdate(updatedRecipes, animate = false) {
+		if (!animate) {
+			this.updateCards(updatedRecipes);
+			this.render();
+		} else {
+			const toRemoveIds = this.recipes
+				.filter(prev => !updatedRecipes.some(next => next.id === prev.id))
+				.map(r => r.id);
+			toRemoveIds.forEach(id => {
+				const cardInstance = this.getCardById(id);
+				if (cardInstance && cardInstance.parent)
+					this._removeCardWithAnimation(cardInstance.parent, () => {
+						this.updateCards(updatedRecipes);
+					});
+			});
+		}
+	}
+
+	/**
+	 * Renders the grid and
+	 * either skeletons if loading === true,
+	 * or live recipe cards if loading === false
+	 *
+	 * @returns {void}
+	 */
+	render() {
+		this.appRoot.innerHTML = renderGridContainer(this.title, this.search);
+		this.grid = document.getElementById('recipeGrid');
+		if (!this.grid) {
+			throw new Error(`[Recipe Grid Controller] Recipe grid not found`);
+		}
+
+		if (this.loading) {
+			this._renderSkeletons();
+			return;
+		} else {
+			this._renderRecipeCards();
+		}
+	}
+
+	/**
+	 * Set the loading state
+	 *
+	 * @param {boolean} isLoading
+	 */
+	setLoading(isLoading) {
+		this.loading = isLoading;
+	}
+
+	/**
+	 *
+	 * @param {string | number} field
+	 */
+	sortBy(field) {
+		const sorted = [...this.recipes].sort((a, b) => {
+			const aVal = a[field];
+			const bVal = b[field];
+
+			if (typeof aVal === 'string') {
+				return aVal.localeCompare(bVal);
+			} else {
+				return aVal - bVal;
+			}
+		});
+
+		this.updateCards(sorted);
+	}
+
+	/**
+	 *
+	 * @param {RecipeCardObject[]} updatedRecipes
+	 */
+	updateCards(updatedRecipes) {
+		this.recipes = updatedRecipes;
+		this.render();
 	}
 }

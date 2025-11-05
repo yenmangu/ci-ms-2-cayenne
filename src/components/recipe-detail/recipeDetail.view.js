@@ -5,6 +5,33 @@
  */
 
 /**
+ * @typedef {object} ImageModel
+ * @property {string} imageUrl
+ * @property {string} title
+ *
+ */
+
+const PLACEHOLDER_URL =
+	'../../../assets/images/placeholders/meal-placeholder.png';
+
+/**
+ *
+ * @param {ImageModel} model
+ * @returns {string}
+ */
+export function renderImage(model) {
+	return `
+    <img class="img-fluid recipe-image rounded""
+         src="${PLACEHOLDER_URL}"
+         alt="${model.title}"
+         loading="lazy"
+         decoding="async"
+         data-target-src="${model.imageUrl}">
+    <div class="card-body"><h3 class="card-title">${model.title}</h3></div>
+  `;
+}
+
+/**
  *
  * @param {Ingredient} item
  * @param {'metric' | 'us' } [system='metric']
@@ -17,7 +44,9 @@ function ingredientMiniCard(item, system = 'metric', unitLength = 'unitShort') {
 	const measureUnit = measure ? measure[unitLength] : item.unit ?? '';
 
 	const imgHtml = item.image
-		? `<img class="ingredient-image rounded me-2" width="32" height="32" src="https://spoonacular.com/cdn/ingredients_100x100/${item.image}" alt="${item.name}" />`
+		? `<img class="ingredient-image rounded me-2" width="32" height="32"
+				src="https://spoonacular.com/cdn/ingredients_100x100/${item.image}"
+				alt="${item.name}" />`
 		: '';
 
 	return `
@@ -60,17 +89,17 @@ export function renderRecipeDetail(recipe, summaryObj, opts) {
 	// console.log('Opts passed to view: ', opts);
 
 	const {
-		title,
-		image,
-		servings,
-		readyInMinutes,
+		analyzedInstructions,
 		cuisines,
 		dairyFree,
 		diets,
-		instructions,
 		extendedIngredients,
+		image,
+		instructions,
+		readyInMinutes,
+		servings,
 		summary,
-		analyzedInstructions
+		title
 	} = recipe;
 
 	/**
@@ -87,7 +116,6 @@ export function renderRecipeDetail(recipe, summaryObj, opts) {
 		) {
 			recipe[key] = 'Not Available';
 		}
-		// TODO: Add async methods for retrieving additional details
 	}
 
 	const ingredientsInsertsArray = [];
@@ -112,17 +140,11 @@ export function renderRecipeDetail(recipe, summaryObj, opts) {
 
 	const ingredientsHtml = ingredientsInsertsArray.join('');
 
-	// const summaryBlock = Array.isArray(summary) ? summary : summary.split('.');
-	// for (let el of summaryBlock) {
-	// 	const summaryInsert = `<p>${el}</p>`;
-	// 	summaryInsertsArray.push(summaryInsert);
-	// }
-
 	const recipeTemplate = `<div class="recipe-detail container my-2" id="recipeDetail">
 
   <section class="mb-4 text-center">
     <h2 class="recipe-title">${title}</h2>
-    <img class="img-fluid recipe-image rounded" src="${image}" />
+    <div data-label-image-wrapper></div>
 		<div class="toggle-container" id="toggleContainer"></div>
   </section>
 

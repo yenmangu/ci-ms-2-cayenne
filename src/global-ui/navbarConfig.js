@@ -7,17 +7,17 @@
  * @typedef {Link[]}
  */
 const links = [
-	{ href: './index.html', title: 'Home', dataPage: 'index' },
-	{ href: './features.html', title: 'Features', dataPage: 'features' },
+	{ dataPage: 'index', href: './index.html', title: 'Home' },
+	{ dataPage: 'features', href: './features.html', title: 'Features' },
 	// { href: './about.html', title: 'About', dataPage: 'about' },
-	{ href: './cayenne.html', title: 'Cayenne', dataPage: 'cayenne' }
+	{ dataPage: 'cayenne', href: './cayenne.html', title: 'Cayenne' }
 ];
 
 /**
  * @type {NavBarConfig}
  */
 const navConfig = {
-	links,
-	activeLink: ''
+	activeLink: '',
+	links
 };
 export { links, navConfig };

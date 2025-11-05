@@ -53,6 +53,50 @@ export class IngredientMiniCard {
 		this.icon = null;
 	}
 
+	/**
+	 *
+	 * @param {MouseEvent} e
+	 */
+	#_handleShoppingListClick(e) {
+		e.preventDefault();
+		this.#_updateState();
+	}
+
+	/**
+	 *
+	 * @param {HTMLElement} container
+	 */
+	#_insertIcon(container) {
+		const cartIconOptions = iconButtonConfigs.cart(false, undefined, 'solid');
+		this.icon = new IconButton(this.iconRegistry, {
+			...cartIconOptions,
+
+			onClick: (e, btn) => {
+				console.log(`Shopping list clicked for ${this.ingredient.name}`);
+				this.#_handleShoppingListClick(e);
+			}
+		});
+		this.icon.mount(container);
+	}
+
+	#_updateState() {
+		/** @type {ShoppingListItem} */
+		const itemToStore = {
+			id: this.ingredient.id,
+			image: this.ingredient.image,
+			linkedRecipe: this.opts.linkedRecipe ?? '',
+			linkedRecipeId: this.opts.linkedRecipeId ?? null,
+			name: this.ingredient.name
+		};
+		appStore.toggleIngredientInCart(itemToStore);
+	}
+
+	destroy() {
+		this.subscription.unsubscribe();
+		this.subscription = null;
+		this.el.innerHTML = '';
+	}
+
 	init() {
 		this.subscription = appStore
 			.subscribe(state => {
@@ -94,49 +138,5 @@ export class IngredientMiniCard {
 		wrapper.appendChild(this.miniCardEl);
 		this.el = wrapper;
 		return this.el;
-	}
-
-	/**
-	 *
-	 * @param {HTMLElement} container
-	 */
-	#_insertIcon(container) {
-		const cartIconOptions = iconButtonConfigs.cart(false, undefined, 'solid');
-		this.icon = new IconButton(this.iconRegistry, {
-			...cartIconOptions,
-
-			onClick: (e, btn) => {
-				console.log(`Shopping list clicked for ${this.ingredient.name}`);
-				this.#_handleShoppingListClick(e);
-			}
-		});
-		this.icon.mount(container);
-	}
-
-	/**
-	 *
-	 * @param {MouseEvent} e
-	 */
-	#_handleShoppingListClick(e) {
-		e.preventDefault();
-		this.#_updateState();
-	}
-
-	#_updateState() {
-		/** @type {ShoppingListItem} */
-		const itemToStore = {
-			id: this.ingredient.id,
-			image: this.ingredient.image,
-			name: this.ingredient.name,
-			linkedRecipe: this.opts.linkedRecipe ?? '',
-			linkedRecipeId: this.opts.linkedRecipeId ?? null
-		};
-		appStore.toggleIngredientInCart(itemToStore);
-	}
-
-	destroy() {
-		this.subscription.unsubscribe();
-		this.subscription = null;
-		this.el.innerHTML = '';
 	}
 }

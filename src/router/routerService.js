@@ -1,27 +1,8 @@
 export const routerService = {
 	activeRouteKey: null,
 
-	setActiveRouteKey(newKey) {
-		this.activeRouteKey = newKey;
-	},
-
 	isActiveRoute(key) {
 		return this.activeRouteKey === key;
-	},
-
-	navigateHome() {
-		window.location.hash = '#/';
-	},
-	navigateRecipe(recipeId) {
-		window.location.hash = `#/recipe?id=${encodeURIComponent(recipeId)}`;
-	},
-
-	navigateShoppingList() {
-		window.location.hash = `#/shopping-list`;
-	},
-
-	navigateLikedRecipes() {
-		window.location.hash = '#/saved-recipes';
 	},
 
 	navigate(path, params) {
@@ -35,5 +16,24 @@ export const routerService = {
 			}
 		}
 		window.location.hash = hash;
+	},
+
+	navigateHome() {
+		window.location.hash = '#/';
+	},
+	navigateLikedRecipes() {
+		window.location.hash = '#/saved-recipes';
+	},
+
+	navigateRecipe(recipeId) {
+		window.location.hash = `#/recipe?id=${encodeURIComponent(recipeId)}`;
+	},
+
+	navigateShoppingList() {
+		window.location.hash = `#/shopping-list`;
+	},
+
+	setActiveRouteKey(newKey) {
+		this.activeRouteKey = newKey;
 	}
 };

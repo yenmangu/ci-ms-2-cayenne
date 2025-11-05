@@ -7,15 +7,15 @@ import { appStore } from './appStore.js';
 const PROD_HOSTNAMES = ['yenmangu.github.io'];
 
 const env = {
-	prod: {
-		API_URL: 'https://ci-cayenne-proxy.vercel.app/api',
-		HOME_URL: 'https://yenmangu.github.io/ci-ms-2-cayenne/'
-	},
 	dev: {
 		API_URL: 'http://127.0.0.1:3000/api',
 		// API_URL: 'https://ci-cayenne-proxy.vercel.app/api',
 		HOME_URL: 'http://127.0.0.1:5500/',
 		PROD_API: 'https://ci-cayenne-proxy.vercel.app/api'
+	},
+	prod: {
+		API_URL: 'https://ci-cayenne-proxy.vercel.app/api',
+		HOME_URL: 'https://yenmangu.github.io/ci-ms-2-cayenne/'
 	}
 };
 
@@ -32,8 +32,8 @@ export const ENV = {
 export const ENV_1 = isProd ? env.prod : env.dev;
 
 const envConfig = {
-	HOME_URL: '',
-	API_URL: ''
+	API_URL: '',
+	HOME_URL: ''
 };
 /**
  *

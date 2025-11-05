@@ -21,10 +21,7 @@ import { getClient } from '../../api/client.singleton.js';
 export const createGridService = (opts = {}) => {
 	const client = getClient();
 	const service = {
-		opts: {},
 		filters: {},
-		recipes: null,
-
 		/**
 		 * Uses data stored on proxy API to test recipeGrid
 		 *
@@ -38,7 +35,10 @@ export const createGridService = (opts = {}) => {
 				service.recipes = data;
 				return data;
 			}
-		}
+		},
+		opts: {},
+
+		recipes: null
 	};
 
 	return service;

@@ -24,12 +24,12 @@ const dedupeMap = new Map();
  */
 function makeDedupeKey(e) {
 	const m = e.meta ?? {};
-	const slim = { endpoint: m.endpoint ?? m.url, cmd: m.cmd };
+	const slim = { cmd: m.cmd, endpoint: m.endpoint ?? m.url };
 	return JSON.stringify({
 		code: e.code,
+		meta: slim,
 		scope: e.scope,
-		status: e.status ?? null,
-		meta: slim
+		status: e.status ?? null
 	});
 }
 
@@ -122,7 +122,7 @@ export function selectLatest(list, scope) {
  */
 export function garbageCollectErrors(
 	list,
-	{ ttl = 5 * 60_000, max = 50 } = {}
+	{ max = 50, ttl = 5 * 60_000 } = {}
 ) {
 	const now = Date.now();
 	let pruned = list.filter(e => now - e.ts < ttl);

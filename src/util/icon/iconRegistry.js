@@ -53,6 +53,9 @@
 import { Icon } from './icon-component/icon.controller.js';
 
 export class IconRegistry {
+	/** @type {Map<string, IconEntry>} */
+	#icons = new Map();
+
 	/**
 	 * @param {string} baseDir e.g. '/assets/icons'
 	 */
@@ -60,82 +63,11 @@ export class IconRegistry {
 		/** @type {string} */
 		this.baseDir = baseDir.replace(/\/+$/, '');
 	}
-
-	/** @type {Map<string, IconEntry>} */
-	#icons = new Map();
-	has(name) {
-		return this.#icons.has(name);
-	}
-
-	/**
-	 * Register an icon from the raw svgText
-	 *
-	 * @param {string} name
-	 * @param {string} svgText
-	 */
-	registerRaw(name, svgText) {
-		if (this.#icons.has(name)) return;
-
-		const template = this.#parseAndNormalise(svgText);
-		this.#icons.set(name, { name, template });
-	}
-
-	/**
-	 * Fetch and register `baseDir/<name>.svg`
-	 * Optimised - if already cached, returns
-	 *
-	 * @param {string} name
-	 * @param {{sanitise?: boolean}} [options]
-	 */
-	async register(name, options = {}) {
-		if (this.#icons.has(name)) return;
-		const base = this.baseDir.endsWith('/') ? this.baseDir : this.baseDir + '/';
-		const absolute = new URL(base, window.location.href);
-		const file = `${encodeURIComponent(name)}.svg`;
-		const url = new URL(file, absolute).toString();
-
-		const res = await fetch(url, { cache: 'force-cache' });
-		if (!res.ok) {
-			throw new Error(`IconRegistry: failed to fetch ${url} (${res.status})`);
-		}
-
-		const svgText = await res.text();
-		const template = this.#parseAndNormalise(svgText, options.sanitise ?? true);
-		this.#icons.set(name, { name, template });
-	}
-
-	/**
-	 *
-	 * @param {string} name
-	 * @param {{sanitise?: boolean}} options
-	 * @returns
-	 */
-	async ensure(name, options = {}) {
-		if (this.#icons.has(name)) return;
-		await this.register(name, options);
-	}
-
 	/**
 	 *
 	 * @param {string[]} names
 	 * @param {{sanitise?: boolean}} [options]
 	 */
-	async preload(names, options = {}) {
-		await Promise.all(
-			names.map(n =>
-				this.ensure(n, options).catch(err => {
-					console.warn(`Iconregistry failed to preload "${n}": `, err);
-				})
-			)
-		);
-	}
-
-	getIcon(name, attrs = {}) {
-		const entry = this.#icons.get(name);
-		if (!entry) throw new Error(`Icon "${name}" not registered`);
-		return new Icon(entry, attrs);
-	}
-
 	#buildUrl(name) {
 		const base = this.baseDir.endsWith('/') ? this.baseDir : this.baseDir + '/';
 		return new URL(`${name}.svg`, base).toString();
@@ -203,6 +135,74 @@ export class IconRegistry {
 			}
 		});
 		return svg;
+	}
+
+	/**
+	 *
+	 * @param {string} name
+	 * @param {{sanitise?: boolean}} options
+	 * @returns
+	 */
+	async ensure(name, options = {}) {
+		if (this.#icons.has(name)) return;
+		await this.register(name, options);
+	}
+
+	getIcon(name, attrs = {}) {
+		const entry = this.#icons.get(name);
+		if (!entry) throw new Error(`Icon "${name}" not registered`);
+		return new Icon(entry, attrs);
+	}
+
+	has(name) {
+		return this.#icons.has(name);
+	}
+
+	async preload(names, options = {}) {
+		await Promise.all(
+			names.map(n =>
+				this.ensure(n, options).catch(err => {
+					console.warn(`Iconregistry failed to preload "${n}": `, err);
+				})
+			)
+		);
+	}
+
+	/**
+	 * Fetch and register `baseDir/<name>.svg`
+	 * Optimised - if already cached, returns
+	 *
+	 * @param {string} name
+	 * @param {{sanitise?: boolean}} [options]
+	 */
+	async register(name, options = {}) {
+		if (this.#icons.has(name)) return;
+		const base = this.baseDir.endsWith('/') ? this.baseDir : this.baseDir + '/';
+		const absolute = new URL(base, window.location.href);
+		const file = `${encodeURIComponent(name)}.svg`;
+		const url = new URL(file, absolute).toString();
+
+		const res = await fetch(url, { cache: 'force-cache' });
+		if (!res.ok) {
+			throw new Error(`IconRegistry: failed to fetch ${url} (${res.status})`);
+		}
+
+		const svgText = await res.text();
+		const template = this.#parseAndNormalise(svgText, options.sanitise ?? true);
+		this.#icons.set(name, { name, template });
+	}
+
+	/**
+	 * Register an icon from the raw svgText
+	 *
+	 * @param {string} name
+	 * @param {string} svgText
+	 */
+	registerRaw(name, svgText) {
+		if (this.#icons.has(name)) return;
+
+		const template = this.#parseAndNormalise(svgText);
+		this.#icons.set(name, { name, template });
 	}
 
 	test() {}

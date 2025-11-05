@@ -10,12 +10,12 @@ import { pushError, garbageCollectErrors } from '../error.model.js';
 describe('error.model pushError + dedupe', () => {
 	/** @type {ErrorEntry} */
 	const base = {
-		id: 'a1',
-		type: 'server',
 		code: 'HTTP_500',
-		userMessage: 'x',
+		id: 'a1',
 		scope: 'global',
-		ts: 1_000
+		ts: 1_000,
+		type: 'server',
+		userMessage: 'x'
 	};
 
 	beforeEach(() => {
@@ -42,7 +42,7 @@ describe('error.model pushError + dedupe', () => {
 	test('errors older than TTL can be garbageCollected (housekeeping)', () => {
 		jest.spyOn(Date, 'now').mockReturnValue(300_001);
 		const list = [{ ...base, ts: 0 }];
-		const pruned = garbageCollectErrors(list, { ttl: 300_000, max: 50 });
+		const pruned = garbageCollectErrors(list, { max: 50, ttl: 300_000 });
 		expect(pruned).toHaveLength(0);
 	});
 
@@ -50,14 +50,14 @@ describe('error.model pushError + dedupe', () => {
 		jest.spyOn(Date, 'now').mockReturnValue(300_000);
 		/** @type {ErrorEntry} */
 		const fresh = {
-			id: '2',
-			type: 'client',
 			code: 'HTTP_4XX',
-			userMessage: 'y',
+			id: '2',
 			scope: 'global',
-			ts: 299_99
+			ts: 299_99,
+			type: 'client',
+			userMessage: 'y'
 		};
-		const kept = garbageCollectErrors([fresh], { ttl: 300_000, max: 50 });
+		const kept = garbageCollectErrors([fresh], { max: 50, ttl: 300_000 });
 		expect(kept).toHaveLength(1);
 	});
 
@@ -66,16 +66,16 @@ describe('error.model pushError + dedupe', () => {
 		const mk = i =>
 			/** @type {ErrorEntry} */
 			({
-				id: String(i),
-				type: /** @type {ErrorType} */ ('server'),
 				code: 'HTTP_500',
-				userMessage: 'x',
+				id: String(i),
 				scope: /** @type {ErrorScope} */ ('global'),
-				ts: 900_000 + i
+				ts: 900_000 + i,
+				type: /** @type {ErrorType} */ ('server'),
+				userMessage: 'x'
 			});
 
 		const list = Array.from({ length: 5 }, (_, i) => mk(i)); // ts ascending
-		const pruned = garbageCollectErrors(list, { ttl: 999_999, max: 4 });
+		const pruned = garbageCollectErrors(list, { max: 4, ttl: 999_999 });
 		expect(pruned).toHaveLength(4);
 		expect(pruned.map(e => e.id)).toEqual(['1', '2', '3', '4']);
 	});

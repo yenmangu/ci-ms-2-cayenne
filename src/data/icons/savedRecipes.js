@@ -16,22 +16,18 @@ export function buildSavedRecipesOptions(
 	// Not including toggled, onClick (those will be added later)
 	/** @type {IconButtonOptions} */
 	const savedRecipes = {
-		icon: 'bookmark-regular',
-		toggledIcon: 'bookmark-solid',
-		isNavLink,
-		routeKey: isNavLink ? routeKey : '',
-		variant: variant ?? 'solid',
-		disabled: false,
 		buttonAttrs: {
 			ariaLabel: 'Saved recipes',
-			title: 'View saved recipes',
-			tabIndex: 0
+			tabIndex: 0,
+			title: 'View saved recipes'
 		},
 		buttonToggledAttrs: {
 			ariaLabel: 'Saved recipes (selected)',
-			title: 'Saved recipes (selected)',
-			tabIndex: 0
+			tabIndex: 0,
+			title: 'Saved recipes (selected)'
 		},
+		disabled: false,
+		icon: 'bookmark-regular',
 		iconAttrs: {
 			ariaHidden: true, // Decorative SVG
 			focusable: false
@@ -39,7 +35,11 @@ export function buildSavedRecipesOptions(
 		iconToggledAttrs: {
 			ariaHidden: true,
 			focusable: false
-		}
+		},
+		isNavLink,
+		routeKey: isNavLink ? routeKey : '',
+		toggledIcon: 'bookmark-solid',
+		variant: variant ?? 'solid'
 	};
 	return savedRecipes;
 }

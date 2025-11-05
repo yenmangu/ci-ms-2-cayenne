@@ -31,6 +31,13 @@ export class LikedRecipes {
 		this.init();
 	}
 
+	destroy() {
+		if (this.subscription) {
+			this.subscription.unsubscribe();
+			this.subscription = null;
+		}
+	}
+
 	init() {
 		this.subscription = appStore.subscribe(state => {
 			if (state && state.likedRecipes) {
@@ -43,12 +50,5 @@ export class LikedRecipes {
 			title: this.title
 		});
 		this.grid.render();
-	}
-
-	destroy() {
-		if (this.subscription) {
-			this.subscription.unsubscribe();
-			this.subscription = null;
-		}
 	}
 }

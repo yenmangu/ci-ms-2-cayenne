@@ -1,60 +1,60 @@
 import { mapFullImageUrl } from '../util/dataMapping.js';
 
 export const bananaResults = {
+	number: 10,
+	offset: 0,
 	results: [
 		{
 			id: 9040,
-			name: 'banana',
-			image: 'bananas.jpg'
+			image: 'bananas.jpg',
+			name: 'banana'
 		},
 		{
 			id: 10011111,
-			name: 'banana leaves',
-			image: 'banana-leaf.jpg'
+			image: 'banana-leaf.jpg',
+			name: 'banana leaves'
 		},
 		{
 			id: 19400,
-			name: 'banana chips',
-			image: 'banana-chips.jpg'
+			image: 'banana-chips.jpg',
+			name: 'banana chips'
 		},
 		{
 			id: 18019,
-			name: 'banana bread',
-			image: 'quick-bread.png'
+			image: 'quick-bread.png',
+			name: 'banana bread'
 		},
 		{
 			id: 11976,
-			name: 'banana pepper',
-			image: 'wax-peppers.png'
+			image: 'wax-peppers.png',
+			name: 'banana pepper'
 		},
 		{
 			id: 10211643,
-			name: 'pink banana squash',
-			image: 'pink-banana-squash.jpg'
+			image: 'pink-banana-squash.jpg',
+			name: 'pink banana squash'
 		},
 		{
 			id: 98987,
-			name: 'banana blossoms',
-			image: 'banana-blossoms.jpg'
+			image: 'banana-blossoms.jpg',
+			name: 'banana blossoms'
 		},
 		{
 			id: 98903,
-			name: 'banana pepper rings',
-			image: 'wax-peppers.png'
+			image: 'wax-peppers.png',
+			name: 'banana pepper rings'
 		},
 		{
 			id: 93779,
-			name: 'banana liqueur',
-			image: 'limoncello.jpg'
+			image: 'limoncello.jpg',
+			name: 'banana liqueur'
 		},
 		{
 			id: 14211111,
-			name: 'banana extract',
-			image: 'extract.png'
+			image: 'extract.png',
+			name: 'banana extract'
 		}
 	],
-	offset: 0,
-	number: 10,
 	totalResults: 14
 };
 

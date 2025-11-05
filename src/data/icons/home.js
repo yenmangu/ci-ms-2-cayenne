@@ -16,22 +16,18 @@ export function buildHomeOptions(
 	// Not including toggled, onClick (those will be added later)
 	/** @type {IconButtonOptions} */
 	const home = {
-		icon: 'house-regular',
-		toggledIcon: 'house-solid',
-		isNavLink,
-		routeKey: isNavLink ? routeKey : '',
-		variant: variant ?? 'solid',
-		disabled: false,
 		buttonAttrs: {
 			ariaLabel: 'Home',
-			title: 'Go to Home page',
-			tabIndex: 0
+			tabIndex: 0,
+			title: 'Go to Home page'
 		},
 		buttonToggledAttrs: {
 			ariaLabel: 'Home (selected)',
-			title: 'Home (selected)',
-			tabIndex: 0
+			tabIndex: 0,
+			title: 'Home (selected)'
 		},
+		disabled: false,
+		icon: 'house-regular',
 		iconAttrs: {
 			ariaHidden: true, // Decorative SVG
 			focusable: false
@@ -39,7 +35,11 @@ export function buildHomeOptions(
 		iconToggledAttrs: {
 			ariaHidden: true,
 			focusable: false
-		}
+		},
+		isNavLink,
+		routeKey: isNavLink ? routeKey : '',
+		toggledIcon: 'house-solid',
+		variant: variant ?? 'solid'
 	};
 	return home;
 }

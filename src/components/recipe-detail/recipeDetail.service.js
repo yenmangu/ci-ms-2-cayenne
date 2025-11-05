@@ -17,6 +17,7 @@
  */
 
 import { getClient } from '../../api/client.singleton.js';
+import { addImagePlaceholder } from '../../data/addImagePlaceholder.js';
 import { testRecipe, testRecipeSummary } from '../../data/testRecipe.js';
 
 /**
@@ -28,10 +29,7 @@ export const createDetailService = opts => {
 	const client = getClient();
 	/** @type {DetailService} */
 	const service = {
-		opts: {},
 		fetchedRecipe: null,
-		recipeSummary: null,
-
 		/**
 		 *
 		 * @param {number} [id]
@@ -46,7 +44,10 @@ export const createDetailService = opts => {
 				fetchedRecipe: service.fetchedRecipe,
 				summary: service.recipeSummary
 			};
-		}
+		},
+		opts: {},
+
+		recipeSummary: null
 	};
 
 	return service;

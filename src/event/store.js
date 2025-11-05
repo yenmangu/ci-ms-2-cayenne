@@ -260,17 +260,17 @@ export function createStateStore(initialState = {}) {
 				listener(getListenerArg(state, key));
 				return chain;
 			},
-			unsubscribe: () => {
-				emitterChain.unsubscribe();
-				return chain;
-			},
 			/**
 			 *
 			 * @param {Listener} fn
 			 * @returns
 			 */
+			once: () => makeStoreApi(emitterChain.once(), listener, key),
 			tap: fn => makeStoreApi(emitterChain.tap(fn), listener, key),
-			once: () => makeStoreApi(emitterChain.once(), listener, key)
+			unsubscribe: () => {
+				emitterChain.unsubscribe();
+				return chain;
+			}
 		};
 		return chain;
 	}
@@ -287,7 +287,7 @@ export function createStateStore(initialState = {}) {
 	 */
 	function dispatch(action) {
 		if (typeof action === 'function') {
-			return action({ setState, getState, subscribe, dispatch, resetState });
+			return action({ dispatch, getState, resetState, setState, subscribe });
 		} else if (typeof action === 'object') {
 			return setState(action);
 		} else {
@@ -302,10 +302,10 @@ export function createStateStore(initialState = {}) {
 	}
 
 	function persistState() {
-		const { likedRecipes, unitLocale, shoppingList } = state;
+		const { likedRecipes, shoppingList, unitLocale } = state;
 		localStorage.setItem(
 			CAYENNE_STATE,
-			JSON.stringify({ likedRecipes, unitLocale, shoppingList })
+			JSON.stringify({ likedRecipes, shoppingList, unitLocale })
 		);
 	}
 
@@ -318,15 +318,15 @@ export function createStateStore(initialState = {}) {
 	}
 
 	return {
-		setState,
-		getState,
-		subscribe,
+		addSearchString,
 		dispatch,
+		getState,
+		removeLikedRecipe,
 		resetState,
 		saveRecipe,
-		removeLikedRecipe,
-		toggleLikedrecipe,
-		addSearchString,
-		toggleIngredientInCart
+		setState,
+		subscribe,
+		toggleIngredientInCart,
+		toggleLikedrecipe
 	};
 }

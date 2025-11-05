@@ -16,8 +16,8 @@ import { pushError } from './error.model.js';
 export function normaliseError(err, hints = {}) {
 	if (hints.type === 'not_found') {
 		return {
-			type: 'not_found',
 			code: hints.code || 'ROUTE_404',
+			type: 'not_found',
 			userMessage: 'That page doesnt exist.',
 			...hints
 		};
@@ -26,51 +26,51 @@ export function normaliseError(err, hints = {}) {
 		const s = /** @type {{status?: number}} */ (err).status ?? 0;
 		if (s >= 500)
 			return {
-				type: 'server',
 				code: 'HTTP_5XX',
 				status: s,
+				type: 'server',
 				userMessage: 'Server error. Please try again.',
 				...hints
 			};
 		if (s === 404) {
 			return {
-				type: 'not_found',
 				code: 'HTTP_404',
 				status: s,
+				type: 'not_found',
 				userMessage: "We couldn't find that.",
 				...hints
 			};
 		}
 		if (s === 429) {
 			return {
-				type: 'rate_limit',
 				code: 'HTTP_429',
 				status: s,
+				type: 'rate_limit',
 				userMessage: 'Too many requests. Try later',
 				...hints
 			};
 		}
 		return {
-			type: 'client',
 			code: 'HTTP_4XX',
 			status: s,
+			type: 'client',
 			userMessage: 'There was a problem with your request.',
 			...hints
 		};
 	}
 	if (err instanceof TypeError && /fetch/i.test(String(err.message))) {
 		return {
-			type: 'network',
 			code: 'NETWORK',
+			type: 'network',
 			userMessage: 'Network issue. Check your connection',
 			...hints
 		};
 	}
 	return {
-		type: 'unexpected',
 		code: 'UNEXPECTED',
-		userMessage: 'Unexpected error occurred',
 		message: String(err),
+		type: 'unexpected',
+		userMessage: 'Unexpected error occurred',
 		...hints
 	};
 }
@@ -86,17 +86,17 @@ export function normalisedToEntry(
 	fallback = /** @type {ErrorScope} */ ('global')
 ) {
 	return {
-		id: String(Date.now()) + Math.random().toString(36).slice(2, 6),
-		type: n.type,
 		code: n.code,
-		userMessage: n.userMessage,
-		status: n.status,
+		id: String(Date.now()) + Math.random().toString(36).slice(2, 6),
 		message: n.message,
+		meta: n.context || {},
 		scope: n.context?.scope || fallback,
 		severity: 'error',
+		status: n.status,
 		sticky: Boolean(n.retry),
 		ts: Date.now(),
-		meta: n.context || {}
+		type: n.type,
+		userMessage: n.userMessage
 	};
 }
 
@@ -108,7 +108,7 @@ export function normalisedToEntry(
 export function addError(n) {
 	/** @type {StoreAction} */
 	return function thunk(ctx) {
-		const { setState, getState } = ctx;
+		const { getState, setState } = ctx;
 		const entry = normalisedToEntry(n);
 		const next = pushError(getState().errors || [], entry);
 		setState({ errors: next });

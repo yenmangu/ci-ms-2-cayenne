@@ -24,5 +24,9 @@
 	"postman.settings.dotenv-detection-notification-visibility": false,
 	"editor.hover.sticky": true,
 	"typescript.tsdk": "node_modules/typescript/lib",
-	"markdown.preview.doubleClickToSwitchToEditor": true
+	"markdown.preview.doubleClickToSwitchToEditor": true,
+	"editor.codeActionsOnSave": {
+		"source.fixAll.eslint": "always",
+		"source.organizeImports": "always"
+	}
 }

@@ -30,13 +30,13 @@ import { IconRegistry } from '../iconRegistry.js';
 import { Icon } from './icon.controller.js';
 
 const ARIA_ATTRS = {
-	title: 'title',
-	ariaLabel: 'aria-label',
-	ariaLabelledBy: 'aria-labelledby',
 	ariaDescribedBy: 'aria-describedby',
 	ariaHidden: 'aria-hidden',
+	ariaLabel: 'aria-label',
+	ariaLabelledBy: 'aria-labelledby',
 	focusable: 'focusable',
-	tabIndex: 'tabindex'
+	tabIndex: 'tabindex',
+	title: 'title'
 };
 
 /**
@@ -47,19 +47,19 @@ const CSS_LENGTH_RE =
 	/^(-?(\d*\.)?\d+)((px)|(em)|(%)|(ex)|(ch)|(rem)|(vw)|(vh)|(vmin)|(vmax)|(cm)|(mm)|(in)|(pt)|(pc))$/gim;
 
 export class IconButton {
-	/** @type {HTMLButtonElement} */ #el;
-	/** @type {HTMLSpanElement} */ #iconHost;
-	/** @type {HTMLElement|null} */ #labelNode = null;
-	/** @type {IconButtonOptions} */ #opts;
-	/** @type {Icon|null} */ #icon = null;
-	/** @type {IconRegistry} */ #registry;
-	/** @type {string} */ #routeKey = null;
+	/** @type {HTMLButtonElement} */ #buttonAttrs;
+	/** @type {HTMLSpanElement} */ #buttonToggledAttrs;
+	/** @type {HTMLElement|null} */ #el;
+	/** @type {IconButtonOptions} */ #icon = null;
+	/** @type {Icon|null} */ #iconAttrs;
+	/** @type {IconRegistry} */ #iconHost;
+	/** @type {string} */ #iconToggledAttrs;
 
-	/** @type {IconAttributes} */ #iconAttrs;
-	/** @type {IconAttributes} */ #iconToggledAttrs;
+	/** @type {IconAttributes} */ #labelNode = null;
+	/** @type {IconAttributes} */ #opts;
 
-	/** @type {ButtonAttributes} */ #buttonAttrs;
-	/** @type {ButtonAttributes} */ #buttonToggledAttrs;
+	/** @type {ButtonAttributes} */ #registry;
+	/** @type {ButtonAttributes} */ #routeKey = null;
 
 	/**
 	 * @param {Registry} registry
@@ -71,7 +71,7 @@ export class IconButton {
 		if (!opts?.icon) throw new Error('IconButton: "icon" is required');
 
 		this.#registry = registry;
-		this.#opts = { variant: 'ghost', size: 'md', toggled: false, ...opts };
+		this.#opts = { size: 'md', toggled: false, variant: 'ghost', ...opts };
 		if (opts.routeKey) this.#routeKey = opts.routeKey;
 
 		// New attributes
@@ -126,6 +126,18 @@ export class IconButton {
 
 	/**
 	 *
+	 * @param {Element} el
+	 * @param {object} attrs
+	 */
+	#classList() {
+		const v = this.#opts.variant;
+		const s = this.#opts.size;
+		const t = this.#opts.toggled ? 'icon-button--toggled' : '';
+		return `icon-button icon-button--${v} icon-button--${s} ${t}`.trim();
+	}
+
+	/**
+	 *
 	 * @returns {HTMLSpanElement}
 	 */
 	#createLabelNode() {
@@ -135,11 +147,6 @@ export class IconButton {
 		return span;
 	}
 
-	/**
-	 *
-	 * @param {Element} el
-	 * @param {object} attrs
-	 */
 	#setLabelAttributes(el, attrs) {
 		for (const [key, attrName] of Object.entries(ARIA_ATTRS)) {
 			const value = attrs[key];
@@ -149,25 +156,6 @@ export class IconButton {
 				el.removeAttribute(attrName);
 			}
 		}
-	}
-
-	getCurrentIconAttrs() {
-		return this.#opts.toggled
-			? { ...this.#iconAttrs, ...this.#iconToggledAttrs }
-			: { ...this.#iconAttrs };
-	}
-
-	getCurrentButtonAttrs() {
-		return this.#opts.toggled
-			? { ...this.#buttonAttrs, ...this.#buttonToggledAttrs }
-			: { ...this.#buttonAttrs };
-	}
-
-	#classList() {
-		const v = this.#opts.variant;
-		const s = this.#opts.size;
-		const t = this.#opts.toggled ? 'icon-button--toggled' : '';
-		return `icon-button icon-button--${v} icon-button--${s} ${t}`.trim();
 	}
 
 	/**
@@ -192,13 +180,30 @@ export class IconButton {
 		console.warn('IconButton Invalid size value: ', size);
 	}
 
-	/** @returns {HTMLButtonElement} */
-	get el() {
-		return this.#el;
+	// Optional cleanup; minimise memory leaks
+	destroy() {
+		this.#el.replaceWith();
+		this.#icon = null;
 	}
 
-	get routeKey() {
-		return this.#routeKey;
+	getCurrentButtonAttrs() {
+		return this.#opts.toggled
+			? { ...this.#buttonAttrs, ...this.#buttonToggledAttrs }
+			: { ...this.#buttonAttrs };
+	}
+
+	getCurrentIconAttrs() {
+		return this.#opts.toggled
+			? { ...this.#iconAttrs, ...this.#iconToggledAttrs }
+			: { ...this.#iconAttrs };
+	}
+
+	/**
+	 *
+	 * @param {boolean} on
+	 */
+	isToggled() {
+		return !!this.#opts.toggled;
 	}
 
 	/**
@@ -253,18 +258,14 @@ export class IconButton {
 		}
 	}
 
-	/**
-	 *
-	 * @param {boolean} on
-	 */
-	setToggled(on) {
-		this.toggled = !!on;
-		this.#opts.toggled = !!on;
-		void this.render();
-	}
+	setAriaLabel(text, isToggled) {
+		if (isToggled) {
+			this.#buttonToggledAttrs.ariaLabel = text;
+		} else {
+			this.#buttonAttrs.ariaLabel = text;
+		}
 
-	isToggled() {
-		return !!this.#opts.toggled;
+		void this.render();
 	}
 
 	setDisabled(icon, toggledIcon = this.#opts.toggledIcon) {
@@ -297,19 +298,18 @@ export class IconButton {
 		void this.render();
 	}
 
-	setAriaLabel(text, isToggled) {
-		if (isToggled) {
-			this.#buttonToggledAttrs.ariaLabel = text;
-		} else {
-			this.#buttonAttrs.ariaLabel = text;
-		}
-
+	setToggled(on) {
+		this.toggled = !!on;
+		this.#opts.toggled = !!on;
 		void this.render();
 	}
 
-	// Optional cleanup; minimise memory leaks
-	destroy() {
-		this.#el.replaceWith();
-		this.#icon = null;
+	/** @returns {HTMLButtonElement} */
+	get el() {
+		return this.#el;
+	}
+
+	get routeKey() {
+		return this.#routeKey;
 	}
 }

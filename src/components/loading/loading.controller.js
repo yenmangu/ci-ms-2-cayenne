@@ -18,13 +18,13 @@ export class Loading {
 		this.isLoading = true;
 	}
 
-	render() {
-		this.el = stringToHtml(this.html);
-		if (this.isLoading) this.container.appendChild(this.el);
-	}
-
 	destroy() {
 		this.isLoading = false;
 		this.container.removeChild(this.el);
+	}
+
+	render() {
+		this.el = stringToHtml(this.html);
+		if (this.isLoading) this.container.appendChild(this.el);
 	}
 }

@@ -56,22 +56,22 @@ function _devStoreRecipes() {
 	/** @type {RecipeCard[]} */
 	const devRecipes = [
 		{
-			title: 'test_1',
 			id: 1,
 			image: 'test.jpg',
-			imageType: 'jpg'
+			imageType: 'jpg',
+			title: 'test_1'
 		},
 		{
-			title: 'test_2',
 			id: 2,
 			image: 'test_1.jpg',
-			imageType: 'jpg'
+			imageType: 'jpg',
+			title: 'test_2'
 		},
 		{
-			title: 'test_3',
 			id: 3,
 			image: 'test_3.jpg',
-			imageType: 'jpg'
+			imageType: 'jpg',
+			title: 'test_3'
 		}
 	];
 	localStorage.setItem(likedRecipeKey, JSON.stringify(devRecipes));

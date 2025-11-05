@@ -19,9 +19,9 @@ export function emulateViewportFromQuery(params) {
 
 	/** @type {Record<string, number>} */
 	const PRESETS = {
+		desktop: 1200, // generic large breakpoint
 		mobile: 375, // iPhone-ish
-		tablet: 768, // iPad Mini-ish
-		desktop: 1200 // generic large breakpoint
+		tablet: 768 // iPad Mini-ish
 	};
 
 	let widthPx = 0;
@@ -52,18 +52,18 @@ function addEmulationBadge(label) {
 	const el = document.createElement('div');
 	el.textContent = `Emulated: ${label}`;
 	Object.assign(el.style, {
-		position: 'fixed',
-		zIndex: '99999',
-		right: '8px',
-		bottom: '8px',
-		font: '12px/1.2 system-ui, sans-serif',
-		color: '#222',
 		background: 'rgba(255,255,255,.9)',
 		border: '1px solid #ccc',
 		borderRadius: '6px',
-		padding: '6px 8px',
+		bottom: '8px',
 		boxShadow: '0 1px 4px rgba(0,0,0,.1)',
-		pointerEvents: 'none'
+		color: '#222',
+		font: '12px/1.2 system-ui, sans-serif',
+		padding: '6px 8px',
+		pointerEvents: 'none',
+		position: 'fixed',
+		right: '8px',
+		zIndex: '99999'
 	});
 	document.body.appendChild(el);
 }

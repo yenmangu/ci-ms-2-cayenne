@@ -30,11 +30,7 @@ export const createLandingService = opts => {
 	/** @type {LandingService} */
 	const service = {
 		client,
-		/** @type {RecipeFull} */ fetchedRecipe: null,
-		recipeId: null,
-		recipeCard: null,
-
-		/**
+		/** @type {RecipeFull} */ /**
 		 *
 		 * @param {RecipeFull} recipe
 		 * @returns {RecipeCardObject}
@@ -49,11 +45,10 @@ export const createLandingService = opts => {
 				title: recipe.title
 			};
 		},
-		updateStoreRandomRecipe: async () => {
-			const recipe = await client.getRandomRecipe();
-			appStore.setState({ currentRandom: recipe });
-		},
+		fetchedRecipe: null,
+		recipeCard: null,
 
+		recipeId: null,
 		/**
 		 *
 		 * @param {RecipeFull | SingleRecipeEnvelope} input
@@ -62,6 +57,11 @@ export const createLandingService = opts => {
 		toRecipeCard(input) {
 			const recipe = 'recipes' in input ? input.recipes[0] : input;
 			return recipe;
+		},
+
+		updateStoreRandomRecipe: async () => {
+			const recipe = await client.getRandomRecipe();
+			appStore.setState({ currentRandom: recipe });
 		}
 	};
 

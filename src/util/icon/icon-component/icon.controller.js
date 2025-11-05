@@ -7,6 +7,13 @@ const SVG_NS = 'http://www.w3.org/2000/svg';
 
 export class Icon {
 	/**
+	 *
+	 * @param {SVGElement} svg
+	 * @param {string} text
+	 */
+	static #uid = 0;
+
+	/**
 	 * @param {IconEntry} entry
 	 * @param {IconAttributes} [attrs={}]
 	 * @param {IconAttributes} [toggledAttrs ={}]
@@ -22,24 +29,50 @@ export class Icon {
 
 	/**
 	 *
-	 * @param {HTMLElement} container
+	 * @param {SVGElement} svg
 	 */
-	render(container) {
-		const svg = /** @type {SVGElement} */ (this.entry.template.cloneNode(true));
-		this.node = svg;
-		this.#applyAttrs(this.node);
-		this.#applyClassesAndStyle(this.node);
-		this.#applyA11y(this.node);
-		container.replaceChildren(svg);
-	}
+	#applyA11y(svg) {
+		const {
+			ariaHidden,
+			ariaLabel,
+			desc,
+			describedBy,
+			labelledBy,
+			role,
+			tabIndex,
+			title
+		} = this.attrs;
 
-	/**
-	 *
-	 * @param {IconAttributes} next
-	 */
-	update(next) {
-		Object.assign(this.attrs, next);
-		if (this.node) this.#applyAttrs(this.node);
+		if (ariaHidden === true) {
+			svg.setAttribute('aria-hidden', 'true');
+			svg.removeAttribute('role');
+			svg.removeAttribute('aria-label');
+			svg.removeAttribute('aria-labelledby');
+			svg.removeAttribute('aria-describedby');
+		} else {
+			svg.removeAttribute('aria-hidden');
+			if (role) svg.setAttribute('role', role);
+			else if (!svg.hasAttribute('role')) svg.setAttribute('role', 'img');
+		}
+		if (ariaLabel) {
+			svg.setAttribute('aria-label', ariaLabel);
+			svg.removeAttribute('aria-labelledby');
+		} else if (labelledBy) {
+			svg.setAttribute('aria-labelledby', labelledBy);
+			svg.removeAttribute('aria-label');
+		} else if (title) {
+			const id = this.#ensureTitle(svg, title);
+			svg.setAttribute('aria-labelledby', id);
+			svg.removeAttribute('aria-label');
+		} else {
+			svg.removeAttribute('aria-label');
+		}
+
+		if (describedBy) {
+			svg.setAttribute('aria-describedby', describedBy);
+		} else if (desc) {
+			const id = this.#ensureDesc(svg, desc);
+		}
 	}
 
 	/**
@@ -47,7 +80,7 @@ export class Icon {
 	 * @param {SVGElement} svg
 	 */
 	#applyAttrs(svg) {
-		const { stroke, fill, strokeWidth, vectorEffect, width, height } =
+		const { fill, height, stroke, strokeWidth, vectorEffect, width } =
 			this.attrs;
 
 		if (stroke != null) svg.setAttribute('stroke', String(stroke));
@@ -108,59 +141,6 @@ export class Icon {
 		}
 	}
 
-	/**
-	 *
-	 * @param {SVGElement} svg
-	 */
-	#applyA11y(svg) {
-		const {
-			role,
-			ariaHidden,
-			ariaLabel,
-			desc,
-			describedBy,
-			labelledBy,
-			title,
-			tabIndex
-		} = this.attrs;
-
-		if (ariaHidden === true) {
-			svg.setAttribute('aria-hidden', 'true');
-			svg.removeAttribute('role');
-			svg.removeAttribute('aria-label');
-			svg.removeAttribute('aria-labelledby');
-			svg.removeAttribute('aria-describedby');
-		} else {
-			svg.removeAttribute('aria-hidden');
-			if (role) svg.setAttribute('role', role);
-			else if (!svg.hasAttribute('role')) svg.setAttribute('role', 'img');
-		}
-		if (ariaLabel) {
-			svg.setAttribute('aria-label', ariaLabel);
-			svg.removeAttribute('aria-labelledby');
-		} else if (labelledBy) {
-			svg.setAttribute('aria-labelledby', labelledBy);
-			svg.removeAttribute('aria-label');
-		} else if (title) {
-			const id = this.#ensureTitle(svg, title);
-			svg.setAttribute('aria-labelledby', id);
-			svg.removeAttribute('aria-label');
-		} else {
-			svg.removeAttribute('aria-label');
-		}
-
-		if (describedBy) {
-			svg.setAttribute('aria-describedby', describedBy);
-		} else if (desc) {
-			const id = this.#ensureDesc(svg, desc);
-		}
-	}
-
-	/**
-	 *
-	 * @param {SVGElement} svg
-	 * @param {string} text
-	 */
 	#ensureDesc(svg, text) {
 		let el = document.querySelector('desc');
 		if (!el) {
@@ -172,8 +152,6 @@ export class Icon {
 		el.textContent = text;
 		return el.id;
 	}
-
-	static #uid = 0;
 
 	/**
 	 *
@@ -203,5 +181,27 @@ export class Icon {
 
 		el.textContent = text;
 		return el.id;
+	}
+
+	/**
+	 *
+	 * @param {HTMLElement} container
+	 */
+	render(container) {
+		const svg = /** @type {SVGElement} */ (this.entry.template.cloneNode(true));
+		this.node = svg;
+		this.#applyAttrs(this.node);
+		this.#applyClassesAndStyle(this.node);
+		this.#applyA11y(this.node);
+		container.replaceChildren(svg);
+	}
+
+	/**
+	 *
+	 * @param {IconAttributes} next
+	 */
+	update(next) {
+		Object.assign(this.attrs, next);
+		if (this.node) this.#applyAttrs(this.node);
 	}
 }

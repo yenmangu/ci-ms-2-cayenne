@@ -6,7 +6,7 @@
 export function parseHashRoute(hash) {
 	const clean = hash.startsWith('#') ? hash.slice(1) : hash;
 	if (!clean) {
-		return { path: '/', params: {} };
+		return { params: {}, path: '/' };
 	}
 
 	const [rawPath, queryString] = clean.split('?');
@@ -28,12 +28,12 @@ export function parseHashRoute(hash) {
 	const segments = path.split('/').filter(Boolean);
 	if (segments.length > 1) {
 		return {
-			path: '/' + segments[0],
-			params: { id: segments[1], ...params }
+			params: { id: segments[1], ...params },
+			path: '/' + segments[0]
 		};
 	}
 	return {
-		path,
-		params
+		params,
+		path
 	};
 }

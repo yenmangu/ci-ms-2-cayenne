@@ -53,33 +53,12 @@ export class LandingPage {
 		this.randomBtnWired = false;
 	}
 
-	async init() {
-		this.landingPageComponent = stringToHtml(renderLandingPage());
-
-		this.#_collectContainers();
-		this.#_onFetchNewRandom();
-
-		this.landingSearch = new SearchBar(this.searchBarContainer);
-		this.randomRecipeContainer =
-			this.landingPageComponent.querySelector('#random-recipe');
-	}
-
 	#_collectContainers() {
 		this.randomRecipeContainer =
 			this.landingPageComponent.querySelector('#random-recipe');
 		this.searchBarContainer = this.landingPageComponent.querySelector(
 			'#landing-search-bar'
 		);
-	}
-
-	render() {
-		if (this.landingPageComponent) {
-			this.container.prepend(this.landingPageComponent);
-			this.landingAppended = true;
-			this.#_coordinateLanding();
-		} else {
-			throw new Error('Landing component not initialised');
-		}
 	}
 
 	#_coordinateLanding() {
@@ -91,10 +70,10 @@ export class LandingPage {
 		this.#_renderTitle();
 	}
 
-	#_renderSearch() {
-		if (this.landingAppended && this.landingSearch) {
-			this.landingSearch.init();
-		}
+	#_onFetchNewRandom() {
+		this.loadingComponent = new Loading(this.container);
+		this.loadingComponent.render();
+		this.service.updateStoreRandomRecipe();
 	}
 
 	#_renderRandomRecipe() {
@@ -107,6 +86,12 @@ export class LandingPage {
 			this.randomRecipeCard.render();
 		} else {
 			this.randomRecipeCard.update(this.randomRecipe);
+		}
+	}
+
+	#_renderSearch() {
+		if (this.landingAppended && this.landingSearch) {
+			this.landingSearch.init();
 		}
 	}
 
@@ -140,13 +125,28 @@ export class LandingPage {
 		}
 	}
 
-	#_onFetchNewRandom() {
-		this.loadingComponent = new Loading(this.container);
-		this.loadingComponent.render();
-		this.service.updateStoreRandomRecipe();
-	}
-
 	destroy() {
 		if (this.subscription) this.subscription.unsubscribe();
+	}
+
+	async init() {
+		this.landingPageComponent = stringToHtml(renderLandingPage());
+
+		this.#_collectContainers();
+		this.#_onFetchNewRandom();
+
+		this.landingSearch = new SearchBar(this.searchBarContainer);
+		this.randomRecipeContainer =
+			this.landingPageComponent.querySelector('#random-recipe');
+	}
+
+	render() {
+		if (this.landingPageComponent) {
+			this.container.prepend(this.landingPageComponent);
+			this.landingAppended = true;
+			this.#_coordinateLanding();
+		} else {
+			throw new Error('Landing component not initialised');
+		}
 	}
 }

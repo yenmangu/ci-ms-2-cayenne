@@ -11,12 +11,12 @@ const userState = persisted ? JSON.parse(persisted) : {};
 
 /** @type {AppState} */
 const initialState = {
-	unitLocale: 'metric',
-	unitLength: 'unitShort',
-	recipeResults: [],
 	currentRecipe: null,
 	likedRecipes: [],
+	recipeResults: [],
 	shoppingList: [],
+	unitLength: 'unitShort',
+	unitLocale: 'metric',
 	...userState
 };
 

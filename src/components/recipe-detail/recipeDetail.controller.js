@@ -6,15 +6,16 @@
  * @typedef {import('../../types/stateTypes.js').PartialAppState} PartialAppState
  * @typedef {import('../../types/stateTypes.js').UnitLocale} UnitLocale
  * @typedef {import('../../types/stateTypes.js').UnitLength} UnitLength
+ * @typedef {import('./recipeDetail.view.js').ImageModel} ImageModel
  */
 
-import * as service from './recipeDetail.service.js';
-import { renderRecipeDetail } from './recipeDetail.view.js';
-import { ToggleComponent } from '../toggle-component/toggleComponent.controller.js';
 import { appStore } from '../../appStore.js';
-import { config } from '../../config/stateConfigs.js';
+import { escapeHtml } from '../../util/escapeHtml.js';
 import { stringToHtml } from '../../util/htmlToElement.js';
 import { IngredientMiniCard } from '../ingredient-mini-card/ingredientMiniCard.controller.js';
+import { ToggleComponent } from '../toggle-component/toggleComponent.controller.js';
+import * as service from './recipeDetail.service.js';
+import { renderImage, renderRecipeDetail } from './recipeDetail.view.js';
 
 /**
  * @component
@@ -41,8 +42,8 @@ export class RecipeDetail {
 
 		this.noSummaryPlaceholder = {
 			id: 0,
-			title: 'Not Available',
-			summary: 'No summary available.'
+			summary: 'No summary available.',
+			title: 'Not Available'
 		};
 
 		/** @type {UnitLocale} */
@@ -75,74 +76,6 @@ export class RecipeDetail {
 		// this.init();
 	}
 
-	async init() {
-		if (!this.subscription) {
-			this.subscription = appStore.subscribe(state => {
-				this.handleStateChange(state);
-			});
-			const { fetchedRecipe, summary } = await this.service.fetchRecipeById(
-				this.recipeId,
-				{}
-			);
-			this.fetchedRecipe = fetchedRecipe;
-			this.summary = summary;
-		}
-
-		// Build the component using the HTML string;
-		this.recipeDetailComponent = stringToHtml(
-			renderRecipeDetail(this.fetchedRecipe, this.summary)
-		);
-		this.componentReady = true;
-	}
-
-	/**
-	 *
-	 * @param {PartialAppState} state
-	 */
-	handleStateChange(state) {
-		this.lastState = state;
-		this.unitLength = state.unitLength;
-		this.unitLocale = state.unitLocale;
-		if (this.recipeDetailComponent) {
-			this.#_hydrate(state);
-		}
-	}
-
-	render() {
-		if (this.recipeDetailComponent instanceof HTMLElement) {
-		}
-		if (this.appRoot) {
-			this.appRoot.append(this.recipeDetailComponent);
-			this.#_buildIngredientCards();
-		} else {
-			console.warn('No App root');
-		}
-	}
-
-	async fetchRecipe() {
-		await this.service.fetchRecipeById(this.recipeId, {});
-		this.fetchedRecipe = this.service.fetchedRecipe;
-		this.summary = this.service.recipeSummary;
-		appStore.setState({ currentRecipe: this.fetchedRecipe });
-	}
-
-	async publicTest() {
-		await this._testEndpoint(this.recipeId);
-	}
-
-	async _testEndpoint(id) {
-		const { recipe, summary } = await service.fetchRecipeDetail(id);
-		this.fetchedRecipe = recipe;
-
-		this.summary = summary ?? this.noSummaryPlaceholder;
-
-		appStore.setState({ currentRecipe: this.fetchedRecipe });
-	}
-
-	_getIdFromUrl() {
-		throw new Error('Method not implemented.');
-	}
-
 	#_buildIngredientCards() {
 		if (this.fetchedRecipe && this.fetchedRecipe.extendedIngredients) {
 			if (!Array.isArray(this.fetchedRecipe.extendedIngredients)) {
@@ -158,9 +91,9 @@ export class RecipeDetail {
 			ingredients.forEach(i => {
 				const wrapper = document.createElement('div');
 				const card = new IngredientMiniCard(i, {
-					linkedRecipeId: this.recipeId,
+					inRecipeDetail: true,
 					linkedRecipe: this.fetchedRecipe.title,
-					inRecipeDetail: true
+					linkedRecipeId: this.recipeId
 				});
 				card.render();
 				this.ingredientCardInstances.push(card);
@@ -170,10 +103,6 @@ export class RecipeDetail {
 			// handle no ingredients
 			console.log('No ingredients in recipe');
 		}
-	}
-
-	#_hydrate(state) {
-		this.#_handleIngredientUpdate();
 	}
 
 	#_getIngredientCards() {
@@ -229,9 +158,102 @@ export class RecipeDetail {
 		});
 	}
 
+	#_hydrate(state) {
+		this.#_handleIngredientUpdate();
+	}
+
+	/**
+	 *
+	 * @param {{imageUrl:string, title: string}} recipeImage
+	 */
+	#_renderImage(recipeImage) {
+		const imageEl = stringToHtml(renderImage(recipeImage));
+
+		const imageWrapper = /** @type {HTMLElement} */ (
+			this.recipeDetailComponent.querySelector('[data-label-image-wrapper]')
+		);
+		if (imageEl && imageWrapper) {
+			imageWrapper.appendChild(imageEl);
+		}
+	}
+
+	_getIdFromUrl() {
+		throw new Error('Method not implemented.');
+	}
+
+	async _testEndpoint(id) {
+		const { recipe, summary } = await service.fetchRecipeDetail(id);
+		this.fetchedRecipe = recipe;
+
+		this.summary = summary ?? this.noSummaryPlaceholder;
+
+		appStore.setState({ currentRecipe: this.fetchedRecipe });
+	}
+
 	destroy() {
 		if (this.subscription) {
 			this.subscription.unsubscribe();
+		}
+	}
+
+	async fetchRecipe() {
+		await this.service.fetchRecipeById(this.recipeId, {});
+		this.fetchedRecipe = this.service.fetchedRecipe;
+		this.summary = this.service.recipeSummary;
+		appStore.setState({ currentRecipe: this.fetchedRecipe });
+	}
+
+	/**
+	 *
+	 * @param {PartialAppState} state
+	 */
+	handleStateChange(state) {
+		this.lastState = state;
+		this.unitLength = state.unitLength;
+		this.unitLocale = state.unitLocale;
+		if (this.recipeDetailComponent) {
+			this.#_hydrate(state);
+		}
+	}
+
+	async init() {
+		if (!this.subscription) {
+			this.subscription = appStore.subscribe(state => {
+				this.handleStateChange(state);
+			});
+			const { fetchedRecipe, summary } = await this.service.fetchRecipeById(
+				this.recipeId,
+				{}
+			);
+			this.fetchedRecipe = fetchedRecipe;
+			this.summary = summary;
+		}
+
+		// Build the component using the HTML string;
+		this.recipeDetailComponent = stringToHtml(
+			renderRecipeDetail(this.fetchedRecipe, this.summary)
+		);
+		this.componentReady = true;
+	}
+
+	async publicTest() {
+		await this._testEndpoint(this.recipeId);
+	}
+
+	render() {
+		if (this.recipeDetailComponent instanceof HTMLElement) {
+		}
+		if (this.appRoot) {
+			this.appRoot.append(this.recipeDetailComponent);
+
+			const imageModel = /** @type {ImageModel } */ ({
+				imageUrl: this.fetchedRecipe.image,
+				title: escapeHtml(this.fetchedRecipe.title)
+			});
+			this.#_renderImage(imageModel);
+			this.#_buildIngredientCards();
+		} else {
+			console.warn('No App root');
 		}
 	}
 }

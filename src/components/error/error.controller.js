@@ -6,10 +6,10 @@
  * @typedef {import('../../event/store.js').StoreChainApi} StoreChainApi
  */
 
-import { renderError } from './error.view.js';
-import { resolveError } from './error.model.js';
-import { reportError } from '../../error/errorReporter.js';
 import { getClient } from '../../api/client.singleton.js';
+import { reportError } from '../../error/errorReporter.js';
+import { resolveError } from './error.model.js';
+import { renderError } from './error.view.js';
 
 /**
  * ErrorController class renders latest error for a given scope.
@@ -30,7 +30,7 @@ export class ErrorController {
 	 * }} opts
 	 *
 	 */
-	constructor(container, { store, scope, mode = 'inline', title } = {}) {
+	constructor(container, { mode = 'inline', scope, store, title } = {}) {
 		/** @type {HTMLElement} */
 		this.el = container;
 
@@ -43,43 +43,6 @@ export class ErrorController {
 		/** @type {string|undefined} */ this.title = title;
 
 		this.#_sub = null;
-	}
-
-	init() {
-		this.#_sub = this.store
-			.subscribe(({ errors }) => {
-				this.render(errors);
-			}, 'errors')
-			.immediate();
-	}
-
-	/**
-	 *
-	 * @param {ErrorEntry[]} errors
-	 */
-	render(errors) {
-		// Fallback if render() is called without args
-		const list = errors ?? (this.store.getState().errors || []);
-		const entry = list.filter(e => e.scope === this.scope).at(-1);
-
-		if (!entry) {
-			this.el.innerHTML = '';
-			return;
-		}
-
-		const onRetry = this.#_deriveRetry(entry);
-
-		this.el.innerHTML = renderError(
-			{
-				type: entry.type,
-				code: entry.code,
-				userMessage: entry.userMessage,
-				message: entry.message,
-				retry: !!onRetry
-			},
-			{ mode: this.mode, title: this.title }
-		);
-		this.#_wireHandlers(entry, onRetry);
 	}
 
 	/**
@@ -140,7 +103,7 @@ export class ErrorController {
 						this.store.setState({ errors: resolveError(list, entry.id) });
 					} catch (err) {
 						reportError(this.store, err, {
-							context: { scope: this.scope, cmd: 'refetch' }
+							context: { cmd: 'refetch', scope: this.scope }
 						});
 					}
 				},
@@ -153,5 +116,42 @@ export class ErrorController {
 		this.#_sub?.unsubscribe();
 		this.#_sub = null;
 		this.el.innerHTML = '';
+	}
+
+	init() {
+		this.#_sub = this.store
+			.subscribe(({ errors }) => {
+				this.render(errors);
+			}, 'errors')
+			.immediate();
+	}
+
+	/**
+	 *
+	 * @param {ErrorEntry[]} errors
+	 */
+	render(errors) {
+		// Fallback if render() is called without args
+		const list = errors ?? (this.store.getState().errors || []);
+		const entry = list.filter(e => e.scope === this.scope).at(-1);
+
+		if (!entry) {
+			this.el.innerHTML = '';
+			return;
+		}
+
+		const onRetry = this.#_deriveRetry(entry);
+
+		this.el.innerHTML = renderError(
+			{
+				code: entry.code,
+				message: entry.message,
+				retry: !!onRetry,
+				type: entry.type,
+				userMessage: entry.userMessage
+			},
+			{ mode: this.mode, title: this.title }
+		);
+		this.#_wireHandlers(entry, onRetry);
 	}
 }

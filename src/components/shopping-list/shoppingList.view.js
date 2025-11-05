@@ -46,7 +46,7 @@ export function renderInput() {
  * @param {number} [opts.imageWidth=25]
  */
 export function renderDropdownItem(item, opts = {}) {
-	const { image, original, id } = item;
+	const { id, image, original } = item;
 	const imageWidth = opts.imageWidth ?? 25;
 	const label = escapeHtml(original || 'Unknown Ingredient');
 	return `<button type="button"
@@ -69,7 +69,7 @@ export function renderDropdownItem(item, opts = {}) {
  * @returns
  */
 export function renderShoppingListItem(item) {
-	const { name, id } = item;
+	const { id, name } = item;
 
 	return `<li class="shopping-list__item d-flex align-items-center justify-content-between py-2 px-3 border-bottom"
 		data-shopping-item-id="${id}">

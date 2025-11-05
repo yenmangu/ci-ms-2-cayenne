@@ -93,121 +93,121 @@
  */
 
 export const SPOONACULAR_ENDPOINTS = {
+	// Meal planner
+	addMealPlanTemplate: '/mealplanner/{username}/templates',
+	addToMealPlan: '/mealplanner/{username}/items',
+	// Shopping list
+	addToShoppingList: '/mealplanner/{username}/shopping-list/items',
 	// Recipes
-	searchRecipes: '/recipes/complexSearch',
-	searchRecipesByIngredients: '/recipes/findByIngredients',
-	searchRecipesByNutrients: '/recipes/findByNutrients',
-	getRecipeInformation: '/recipes/{id}/information',
-	getRecipeInformationBulk: '/recipes/informationBulk',
-	getSimilarRecipes: '/recipes/{id}/similar',
-	getRandomRecipes: '/recipes/random',
-	autocompleteRecipeSearch: '/recipes/autocomplete',
-	analyzeRecipeSearchQuery: '/recipes/queries/analyze',
-	analyzeRecipeInstructions: '/recipes/analyzeInstructions',
 	analyzeRecipe: '/recipes/analyze',
-	classifyCuisine: '/recipes/cuisine',
-	guessNutritionByDishName: '/recipes/guessNutrition',
-	summarizeRecipe: '/recipes/{id}/summary',
-	convertAmounts: '/recipes/convert',
-	quickAnswer: '/recipes/quickAnswer',
-	extractRecipeFromWebsite: '/recipes/extract',
-
-	// Recipe widgets & images
-	recipeNutritionWidgetJson: '/recipes/{id}/nutritionWidget.json',
-	recipeNutritionWidgetHtml: '/recipes/{id}/nutritionWidget',
-	recipeNutritionLabelPng: '/recipes/{id}/nutritionLabel.png',
-	recipeNutritionLabelHtml: '/recipes/{id}/nutritionLabel',
-	recipeIngredientsWidgetJson: '/recipes/{id}/ingredientWidget.json',
-	recipeIngredientsWidgetHtml: '/recipes/{id}/ingredientWidget',
-	recipeIngredientsImagePng: '/recipes/{id}/ingredientWidget.png',
-	recipeEquipmentWidgetJson: '/recipes/{id}/equipmentWidget.json',
-	recipeEquipmentWidgetHtml: '/recipes/{id}/equipmentWidget',
-	recipeEquipmentImagePng: '/recipes/{id}/equipmentWidget.png',
-	recipePriceBreakdownJson: '/recipes/{id}/priceBreakdownWidget.json',
-	recipePriceBreakdownHtml: '/recipes/{id}/priceBreakdownWidget',
-	recipePriceBreakdownPng: '/recipes/{id}/priceBreakdownWidget.png',
-	recipeTasteJson: '/recipes/{id}/tasteWidget.json',
-	recipeTasteHtml: '/recipes/{id}/tasteWidget',
-	recipeTastePng: '/recipes/{id}/tasteWidget.png',
-	createRecipeCard: '/recipes/visualizeRecipe',
-	visualizeRecipeNutrition: '/recipes/visualizeNutrition',
-	visualizeEquipment: '/recipes/visualizeEquipment',
-	visualizePriceBreakdown: '/recipes/visualizePriceEstimator',
-	createRecipeCardById: '/recipes/{id}/card',
-
+	analyzeRecipeInstructions: '/recipes/analyzeInstructions',
+	analyzeRecipeSearchQuery: '/recipes/queries/analyze',
 	// Ingredients
 	autocompleteIngredientSearch: '/food/ingredients/autocomplete',
-	ingredientSearch: '/food/ingredients/search',
-	getIngredientInformation: '/food/ingredients/{id}/information',
-	computeIngredientAmount: '/food/ingredients/{id}/amount',
-	getIngredientSubstitutes: '/food/ingredients/substitutes',
-	getIngredientSubstitutesById: '/food/ingredients/{id}/substitutes',
-	mapIngredientsToProducts: '/food/ingredients/map',
-	computeGlycemicLoad: '/food/ingredients/glycemicLoad',
-
+	// Menu items
+	autocompleteMenuItemSearch: '/food/menuItems/suggest',
 	// Products (grocery)
 	autocompleteProductSearch: '/food/products/suggest',
-	searchGroceryProducts: '/food/products/search',
-	searchGroceryProductsByUpc: '/food/products/upc/{upc}',
-	getProductInformation: '/food/products/{id}',
+	autocompleteRecipeSearch: '/recipes/autocomplete',
+	classifyCuisine: '/recipes/cuisine',
+	clearMealPlanDay: '/mealplanner/{username}/day/{date}',
+	computeGlycemicLoad: '/food/ingredients/glycemicLoad',
+	computeIngredientAmount: '/food/ingredients/{id}/amount',
+	// Users & custom foods
+	connectUser: '/users/connect',
+	// NLP / fun / misc
+	conversationSuggests: '/food/converse/suggest',
+	convertAmounts: '/recipes/convert',
+
+	// Recipe widgets & images
+	createRecipeCard: '/recipes/visualizeRecipe',
+	createRecipeCardById: '/recipes/{id}/card',
+	deleteFromMealPlan: '/mealplanner/{username}/items/{id}',
+	deleteFromShoppingList: '/mealplanner/{username}/shopping-list/items/{id}',
+	detectFoodInText: '/food/detect',
+	extractRecipeFromWebsite: '/recipes/extract',
+	generateMealPlan: '/mealplanner/generate',
+	generateShoppingList:
+		'/mealplanner/{username}/shopping-list/{start_date}/{end_date}',
 	getComparableProductsByUpc: '/food/products/upc/{upc}/comparable',
-	productNutritionWidgetHtml: '/food/products/{id}/nutritionWidget',
-	productNutritionWidgetPng: '/food/products/{id}/nutritionWidget.png',
-	productNutritionLabelPng: '/food/products/{id}/nutritionLabel.png',
-	productNutritionLabelHtml: '/food/products/{id}/nutritionLabel',
-
-	// Menu items
-	searchMenuItems: '/food/menuItems/search',
-	autocompleteMenuItemSearch: '/food/menuItems/suggest',
+	// Wine
+	getDishPairingForWine: '/food/wine/dishes',
+	getIngredientInformation: '/food/ingredients/{id}/information',
+	getIngredientSubstitutes: '/food/ingredients/substitutes',
+	getIngredientSubstitutesById: '/food/ingredients/{id}/substitutes',
+	getMealPlanTemplate: '/mealplanner/{username}/templates/{id}',
+	getMealPlanTemplates: '/mealplanner/{username}/templates',
+	getMealPlanWeek: '/mealplanner/{username}/week/{start_date}',
 	getMenuItemInformation: '/food/menuItems/{id}',
-	menuItemNutritionWidgetHtml: '/food/menuItems/{id}/nutritionWidget',
-	menuItemNutritionWidgetPng: '/food/menuItems/{id}/nutritionWidget.png',
-	menuItemNutritionLabelPng: '/food/menuItems/{id}/nutritionLabel.png',
-	menuItemNutritionLabelHtml: '/food/menuItems/{id}/nutritionLabel',
+	getProductInformation: '/food/products/{id}',
+	getRandomRecipes: '/recipes/random',
+	getRecipeInformation: '/recipes/{id}/information',
+	getRecipeInformationBulk: '/recipes/informationBulk',
 
+	getShoppingList: '/mealplanner/{username}/shopping-list',
+	getSimilarRecipes: '/recipes/{id}/similar',
+	getWineDescription: '/food/wine/description',
+	getWinePairing: '/food/wine/pairing',
+	getWineRecommendation: '/food/wine/recommendation',
+	guessNutritionByDishName: '/recipes/guessNutrition',
 	// General food search & media
-	searchAllFood: '/food/search',
-	searchSiteContent: '/food/site/search',
-	searchFoodVideos: '/food/videos/search',
 	imageAnalysisByUrl: '/food/images/analyze',
 	imageClassificationByUrl: '/food/images/classify',
 
-	// NLP / fun / misc
-	detectFoodInText: '/food/detect',
+	ingredientSearch: '/food/ingredients/search',
+	mapIngredientsToProducts: '/food/ingredients/map',
+	menuItemNutritionLabelHtml: '/food/menuItems/{id}/nutritionLabel',
+	menuItemNutritionLabelPng: '/food/menuItems/{id}/nutritionLabel.png',
+	menuItemNutritionWidgetHtml: '/food/menuItems/{id}/nutritionWidget',
+	menuItemNutritionWidgetPng: '/food/menuItems/{id}/nutritionWidget.png',
+	productNutritionLabelHtml: '/food/products/{id}/nutritionLabel',
+	productNutritionLabelPng: '/food/products/{id}/nutritionLabel.png',
+	productNutritionWidgetHtml: '/food/products/{id}/nutritionWidget',
+
+	productNutritionWidgetPng: '/food/products/{id}/nutritionWidget.png',
+	quickAnswer: '/recipes/quickAnswer',
 	randomFoodJoke: '/food/jokes/random',
 	randomFoodTrivia: '/food/trivia/random',
-	conversationSuggests: '/food/converse/suggest',
-	talkToChatbot: '/food/converse',
+	recipeEquipmentImagePng: '/recipes/{id}/equipmentWidget.png',
+	recipeEquipmentWidgetHtml: '/recipes/{id}/equipmentWidget',
+	recipeEquipmentWidgetJson: '/recipes/{id}/equipmentWidget.json',
 
-	// Users & custom foods
+	recipeIngredientsImagePng: '/recipes/{id}/ingredientWidget.png',
+	recipeIngredientsWidgetHtml: '/recipes/{id}/ingredientWidget',
+	recipeIngredientsWidgetJson: '/recipes/{id}/ingredientWidget.json',
+	recipeNutritionLabelHtml: '/recipes/{id}/nutritionLabel',
+	recipeNutritionLabelPng: '/recipes/{id}/nutritionLabel.png',
+
+	recipeNutritionWidgetHtml: '/recipes/{id}/nutritionWidget',
+	recipeNutritionWidgetJson: '/recipes/{id}/nutritionWidget.json',
+	recipePriceBreakdownHtml: '/recipes/{id}/priceBreakdownWidget',
+	recipePriceBreakdownJson: '/recipes/{id}/priceBreakdownWidget.json',
+	recipePriceBreakdownPng: '/recipes/{id}/priceBreakdownWidget.png',
+
+	recipeTasteHtml: '/recipes/{id}/tasteWidget',
+	recipeTasteJson: '/recipes/{id}/tasteWidget.json',
+
+	recipeTastePng: '/recipes/{id}/tasteWidget.png',
+	searchAllFood: '/food/search',
 	searchCustomFoods: '/food/customFoods/search',
-	connectUser: '/users/connect',
+	searchFoodVideos: '/food/videos/search',
+	searchGroceryProducts: '/food/products/search',
+	searchGroceryProductsByUpc: '/food/products/upc/{upc}',
+	searchMenuItems: '/food/menuItems/search',
+	searchRecipes: '/recipes/complexSearch',
 
-	// Meal planner
-	generateMealPlan: '/mealplanner/generate',
-	getMealPlanWeek: '/mealplanner/{username}/week/{start_date}',
-	clearMealPlanDay: '/mealplanner/{username}/day/{date}',
-	addToMealPlan: '/mealplanner/{username}/items',
-	deleteFromMealPlan: '/mealplanner/{username}/items/{id}',
-	getMealPlanTemplates: '/mealplanner/{username}/templates',
-	getMealPlanTemplate: '/mealplanner/{username}/templates/{id}',
-	addMealPlanTemplate: '/mealplanner/{username}/templates',
-
-	// Shopping list
-	getShoppingList: '/mealplanner/{username}/shopping-list',
-	addToShoppingList: '/mealplanner/{username}/shopping-list/items',
-	deleteFromShoppingList: '/mealplanner/{username}/shopping-list/items/{id}',
-	generateShoppingList:
-		'/mealplanner/{username}/shopping-list/{start_date}/{end_date}',
-
+	searchRecipesByIngredients: '/recipes/findByIngredients',
+	searchRecipesByNutrients: '/recipes/findByNutrients',
 	// Restaurants
 	searchRestaurants: '/food/restaurants/search',
+	searchSiteContent: '/food/site/search',
 
-	// Wine
-	getDishPairingForWine: '/food/wine/dishes',
-	getWinePairing: '/food/wine/pairing',
-	getWineDescription: '/food/wine/description',
-	getWineRecommendation: '/food/wine/recommendation'
+	summarizeRecipe: '/recipes/{id}/summary',
+
+	talkToChatbot: '/food/converse',
+	visualizeEquipment: '/recipes/visualizeEquipment',
+	visualizePriceBreakdown: '/recipes/visualizePriceEstimator',
+	visualizeRecipeNutrition: '/recipes/visualizeNutrition'
 };
 
 // Legacy/alternate (keep separate if needed)

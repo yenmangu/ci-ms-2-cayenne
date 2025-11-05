@@ -7,7 +7,7 @@ import { getUnifiedParams } from './unifiedParams.js';
  * @returns {boolean}
  */
 function getDev() {
-	const { page, hash, get, getAllObject } = getAllParams();
+	const { get, getAllObject, hash, page } = getAllParams();
 
 	const string = window.location.search;
 	const params = new URLSearchParams(string);
@@ -40,23 +40,23 @@ function getAllParams() {
 		return new URLSearchParams(q);
 	})();
 	return {
-		page,
-		hash,
-		getObject(name) {
-			return {
-				[name]: hash.get(name) ?? page.get(name)
-			};
+		get(name) {
+			return hash.get(name) ?? page.get(name);
+		},
+		getAll(name) {
+			return [...hash.getAll(name), ...page.getAll(name)];
 		},
 		getAllObject(name) {
 			return {
 				[name]: [hash.getAll(name), ...page.getAll(name)]
 			};
 		},
-		get(name) {
-			return hash.get(name) ?? page.get(name);
+		getObject(name) {
+			return {
+				[name]: hash.get(name) ?? page.get(name)
+			};
 		},
-		getAll(name) {
-			return [...hash.getAll(name), ...page.getAll(name)];
-		}
+		hash,
+		page
 	};
 }

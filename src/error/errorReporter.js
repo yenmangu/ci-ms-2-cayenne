@@ -27,15 +27,15 @@ export function reportError(store, err, hints = {}) {
 export function reportRefetch(
 	store,
 	scope,
-	{ url, endpoint, params, opts } = {}
+	{ endpoint, opts, params, url } = {}
 ) {
 	/** @type {NormalisedError} */
 	const networkError = {
-		type: 'network',
 		code: 'RETRYABLE',
-		userMessage: 'Network issue. Please try again.',
+		context: { cmd: 'refetch', endpoint, opts, params, scope, url },
 		retry: true,
-		context: { scope, cmd: 'refetch', url, endpoint, params, opts }
+		type: 'network',
+		userMessage: 'Network issue. Please try again.'
 	};
 	store.dispatch(addError(networkError));
 }
@@ -50,10 +50,10 @@ export function reportNotFound(store, scope, opts = {}) {
 	const { code = 'ROUTE_404', userMessage = "That page doesn't exist." } = opts;
 	store.dispatch(
 		addError({
-			type: 'not_found',
 			code,
-			userMessage,
-			context: { scope }
+			context: { scope },
+			type: 'not_found',
+			userMessage
 		})
 	);
 }

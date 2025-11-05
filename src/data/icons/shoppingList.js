@@ -18,24 +18,20 @@ function buildCartOptions(
 	// Not including toggled, onClick (those will be added later)
 	/** @type {IconButtonOptions} */
 	const cart = {
-		icon: 'cart-regular',
-		toggledIcon: 'cart-solid',
-		isNavLink,
-		routeKey: isNavLink ? routeKey : '',
-		variant: variant ?? 'solid',
-		disabled: false,
 		buttonAttrs: {
 			ariaLabel: 'Shopping list',
-			title: isNavLink ? 'View Shopping list' : 'Add to shopping list',
-			tabIndex: 0
+			tabIndex: 0,
+			title: isNavLink ? 'View Shopping list' : 'Add to shopping list'
 		},
 		buttonToggledAttrs: {
 			ariaLabel: 'Shopping list (selected)',
+			tabIndex: 0,
 			title: isNavLink
 				? 'Shopping list (selected)'
-				: 'Remove from shopping list',
-			tabIndex: 0
+				: 'Remove from shopping list'
 		},
+		disabled: false,
+		icon: 'cart-regular',
 		iconAttrs: {
 			ariaHidden: true, // Decorative SVG
 			focusable: false
@@ -43,7 +39,11 @@ function buildCartOptions(
 		iconToggledAttrs: {
 			ariaHidden: true,
 			focusable: false
-		}
+		},
+		isNavLink,
+		routeKey: isNavLink ? routeKey : '',
+		toggledIcon: 'cart-solid',
+		variant: variant ?? 'solid'
 	};
 	return cart;
 }
