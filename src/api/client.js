@@ -1,14 +1,17 @@
 /**
  * @typedef {import('../config/endpoints.js').EndpointKey} EndpointKey
  * @typedef {import('../types/recipeTypes.js').RecipeFull} RecipeFull
- *
+ * @typedef {import('../types/errorTypes.js').ErrorScope} ErrorScope
  * @typedef {import('../types/stateTypes.js').ErrorMeta} ErrorMeta
  */
 
 // import { ENV } from '../config/env.js';
 import { appStore } from '../appStore.js';
+import { getCurrentRouteScope } from '../components/error/errorScope.js';
+import { handleHttpStatus } from '../components/error/handlers/handleHttpStatus.js';
 import { SPOONACULAR_ENDPOINTS, buildEndpoint } from '../config/endpoints.js';
 import { ENV } from '../env.js';
+import { reportRefetch } from '../error/errorReporter.js';
 import { safeText } from '../util/safeText.js';
 
 /**
@@ -84,32 +87,39 @@ export class SpoonacularClient {
 	 * @returns {Promise<any>}
 	 */
 	async _fetch(endpoint, params = {}, retries = 0, opts = {}) {
-		const url = this._buildUrl(endpoint, params);
-
+		const fullUrl = this._buildUrl(endpoint, params);
+		const meta = { endpoint, opts, params, url: fullUrl };
+		const scope = /** @type {ErrorScope} */ (getCurrentRouteScope());
+		/** @type {Response|undefined} */
+		let response;
 		try {
-			const response = await fetch(url, opts);
+			response = await fetch(fullUrl, opts);
 			if (!response.ok) {
-				if (response.status === 402) {
-					console.log('Hit paywalll');
-				}
-				if (retries > 0) {
-					console.warn(`[RETRYING] ${url} (${retries} retries remaining)`);
-					await this._delay();
-
-					return await this._fetch(endpoint, params, retries - 1, opts);
-				}
 				const detail = await safeText(response);
+				handleHttpStatus(appStore, scope, response.status, meta, detail);
+
 				const err = new Error(
 					`[API ERROR] ${response.status} ${response.statusText}${
 						detail ? ` - ${detail}` : ''
 					}`
 				);
+
 				/** @type {any} */ (err).status = response.status;
+				/** @type {any} */ (err).__reported = true;
+
 				throw err;
 			}
 			return await response.json();
 		} catch (error) {
-			console.error(`[FETCH FAIL] ${url}`, error);
+			const name = /** @type {any} */ (error)?.name || '';
+			const isAbort = name === 'AbortError';
+			const reported = /** @type {any} */ (error)?.__reported === true;
+
+			if (!isAbort && !reported && !response) {
+				reportRefetch(appStore, scope, meta);
+			}
+
+			// console.error(`[FETCH FAIL] ${fullUrl}`, error);
 			throw error;
 		}
 	}
