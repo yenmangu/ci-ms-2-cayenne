@@ -1,10 +1,10 @@
-import { initNavbar } from './global-ui/navbar.js';
-import { startRouter } from './router/appRouter.js';
 import { AppHeader } from './components/app-header/appHeader.controller.js';
 import { isProd } from './env.js';
-import { initAppHeader } from './util/responsiveHeader.js';
+import { initNavbar } from './global-ui/navbar.js';
+import { startRouter } from './router/appRouter.js';
 import { initDevBootstrap } from './util/dev/devBoostrap.js';
 import { initStickyFooter } from './util/footerOffsets.js';
+import { initAppHeader } from './util/responsiveHeader.js';
 
 import {
 	configureIconBaseDir,
@@ -12,8 +12,8 @@ import {
 } from './util/icon/icon-component/icon.service.js';
 
 // Dev
-import { ensureDev, getDevWindow } from './util/dev/devWindow.js';
-import { startPaddingProbe } from './util/dev/probes.js';
+import { appStore } from './appStore.js';
+import { installGlobalErrorHooks } from './error/util/installGlobalErrorHooks.js';
 
 let appHeader = null;
 
@@ -23,6 +23,9 @@ let appHeader = null;
  *
  */
 async function initCayenne() {
+	// Start error handling instantly
+	installGlobalErrorHooks(appStore);
+
 	// Dev logging
 	// console.log('isProd? ', isProd);
 

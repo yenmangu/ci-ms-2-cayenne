@@ -1,8 +1,8 @@
 /**
- * @typedef {import("../../types/errorTypes.js").NormalisedError} NormalisedError
- * @typedef {import("../../types/stateTypes.js").ErrorEntry} ErrorEntry
- * @typedef {import("../../types/stateTypes.js").ErrorScope} ErrorScope
- * @typedef {import("../../types/stateTypes.js").StoreAction} StoreAction
+ * @typedef {import("../types/errorTypes.js").NormalisedError} NormalisedError
+ * @typedef {import("../types/stateTypes.js").ErrorEntry} ErrorEntry
+ * @typedef {import("../types/stateTypes.js").ErrorScope} ErrorScope
+ * @typedef {import("../types/stateTypes.js").StoreAction} StoreAction
  */
 
 import { pushError } from './error.model.js';

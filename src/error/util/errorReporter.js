@@ -1,11 +1,11 @@
 /**
- * @typedef {import("../types/errorTypes.js").NormalisedError} NormalisedError
- * @typedef {import("../types/stateTypes.js").ErrorScope} ErrorScope
- * @typedef {import("../types/stateTypes.js").AppStore} AppStore
- * @typedef {import('../types/stateTypes.js').ErrorMeta} ErrorMeta
+ * @typedef {import("../../types/errorTypes.js").NormalisedError} NormalisedError
+ * @typedef {import("../../types/stateTypes.js").ErrorScope} ErrorScope
+ * @typedef {import("../../types/stateTypes.js").AppStore} AppStore
+ * @typedef {import('../../types/stateTypes.js').ErrorMeta} ErrorMeta
  */
 
-import { normaliseError, addError } from '../components/error/error.service.js';
+import { addError, normaliseError } from '../error-component/error.service.js';
 
 /**
  *

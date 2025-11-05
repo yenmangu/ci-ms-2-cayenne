@@ -1,10 +1,10 @@
 /**
- * @typedef {import("../../types/errorTypes.js").ErrorType} ErrorType
- * @typedef {import("../../types/stateTypes.js").ErrorScope} ErrorScope
- * @typedef {import("../../types/stateTypes.js").ErrorEntry} ErrorEntry
+ * @typedef {import("../types/errorTypes.js").ErrorType} ErrorType
+ * @typedef {import("../types/stateTypes.js").ErrorScope} ErrorScope
+ * @typedef {import("../types/stateTypes.js").ErrorEntry} ErrorEntry
  */
 
-import { escapeHtml } from '../../util/escapeHtml.js';
+import { escapeHtml } from '../util/escapeHtml.js';
 
 /**
  * @typedef {object} RenderErrorInput

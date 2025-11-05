@@ -1,10 +1,10 @@
 /**
- * @typedef {import("../../../types/stateTypes.js").AppStore} AppStore
- * @typedef {import("../../../types/errorTypes.js").ErrorScope} ErrorScope
- * @typedef {import("../../../types/stateTypes.js").ErrorMeta} ErrorMeta
+ * @typedef {import("../../types/stateTypes.js").AppStore} AppStore
+ * @typedef {import("../../types/errorTypes.js").ErrorScope} ErrorScope
+ * @typedef {import("../../types/stateTypes.js").ErrorMeta} ErrorMeta
  */
 
-import { reportError, reportRefetch } from '../../../error/errorReporter.js';
+import { reportError, reportRefetch } from '../util/errorReporter.js';
 import { handleQuotaExceed } from './handle402.js';
 
 /**

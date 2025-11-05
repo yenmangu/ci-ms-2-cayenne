@@ -64,8 +64,6 @@ export class RecipeCard {
 			this.cardEl.querySelector('[data-label-image-wrapper="card"]')
 		);
 		if (wrapperEl) {
-			console.log('wrapper found');
-
 			this.imageHost = mountImage(wrapperEl, imageModel);
 		}
 	}

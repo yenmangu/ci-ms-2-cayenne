@@ -1,15 +1,15 @@
 /**
- * @typedef {import('../../types/stateTypes.js').AppStore}AppStore
- * @typedef {import('../../types/stateTypes.js').ErrorScope} ErrorScope
+ * @typedef {import('../types/stateTypes.js').AppStore}AppStore
+ * @typedef {import('../types/stateTypes.js').ErrorScope} ErrorScope
  * @typedef {import('./error.view.js').ErrorRenderMode} ErrorRenderMode
- * @typedef {import('../../types/stateTypes.js').ErrorEntry}ErrorEntry
- * @typedef {import('../../event/store.js').StoreChainApi} StoreChainApi
+ * @typedef {import('../types/stateTypes.js').ErrorEntry}ErrorEntry
+ * @typedef {import('../event/store.js').StoreChainApi} StoreChainApi
  */
 
-import { getClient } from '../../api/client.singleton.js';
-import { reportError } from '../../error/errorReporter.js';
+import { getClient } from '../api/client.singleton.js';
 import { resolveError } from './error.model.js';
 import { renderError } from './error.view.js';
+import { reportError } from './errorReporter.js';
 
 /**
  * ErrorController class renders latest error for a given scope.

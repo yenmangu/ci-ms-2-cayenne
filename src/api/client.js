@@ -7,11 +7,11 @@
 
 // import { ENV } from '../config/env.js';
 import { appStore } from '../appStore.js';
-import { getCurrentRouteScope } from '../components/error/errorScope.js';
-import { handleHttpStatus } from '../components/error/handlers/handleHttpStatus.js';
 import { SPOONACULAR_ENDPOINTS, buildEndpoint } from '../config/endpoints.js';
 import { ENV } from '../env.js';
-import { reportRefetch } from '../error/errorReporter.js';
+import { getCurrentRouteScope } from '../error/errorScope.js';
+import { handleHttpStatus } from '../error/handlers/handleHttpStatus.js';
+import { reportRefetch } from '../error/util/errorReporter.js';
 import { safeText } from '../util/safeText.js';
 
 /**

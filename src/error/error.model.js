@@ -1,6 +1,6 @@
 /**
- * @typedef {import("../../types/stateTypes.js").ErrorEntry} ErrorEntry
- * @typedef {import("../../types/stateTypes.js").ErrorScope} ErrorScope
+ * @typedef {import("../types/stateTypes.js").ErrorEntry} ErrorEntry
+ * @typedef {import("../types/stateTypes.js").ErrorScope} ErrorScope
  */
 
 /**
