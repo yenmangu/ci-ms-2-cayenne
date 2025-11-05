@@ -4,10 +4,9 @@ import perfectionist from 'eslint-plugin-perfectionist';
 import { defineConfig } from 'eslint/config';
 import globals from 'globals';
 
-const destroyGroup = {};
 export default defineConfig([
 	{
-		files: ['**/*.{js,mjs,cjs}'],
+		files: ['src/**/*.{js,mjs,cjs}'],
 		languageOptions: { globals: globals.browser },
 		plugins: { perfectionist },
 		rules: {
