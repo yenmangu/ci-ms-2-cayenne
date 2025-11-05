@@ -88,6 +88,16 @@ export function renderRecipeDetail(recipe, summaryObj, opts) {
 	// console.log('Recipe passed to view: ', recipe);
 	// console.log('Opts passed to view: ', opts);
 
+	/**
+	 * User facing feedback if value not available
+	 * @param {any} val
+	 * @returns {any}
+	 */
+	const safe = val =>
+		val == null || val == '' || (Array.isArray(val) ?? !val.length)
+			? 'Not Available'
+			: val;
+
 	const {
 		analyzedInstructions,
 		cuisines,
@@ -105,18 +115,8 @@ export function renderRecipeDetail(recipe, summaryObj, opts) {
 	/**
 	 * Provide user facing feedback if value is not available
 	 */
-	for (const [key, value] of Object.entries(recipe)) {
-		if (
-			!value ||
-			value === '' ||
-			value === undefined ||
-			value == null ||
-			// Empty array
-			(Array.isArray(value) && value.length === 0)
-		) {
-			recipe[key] = 'Not Available';
-		}
-	}
+	const titleSafe = safe(title);
+	const summarySafe = safe(summary);
 
 	const ingredientsInsertsArray = [];
 	const instructionsInsertsArray = [];
@@ -143,14 +143,14 @@ export function renderRecipeDetail(recipe, summaryObj, opts) {
 	const recipeTemplate = `<div class="recipe-detail container my-2" id="recipeDetail">
 
   <section class="mb-4 text-center">
-    <h2 class="recipe-title">${title}</h2>
-    <div data-label-image-wrapper></div>
+    <h2 class="recipe-title">${titleSafe}</h2>
+    <div data-label-image-wrapper="detail"></div>
 		<div class="toggle-container" id="toggleContainer"></div>
   </section>
 
   <section class="recipe-summary mb-4">
     <!-- summary HTML will be injected here -->
-		${summary}
+		${summarySafe}
   </section>
 
   <div class="accordion" id="recipeAccordion">

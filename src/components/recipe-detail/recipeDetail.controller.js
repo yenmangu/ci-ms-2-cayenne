@@ -6,16 +6,17 @@
  * @typedef {import('../../types/stateTypes.js').PartialAppState} PartialAppState
  * @typedef {import('../../types/stateTypes.js').UnitLocale} UnitLocale
  * @typedef {import('../../types/stateTypes.js').UnitLength} UnitLength
- * @typedef {import('./recipeDetail.view.js').ImageModel} ImageModel
+ * @typedef {import('../../types/imageTypes.js').ImageModel} ImageModel
  */
 
 import { appStore } from '../../appStore.js';
 import { escapeHtml } from '../../util/escapeHtml.js';
 import { stringToHtml } from '../../util/htmlToElement.js';
+import { mountImage } from '../../util/mountImage.js';
 import { IngredientMiniCard } from '../ingredient-mini-card/ingredientMiniCard.controller.js';
 import { ToggleComponent } from '../toggle-component/toggleComponent.controller.js';
 import * as service from './recipeDetail.service.js';
-import { renderImage, renderRecipeDetail } from './recipeDetail.view.js';
+import { renderRecipeDetail } from './recipeDetail.view.js';
 
 /**
  * @component
@@ -64,6 +65,8 @@ export class RecipeDetail {
 		/** @type {ToggleComponent} */
 		this.unitLengthToggle = null;
 
+		this.imageHost = null;
+
 		/** @type {IngredientMiniCard[]} */
 		this.ingredientCardInstances = [];
 
@@ -83,13 +86,13 @@ export class RecipeDetail {
 				console.log('Ingredients not array');
 			}
 			const ingredients = this.fetchedRecipe.extendedIngredients;
-			const ingredientsContainer =
-				document.getElementById('recipe-ingredients');
+			const ingredientsContainer = /** @type {HTMLElement} */ (
+				this.recipeDetailComponent.querySelector('#recipe-ingredients')
+			);
 
 			ingredientsContainer.innerHTML = '';
 
 			ingredients.forEach(i => {
-				const wrapper = document.createElement('div');
 				const card = new IngredientMiniCard(i, {
 					inRecipeDetail: true,
 					linkedRecipe: this.fetchedRecipe.title,
@@ -117,6 +120,10 @@ export class RecipeDetail {
 	}
 
 	#_handleIngredientUpdate() {
+		// Guard against no currentRecipe
+		const state = this.lastState;
+		if (!state?.currentRecipe) return;
+
 		const cards = this.#_getIngredientCards();
 		const { currentRecipe } = this.lastState;
 		cards.forEach(card => {
@@ -158,23 +165,25 @@ export class RecipeDetail {
 		});
 	}
 
-	#_hydrate(state) {
+	#_hydrate() {
 		this.#_handleIngredientUpdate();
 	}
 
 	/**
 	 *
-	 * @param {{imageUrl:string, title: string}} recipeImage
+	 * @param {ImageModel} recipeImage
 	 */
 	#_renderImage(recipeImage) {
-		const imageEl = stringToHtml(renderImage(recipeImage));
-
 		const imageWrapper = /** @type {HTMLElement} */ (
-			this.recipeDetailComponent.querySelector('[data-label-image-wrapper]')
+			this.recipeDetailComponent.querySelector(
+				'[data-label-image-wrapper="detail"]'
+			)
 		);
-		if (imageEl && imageWrapper) {
-			imageWrapper.appendChild(imageEl);
+		if (imageWrapper) {
+			this.imageHost = mountImage(imageWrapper, recipeImage);
 		}
+
+		// const imageEl = stringToHtml(renderImage(recipeImage));
 	}
 
 	_getIdFromUrl() {
@@ -206,7 +215,7 @@ export class RecipeDetail {
 		this.unitLength = state.unitLength;
 		this.unitLocale = state.unitLocale;
 		if (this.recipeDetailComponent) {
-			this.#_hydrate(state);
+			this.#_hydrate();
 		}
 	}
 
@@ -235,15 +244,15 @@ export class RecipeDetail {
 	}
 
 	render() {
-		if (this.recipeDetailComponent instanceof HTMLElement) {
-		}
 		if (this.appRoot) {
 			this.appRoot.append(this.recipeDetailComponent);
 
 			const imageModel = /** @type {ImageModel } */ ({
-				imageUrl: this.fetchedRecipe.image,
+				alt: escapeHtml(this.fetchedRecipe.title),
+				src: this.fetchedRecipe.image,
 				title: escapeHtml(this.fetchedRecipe.title)
 			});
+
 			this.#_renderImage(imageModel);
 			this.#_buildIngredientCards();
 		} else {
@@ -254,6 +263,9 @@ export class RecipeDetail {
 	destroy() {
 		if (this.subscription) {
 			this.subscription.unsubscribe();
+		}
+		if (this.imageHost) {
+			this.imageHost.destroy();
 		}
 	}
 }

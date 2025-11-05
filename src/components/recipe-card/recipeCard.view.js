@@ -2,8 +2,6 @@
  * @typedef {import("../../types/recipeTypes.js").RecipeCard} RecipeCardObject
  */
 
-import { RecipeCard } from './recipeCard.controller.js';
-
 /**
  *
  * @param {RecipeCardObject} recipe
@@ -12,7 +10,8 @@ import { RecipeCard } from './recipeCard.controller.js';
 export function renderRecipeCard(recipe) {
 	return `<div class="wrapper wrapper--card wrapper--random-card">
 		<a href="#/recipe?id=${recipe.id}" class="card h-100 text-decoration-none text-dark">
-			<img src="${recipe.image}" alt="${recipe.title}" class="card-img-top">
+		    <div data-label-image-wrapper="card"></div>
+
 			<div class="card-body">
 				<h5 class="card-title">${recipe.title}</h5>
 			</div>

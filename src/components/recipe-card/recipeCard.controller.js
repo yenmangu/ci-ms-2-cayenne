@@ -1,10 +1,12 @@
 /**
  * @typedef {import("../../types/recipeTypes.js").RecipeCard} RecipeCardObject
  * @typedef {import('../../types/recipeTypes.js').RecipeCardElementMap} CardElementMap
+ * @typedef {import('../../types/imageTypes.js').ImageModel} ImageModel
  */
 
 import { appStore } from '../../appStore.js';
 import { stringToHtml } from '../../util/htmlToElement.js';
+import { mountImage } from '../../util/mountImage.js';
 import * as service from './RecipeCard.service.js';
 
 import { renderRecipeCard } from './recipeCard.view.js';
@@ -37,6 +39,8 @@ export class RecipeCard {
 		 * @type {CardElementMap}
 		 */
 		this.cardElementMapping = null;
+
+		this.imageHost = null;
 		this.likeBtn = null;
 		this.subscription = null;
 		this.init();
@@ -49,6 +53,19 @@ export class RecipeCard {
 
 	#_onLikeClicked() {
 		this.service.onSaveClick(this.recipe);
+	}
+
+	/**
+	 *
+	 * @param {*} imageModel
+	 */
+	#_renderImage(imageModel) {
+		const wrapperEl = /** @type {HTMLElement} */ (
+			this.cardEl.querySelector('[data-label-image-wrapper="card"]')
+		);
+		if (wrapperEl) {
+			this.imageHost = mountImage(wrapperEl, imageModel);
+		}
 	}
 
 	/**
