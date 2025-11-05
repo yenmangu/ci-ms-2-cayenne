@@ -244,7 +244,7 @@ I've decomposed my Epics into User Stories for prioritizing and implementing the
 | **BEM CSS & Code Style**           | CSS follows BEM for modularity and conflict-resistance; file and variable naming is consistent and cross-platform safe.            | [theme.css](./assets/css/theme.css)                                               |
 | **Mobile-First Responsive Design** | All wireframes and layouts prioritise mobile experience, with scalable components for tablet/desktop.                              | [theme.css](./assets/css/theme.css), [wireframes](./documentation/ux/wireframes/) |
 | **Asset Management & Attribution** | All static assets and icons are clearly organised and credited, supporting both licensing and future asset updates.                | [assets/](./assets/), [README.md](#credits)                                       |
-| **Error Handling & User Feedback** | Friendly, branded error messages, loading indicators, and retry options for failed API or network calls.                           | ![Error Message](documentation/screenshots/error-message.png)                     |
+| **Error Handling & User Feedback** | Friendly, branded error messages, loading indicators, and retry options for failed API or network calls.                           | [ERROR](./ERROR.md)                                                               |
 
 ### Image Preloader
 
@@ -530,9 +530,11 @@ All custom CSS adopts the BEM (Block, Element, Modifier) naming convention for m
 - **Modifier** - A variation of the block or element (`recipe-card--featured`)
 
 ```
+
 .block {}
-.block__element {}
+.block\_\_element {}
 .block--modifier {}
+
 ```
 
 #### Example
