@@ -49,10 +49,6 @@ export const AppRouter = {
 	/** @type {Record<string, ComponentLike | null>} */
 	currentInstances: {},
 
-	/**
-	 * Handle hash changes
-	 * @param {HTMLElement} appRoot
-	 */
 	destroyAllInstances() {
 		Object.values(AppRouter.currentInstances).forEach(instance => {
 			if (instance && typeof instance.destroy === 'function') {
@@ -61,6 +57,11 @@ export const AppRouter = {
 		});
 		AppRouter.currentInstances = {};
 	},
+
+	/**
+	 * Handle hash changes
+	 * @param {HTMLElement} appRoot
+	 */
 	handleRouteChange(appRoot) {
 		const hash = window.location.hash;
 		/** @type {{path: string, params: Record<string,string> | {}}} */

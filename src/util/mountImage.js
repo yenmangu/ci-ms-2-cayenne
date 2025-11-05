@@ -35,7 +35,7 @@ export function normaliseSpoonacularUrl(url) {
  * @returns {ImageModel}
  */
 function addPlaceholder(model) {
-	if (!model.placeholder) {
+	if (!model.placeholder || model.placeholder === undefined) {
 		return { placeholder: DEFAULT_IMAGE_PLACEHOLDER, ...model };
 	}
 	return model;

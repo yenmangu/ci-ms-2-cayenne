@@ -57,13 +57,15 @@ export class RecipeCard {
 
 	/**
 	 *
-	 * @param {*} imageModel
+	 * @param {ImageModel} imageModel
 	 */
 	#_renderImage(imageModel) {
 		const wrapperEl = /** @type {HTMLElement} */ (
 			this.cardEl.querySelector('[data-label-image-wrapper="card"]')
 		);
 		if (wrapperEl) {
+			console.log('wrapper found');
+
 			this.imageHost = mountImage(wrapperEl, imageModel);
 		}
 	}
@@ -104,6 +106,13 @@ export class RecipeCard {
 
 	init() {
 		this.cardEl = stringToHtml(renderRecipeCard(this.recipe));
+		/** @type {ImageModel} */
+		const imageModel = {
+			alt: this.recipe.title,
+			src: this.recipe.image,
+			title: this.recipe.title
+		};
+		this.#_renderImage(imageModel);
 		const cardElementMapping = {
 			anchor: this.cardEl.querySelector('a'),
 			image: this.cardEl.querySelector('img'),
