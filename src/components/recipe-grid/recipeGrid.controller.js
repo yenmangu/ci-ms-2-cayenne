@@ -146,16 +146,6 @@ export class RecipeGrid {
 		});
 	}
 
-	destroy() {
-		this.appRoot.innerHTML = '';
-		this.cardInstances = [];
-		this.grid = null;
-		if (this.subscription) {
-			this.subscription.unsubscribe();
-			this.subscription = null;
-		}
-	}
-
 	/**
 	 *
 	 * @param {()=> boolean | null} [fn]
@@ -256,5 +246,15 @@ export class RecipeGrid {
 	updateCards(updatedRecipes) {
 		this.recipes = updatedRecipes;
 		this.render();
+	}
+
+	destroy() {
+		this.appRoot.innerHTML = '';
+		this.cardInstances = [];
+		this.grid = null;
+		if (this.subscription) {
+			this.subscription.unsubscribe();
+			this.subscription = null;
+		}
 	}
 }

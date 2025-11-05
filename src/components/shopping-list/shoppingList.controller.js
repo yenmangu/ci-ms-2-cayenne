@@ -146,10 +146,6 @@ export class ShoppingList {
 		});
 	}
 
-	destroy() {
-		console.warn('Function destroy() not yet implemented.');
-	}
-
 	init() {
 		this.container.appendChild(this.view);
 
@@ -164,6 +160,11 @@ export class ShoppingList {
 		}
 	}
 
+	updateCards(updated) {
+		this.currentList = updated;
+		this.#_render();
+	}
+
 	// /**
 	//  *
 	//  * @param {ShoppingListItem} item
@@ -174,14 +175,11 @@ export class ShoppingList {
 	// 		listItem => listItem.id === item.id
 	// 	);
 	// 	console.log('Exists: ', exists);
-
 	// 	if (!exists) {
 	// 		appStore.setState({ shoppingList: [...(state.shoppingList || [])] });
 	// 	}
 	// }
-
-	updateCards(updated) {
-		this.currentList = updated;
-		this.#_render();
+	destroy() {
+		console.warn('Function destroy() not yet implemented.');
 	}
 }

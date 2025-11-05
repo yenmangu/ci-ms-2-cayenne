@@ -57,10 +57,6 @@ export class SearchBar {
 		});
 	}
 
-	destroy() {
-		console.warn('Function destroy() not yet implemented.');
-	}
-
 	handleSubmit() {
 		const value = this.searchBarInput.value.trim().split(' ');
 		// const string = value.join(',');
@@ -94,5 +90,9 @@ export class SearchBar {
 
 	render() {
 		this.container.appendChild(this.searchComponent);
+	}
+
+	destroy() {
+		console.warn('Function destroy() not yet implemented.');
 	}
 }

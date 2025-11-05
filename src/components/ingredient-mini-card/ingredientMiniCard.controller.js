@@ -91,12 +91,6 @@ export class IngredientMiniCard {
 		appStore.toggleIngredientInCart(itemToStore);
 	}
 
-	destroy() {
-		this.subscription.unsubscribe();
-		this.subscription = null;
-		this.el.innerHTML = '';
-	}
-
 	init() {
 		this.subscription = appStore
 			.subscribe(state => {
@@ -138,5 +132,11 @@ export class IngredientMiniCard {
 		wrapper.appendChild(this.miniCardEl);
 		this.el = wrapper;
 		return this.el;
+	}
+
+	destroy() {
+		this.subscription.unsubscribe();
+		this.subscription = null;
+		this.el.innerHTML = '';
 	}
 }

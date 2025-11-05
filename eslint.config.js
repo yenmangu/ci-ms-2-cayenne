@@ -4,6 +4,7 @@ import perfectionist from 'eslint-plugin-perfectionist';
 import { defineConfig } from 'eslint/config';
 import globals from 'globals';
 
+const destroyGroup = {};
 export default defineConfig([
 	{
 		files: ['**/*.{js,mjs,cjs}'],
@@ -14,6 +15,17 @@ export default defineConfig([
 			'perfectionist/sort-classes': [
 				'error',
 				{
+					customGroups: [
+						{
+							elementNamePattern: '^#?(destroy|dispose)$',
+							groupName: 'destroy-method',
+							selector: 'method',
+							// match destroy() or #destroy()
+							// optional: don't sort inside this group (usually a single item)
+							type: 'unsorted'
+						}
+					],
+
 					groups: [
 						'index-signature',
 						'static-property',
@@ -27,8 +39,12 @@ export default defineConfig([
 						'private-method',
 						'method',
 						['get-method', 'set-method'],
-						'unknown'
+						'unknown',
+						{ newlinesBetween: 1 },
+						'destroy-method'
 					],
+					newlinesBetween: 'ignore',
+
 					// override: still alphabetical, but with explicit group buckets
 					order: 'asc',
 					type: 'alphabetical'

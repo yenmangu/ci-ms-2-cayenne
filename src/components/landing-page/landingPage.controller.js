@@ -125,10 +125,6 @@ export class LandingPage {
 		}
 	}
 
-	destroy() {
-		if (this.subscription) this.subscription.unsubscribe();
-	}
-
 	async init() {
 		this.landingPageComponent = stringToHtml(renderLandingPage());
 
@@ -148,5 +144,9 @@ export class LandingPage {
 		} else {
 			throw new Error('Landing component not initialised');
 		}
+	}
+
+	destroy() {
+		if (this.subscription) this.subscription.unsubscribe();
 	}
 }

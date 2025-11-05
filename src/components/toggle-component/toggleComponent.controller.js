@@ -58,8 +58,6 @@ export class ToggleComponent {
 		label.textContent = config[this.latestState[this.key]];
 	}
 
-	destroy() {}
-
 	init() {
 		// Dev debugging
 		// console.debug(`ToggleComponent: ${this.toggleConfig.key}`);
@@ -106,4 +104,6 @@ export class ToggleComponent {
 	setStateProp(key, val) {
 		appStore.setState({ [key]: val }, { global: true });
 	}
+
+	destroy() {}
 }

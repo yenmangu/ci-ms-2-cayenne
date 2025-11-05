@@ -85,11 +85,6 @@ export class RecipeCard {
 		likeText.textContent = on ? 'Remove like' : 'Like this recipe';
 	}
 
-	destroy() {
-		this.parent.innerHTML = '';
-		if (this.subscription) this.subscription.unsubscribe();
-	}
-
 	init() {
 		this.cardEl = stringToHtml(renderRecipeCard(this.recipe));
 		const cardElementMapping = {
@@ -160,5 +155,10 @@ export class RecipeCard {
 		this.recipe = newRecipeCardData;
 		this.icon = this.cardElementMapping.likeBtn?.querySelector('i');
 		this.#_checkIsLiked();
+	}
+
+	destroy() {
+		this.parent.innerHTML = '';
+		if (this.subscription) this.subscription.unsubscribe();
 	}
 }

@@ -190,12 +190,6 @@ export class RecipeDetail {
 		appStore.setState({ currentRecipe: this.fetchedRecipe });
 	}
 
-	destroy() {
-		if (this.subscription) {
-			this.subscription.unsubscribe();
-		}
-	}
-
 	async fetchRecipe() {
 		await this.service.fetchRecipeById(this.recipeId, {});
 		this.fetchedRecipe = this.service.fetchedRecipe;
@@ -254,6 +248,12 @@ export class RecipeDetail {
 			this.#_buildIngredientCards();
 		} else {
 			console.warn('No App root');
+		}
+	}
+
+	destroy() {
+		if (this.subscription) {
+			this.subscription.unsubscribe();
 		}
 	}
 }

@@ -199,16 +199,6 @@ export class AppHeader {
 		}
 	}
 
-	destroy() {
-		if (this.subscription) {
-			this.subscription.unsubscribe();
-		}
-
-		if (this.routeSubscription) {
-			this.routeSubscription.unsubscribe();
-		}
-	}
-
 	init() {
 		this.navWrapper = /** @type {HTMLElement} */ (
 			this.header.querySelector('.app-header__nav-wrapper')
@@ -242,6 +232,16 @@ export class AppHeader {
 		} else {
 			this.header.style.marginTop = `${headerStackOffset}px`;
 			spacer.style.height = `${0}`;
+		}
+	}
+
+	destroy() {
+		if (this.subscription) {
+			this.subscription.unsubscribe();
+		}
+
+		if (this.routeSubscription) {
+			this.routeSubscription.unsubscribe();
 		}
 	}
 }

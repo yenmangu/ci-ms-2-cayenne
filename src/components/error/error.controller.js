@@ -112,12 +112,6 @@ export class ErrorController {
 		}
 	}
 
-	destroy() {
-		this.#_sub?.unsubscribe();
-		this.#_sub = null;
-		this.el.innerHTML = '';
-	}
-
 	init() {
 		this.#_sub = this.store
 			.subscribe(({ errors }) => {
@@ -153,5 +147,11 @@ export class ErrorController {
 			{ mode: this.mode, title: this.title }
 		);
 		this.#_wireHandlers(entry, onRetry);
+	}
+
+	destroy() {
+		this.#_sub?.unsubscribe();
+		this.#_sub = null;
+		this.el.innerHTML = '';
 	}
 }

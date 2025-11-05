@@ -180,12 +180,6 @@ export class IconButton {
 		console.warn('IconButton Invalid size value: ', size);
 	}
 
-	// Optional cleanup; minimise memory leaks
-	destroy() {
-		this.#el.replaceWith();
-		this.#icon = null;
-	}
-
 	getCurrentButtonAttrs() {
 		return this.#opts.toggled
 			? { ...this.#buttonAttrs, ...this.#buttonToggledAttrs }
@@ -216,8 +210,6 @@ export class IconButton {
 		container.appendChild(this.#el);
 		void this.render();
 	}
-
-	// New Render()
 
 	async render() {
 		const isToggled = !!this.#opts.toggled;
@@ -257,6 +249,8 @@ export class IconButton {
 			this.#setLabelAttributes(this.#icon.node, currentIconAttrs);
 		}
 	}
+
+	// New Render()
 
 	setAriaLabel(text, isToggled) {
 		if (isToggled) {
@@ -311,5 +305,11 @@ export class IconButton {
 
 	get routeKey() {
 		return this.#routeKey;
+	}
+
+	// Optional cleanup; minimise memory leaks
+	destroy() {
+		this.#el.replaceWith();
+		this.#icon = null;
 	}
 }
