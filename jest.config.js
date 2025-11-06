@@ -1,6 +1,6 @@
 export default {
 	moduleNameMapper: {},
 	setupFiles: ['./jest.setup.js'],
-	testEnvironment: 'node',
+	testEnvironment: 'jsdom',
 	transform: {}
 };
