@@ -447,6 +447,18 @@ This SPA routing system ensures a seamless, app-like experience for users on bot
   - All data fetching (search, recipe detail, ingredient lookups) is done asynchronously, with error handling and loading states displayed to the user.
   - Only safe, relevant recipe and ingredient data is passed to UI components—never raw or extraneous API fields.
 
+### Error Handling Architecture
+
+Cayenne implements a centralised, event-driven error handling system that covers all network and controller failures.
+Each API request passes through the `SpoonacularClient`, which throws typed errors (`HttpError`, `NetworkError`, `AbortError`).
+These are normalised via `reportError()` into structured `NormalisedError` entries stored in the global state.
+
+The `ErrorController` subscribes to the `errors` slice and renders scoped alerts with retry and dismiss actions.
+Retries are resolved deterministically using `refetchFromMeta(meta)` from the client, ensuring consistent recovery.
+Successful retries clear the error and emit a `cayenne:refetch-success` event, while failed retries enqueue a new retryable error via `reportRefetch()`.
+
+This design provides a single, predictable flow for network recovery and user feedback across the entire application.
+
 ### Security & Best Practice
 
 - No API keys or sensitive data are ever stored or visible in the client-side codebase.

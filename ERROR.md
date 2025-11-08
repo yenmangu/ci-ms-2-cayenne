@@ -49,4 +49,44 @@ Errors are tagged using the `ErrorScope` typedef:
 
 ### Example
 
+### Error & Refetch Flow — Overview
+
+1. **User action → request**
+   A controller or UI event triggers a call to `getClient()` and performs an API request.
+
+2. **Client performs IO**
+   `SpoonacularClient.#_fetch()` runs the request.
+   On failure, it throws one of the custom error classes:
+   `HttpError`, `AbortError`, or `NetworkError`.
+
+3. **Error → Reporter → Store**
+   The controller catches the error and calls `reportError(store, err, hints)`.
+   This uses `normaliseError()` to create a `NormalisedError`, then dispatches `addError(normalised)`.
+   The app state now holds a new error entry in the `errors` slice.
+
+4. **ErrorController renders**
+   Subscribed to state changes, it re-renders the most recent error for its scope.
+   The view shows the alert UI with “Retry” and “Dismiss” buttons based on the error type and metadata.
+
+5. **Retry (user click)**
+   `ErrorController.#_deriveRetry(entry)` maps the `meta.cmd` value:
+
+   - `refetch` → calls `getClient().refetchFromMeta(meta)`
+   - `refetchMany` → runs all metas in parallel (`Promise.all`)
+   - `reloadRoute` → reloads the page
+
+6. **On success**
+   The controller clears the error (`resolveError()` + `setState`)
+   and dispatches the event:
+   `cayenne:refetch-success` → `{ data, meta, scope }`.
+   This signals other modules (e.g. UI or page controllers) to update.
+
+7. **On failure**
+   If retry fails, the controller calls
+   `reportRefetch(store, scope, prevMeta)`
+   to enqueue a new, retryable error entry — keeping the user informed and the UI actionable.
+
+**Result:**
+All error handling, retries, and user recovery paths now run through a single, predictable flow — fully tested and verified.
+
 ![Error Message](documentation/screenshots/error-message.png)
