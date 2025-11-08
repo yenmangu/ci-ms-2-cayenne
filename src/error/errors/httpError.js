@@ -28,9 +28,6 @@ export class HttpError extends CustomError {
 
 		super(finalMsg);
 
-		/** @type {string} */
-		this.name = 'HttpError';
-
 		/** @type {string|undefined} */
 		this.detail = detail;
 

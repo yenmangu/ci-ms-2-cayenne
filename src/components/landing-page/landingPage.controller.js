@@ -1,15 +1,16 @@
 /**
  * @typedef {import('../../types/recipeTypes.js').RecipeCard} RecipeCardObject
  * @typedef {import('./landingPage.service.js').LandingService} LandingService
+ * @typedef {import('../../types/errorTypes.js').ErrorScope} ErrorScope
  */
 
 import { appStore } from '../../appStore.js';
 import { stringToHtml } from '../../util/htmlToElement.js';
+import { Loading } from '../loading/loading.controller.js';
 import { RecipeCard } from '../recipe-card/recipeCard.controller.js';
 import { SearchBar } from '../search-bar/searchBar.controller.js';
 import * as service from './landingPage.service.js';
 import { renderLandingPage } from './landingPage.view.js';
-import { Loading } from '../loading/loading.controller.js';
 
 export class LandingPage {
 	/**
@@ -69,11 +70,25 @@ export class LandingPage {
 		this.#_renderSearch();
 		this.#_renderTitle();
 	}
-
 	#_onFetchNewRandom() {
 		this.loadingComponent = new Loading(this.container);
 		this.loadingComponent.render();
 		this.service.updateStoreRandomRecipe();
+	}
+
+	/**
+	 *
+	 * @param {ErrorScope} expectedScope
+	 * @param {(...args)=> any} handler
+	 */
+	#_onRefetchSuccessOnce(expectedScope, handler) {
+		const eHandler = event => {
+			const detail = event?.detail;
+			if (!detail || detail.scope !== expectedScope) return;
+			window.removeEventListener('cayenne:refetch-success', eHandler);
+			handler(detail.data, detail.meta);
+		};
+		window.addEventListener('cayenne:refetch-success', eHandler);
 	}
 
 	#_renderRandomRecipe() {
@@ -129,6 +144,13 @@ export class LandingPage {
 		this.landingPageComponent = stringToHtml(renderLandingPage());
 
 		this.#_collectContainers();
+		this.#_onRefetchSuccessOnce('route:/', ({ data, meta }) => {
+			// console.log(payload);
+
+			const recipe = this.service.toRecipeCard(data);
+			appStore.setState({ currentRandom: recipe });
+		});
+
 		this.#_onFetchNewRandom();
 
 		this.landingSearch = new SearchBar(this.searchBarContainer);

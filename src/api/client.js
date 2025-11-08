@@ -5,13 +5,24 @@
  * @typedef {import('../types/stateTypes.js').ErrorMeta} ErrorMeta
  */
 
+/**
+ * @typedef {import('../types/responseTypes.js').FetchResult} FetchResult
+ */
+
 // import { ENV } from '../config/env.js';
 import { appStore } from '../appStore.js';
 import { SPOONACULAR_ENDPOINTS, buildEndpoint } from '../config/endpoints.js';
 import { ENV } from '../env.js';
-import { getCurrentRouteScope } from '../error/errorScope.js';
+import {
+	AbortError,
+	CustomError,
+	NetworkError
+} from '../error/errors/customError.js';
+import { HttpError } from '../error/errors/httpError.js';
 import { handleHttpStatus } from '../error/handlers/handleHttpStatus.js';
-import { reportRefetch } from '../error/util/errorReporter.js';
+import { getCurrentRouteScope } from '../error/util/errorScope.js';
+import { isAbsoluteUrl } from '../util/isAbsolute.js';
+import { buildIdPath, pathNeedsId } from '../util/pathInjection.js';
 import { safeText } from '../util/safeText.js';
 
 /**
@@ -26,7 +37,7 @@ export class SpoonacularClient {
 				'[MISSING ENV] - Missing API config please consult README "Troubleshooting" section.'
 			);
 		}
-		this.useLive = true;
+		this.useLive = appStore.getState().useLive;
 		this.apiUrl = ENV.API_URL;
 		this.#sub = appStore.subscribe(state => {
 			this.useLive = state.useLive;
@@ -59,69 +70,19 @@ export class SpoonacularClient {
 	 *
 	 * @param {string} endpoint - Spoonacular path, e.g. "/recipes/complexSearch"
 	 * @param {Object} [params={}] - Query Params as key-value pairs
+	 * @param {number} [id=null]
 	 * @returns {string} Full endpoint
 	 */
-	_buildUrl(endpoint, params = {}) {
+	_buildUrl(endpoint, params = {}, id = null) {
 		const query = new URLSearchParams({
 			...params
-		}).toString();
-		const base = this.apiUrl.replace(/\/$/, '');
-		return query ? `${base}${endpoint}?${query}` : `${base}${endpoint}`;
-	}
-
-	/**
-	 * @private
-	 * @param {number} [ms=500] - Milliseconds to wait (Half a second default)
-	 * @returns
-	 */
-	_delay(ms = 500) {
-		return new Promise(resolve => setTimeout(resolve, ms));
-	}
-
-	/**
-	 *
-	 * @param {string} endpoint - Spoonacular path, e.g. "/recipes/complexSearch"
-	 * @param {Record<string, any>} params - Query Params as key-value pairs
-	 * @param {number} [retries=0]
-	 * @param {RequestInit} [opts]
-	 * @returns {Promise<any>}
-	 */
-	async _fetch(endpoint, params = {}, retries = 0, opts = {}) {
-		const fullUrl = this._buildUrl(endpoint, params);
-		const meta = { endpoint, opts, params, url: fullUrl };
-		const scope = /** @type {ErrorScope} */ (getCurrentRouteScope());
-		/** @type {Response|undefined} */
-		let response;
-		try {
-			response = await fetch(fullUrl, opts);
-			if (!response.ok) {
-				const detail = await safeText(response);
-				handleHttpStatus(appStore, scope, response.status, meta, detail);
-
-				const err = new Error(
-					`[API ERROR] ${response.status} ${response.statusText}${
-						detail ? ` - ${detail}` : ''
-					}`
-				);
-
-				/** @type {any} */ (err).status = response.status;
-				/** @type {any} */ (err).__reported = true;
-
-				throw err;
-			}
-			return await response.json();
-		} catch (error) {
-			const name = /** @type {any} */ (error)?.name || '';
-			const isAbort = name === 'AbortError';
-			const reported = /** @type {any} */ (error)?.__reported === true;
-
-			if (!isAbort && !reported && !response) {
-				reportRefetch(appStore, scope, meta);
-			}
-
-			// console.error(`[FETCH FAIL] ${fullUrl}`, error);
-			throw error;
+		});
+		if (id !== null) {
+			query.append('id', id.toString());
 		}
+		const strQuery = query.toString();
+		const base = this.apiUrl.replace(/\/$/, '');
+		return query ? `${base}${endpoint}?${strQuery}` : `${base}${endpoint}`;
 	}
 
 	/**
@@ -130,29 +91,41 @@ export class SpoonacularClient {
 	 * @param {RequestInit} [opts]
 	 */
 	async _fetchAbsolute(url, opts) {
-		try {
-			const res = await fetch(url, opts);
-			if (!res.ok) {
-				const detail = await safeText(res);
-				const err = new Error(
-					`[API ERROR] ${res.status} ${res.statusText}${
-						detail ? ` - ${detail}` : ''
-					}`
-				);
-				/** @type {any} */ (err).status = res.status;
-				throw err;
-			}
-			return await res.json();
-		} catch (e) {
-			console.error('[FETCH ABS FAIL]', url, e);
-			throw e;
+		return this.#_fetchFromApi(url, opts);
+	}
+
+	/**
+	 *
+	 * @param {string} endpoint
+	 * @param {Record<string, any>} params
+	 * @returns {{endpoint: string, params: Record<string, any>}}
+	 */
+	_resolveEndpointForMode(endpoint, params = {}) {
+		console.log('[_resolveEndpointForMode]: endpoint:', endpoint);
+		console.log('[_resolveEndpointForMode]: useLive:', this.useLive);
+
+		if (this.useLive) return { endpoint, params };
+
+		if (endpoint === '/recipes/random' || endpoint === '/recipes/test-random') {
+			return { endpoint: '/recipes/test-random', params };
 		}
+		if (endpoint === '/recipes/test') {
+			return { endpoint, params };
+		}
+		const lastPathSeg = endpoint.split('/').pop();
+		if (lastPathSeg === 'information' || lastPathSeg === 'summary') {
+			const key = /** @type {EndpointKey} */ (lastPathSeg);
+			// const
+		}
+
+		return { endpoint: '/recipes/test', params: { ...params, test: true } };
 	}
 
 	/**
 	 *
 	 * @param {string[]} ingredients
 	 * @param {number} recipes - Max num of recipes to return between 1 and 100
+	 * @returns {Promise<FetchResult>}
 	 */
 	async findByIngredients(ingredients, recipes) {
 		const searchString = this._buildSearchString(ingredients);
@@ -163,54 +136,64 @@ export class SpoonacularClient {
 		const key = /** @type {EndpointKey} */ ('searchRecipesByIngredients');
 		const endpoint = this._buildEndpointWithParameters(key);
 
-		const responseJson = await this._fetch(endpoint, queryParams);
+		const /** @type {FetchResult} */ apiResponse = await this.firstFetch(
+				endpoint,
+				queryParams
+			);
+		const responseJson = await this.firstFetch(endpoint, queryParams);
+		return apiResponse;
 		return responseJson;
 	}
 
 	/**
-	 * @returns {Promise<RecipeFull>}
+	 * @returns {Promise<FetchResult>}
 	 */
-	async getRandomRecipe() {
+	async getRandomRecipe(single = true) {
 		if (this.useLive) {
 			const key = /** @type {EndpointKey} */ ('getRandomRecipes');
 			const endpoint = this._buildEndpointWithParameters(key);
-			const responseJson = await this._fetch(endpoint);
-			return responseJson;
+			const response = await this.firstFetch(endpoint);
+			return response;
 		} else {
-			return await this.getTestApiRecipes(true);
+			return await this.getTestApiRecipes(single);
 		}
 	}
 
 	/**
 	 *
 	 * @param {number} id
-	 * @returns {Promise<RecipeFull>}
+	 * @returns {Promise<FetchResult>}
 	 */
 	async getRecipeInformation(id) {
 		const endpoint = this._buildEndpointWithParameters('getRecipeInformation', {
 			id
 		});
 
-		const responseJson = await this._fetch(endpoint);
-		return responseJson;
+		const fetchResult = await this.firstFetch(endpoint, { id });
+		return fetchResult;
 	}
+	/**
+	 *
+	 * @param {number} id
+	 * @returns {Promise<FetchResult>}
+	 */
 	async getRecipeSummary(id) {
 		const endpoint = this._buildEndpointWithParameters('summarizeRecipe', {
 			id
 		});
-		const responseJson = await this._fetch(endpoint);
-		return responseJson;
+		const fetchResult = await this.firstFetch(endpoint, { id });
+		return fetchResult;
 	}
 
 	/**
 	 *
 	 * @returns
 	 */
-	async getTestApiRecipes(single = false) {
+	async getTestApiRecipes(single = true) {
 		const queryParams = { test: true };
 		const endpoint = single ? '/recipes/test-random' : '/recipes/test';
 		try {
-			const responseJson = await this._fetch(endpoint, queryParams);
+			const responseJson = await this.firstFetch(endpoint, queryParams);
 			return responseJson;
 		} catch (error) {
 			throw error;
@@ -231,7 +214,7 @@ export class SpoonacularClient {
 						params
 				  )
 				: /** @type {string} */ (endpointKeyOrPath);
-		return this._fetch(endpoint, params, 0, opts);
+		return this.subsequentFetch(endpoint, params, opts);
 	}
 
 	/**
@@ -240,16 +223,14 @@ export class SpoonacularClient {
 	 * @returns {Promise<any>}
 	 */
 	async refetchFromMeta(meta) {
-		if (meta?.url) {
-			return this._fetchAbsolute(meta.url, meta.opts);
-		}
 		if (meta?.endpoint) {
-			return this.refetch(meta.endpoint, meta.params, meta.opts);
+			return this.subsequentFetch(meta.endpoint, meta.params, meta.opts);
+		}
+		if (meta?.urlAbs) {
+			return this._fetchAbsolute(meta.urlAbs, meta.opts);
 		}
 		throw new Error('[REFETCH] Missing url/endpoint in meta');
 	}
-
-	async searchIngredients(query) {}
 
 	/**
 	 *
@@ -266,7 +247,246 @@ export class SpoonacularClient {
 		};
 		const key = /** @type {EndpointKey} */ ('searchRecipes');
 		const endpoint = this._buildEndpointWithParameters(key);
-		const responseJson = await this._fetch(endpoint, queryParams);
+		const responseJson = await this.firstFetch(endpoint, queryParams);
 		return responseJson;
+	}
+
+	// NEW METHODS
+	/**
+	 *
+	 * @param {string} urlOrKeyOrPath
+	 * @param {Record<string, any>|{}} [params={}]
+	 * @param {RequestInit & {status?: number}} [opts={}]
+	 * @returns {Promise<FetchResult>}
+	 */
+	async subsequentFetch(urlOrKeyOrPath, params = {}, opts = {}) {
+		const str = String(urlOrKeyOrPath);
+		const status = /** @type {number | undefined} */ (opts.status);
+
+		const resolvedParams = this.#_withCachedFlags(
+			params,
+			status === 402 ? true : undefined
+		);
+
+		const isAbsolute = isAbsoluteUrl(str);
+		const fullUrl = isAbsolute ? str : this._buildUrl(str, resolvedParams);
+
+		/** @type {ErrorMeta} */
+		const metaBase = {
+			from: isAbsolute ? 'absolute' : undefined,
+			endpoint: isAbsolute ? undefined : str,
+			urlAbs: fullUrl,
+			params: resolvedParams,
+			opts
+		};
+
+		return this.#_fetchFromApi(fullUrl, opts, metaBase, true, true);
+	}
+
+	/**
+	 * Abstraction of #_fetchFromApi();
+	 * initial fetch only
+	 * @param {string} urlOrKeyOrPath
+	 * @param {Record<string, any>} params
+	 * @param {RequestInit} opts
+	 * @returns {Promise<FetchResult>}
+	 */
+	async firstFetch(urlOrKeyOrPath, params = {}, opts = {}) {
+		const isAbsolute = isAbsoluteUrl(urlOrKeyOrPath);
+
+		/** @type {'absolute'|'live'|'test'} */
+		let from = 'absolute';
+
+		/** @type {string} endpoint */
+		let endpointPath = urlOrKeyOrPath;
+
+		/** @type {string} */
+		let fullyResolvedUrl;
+
+		if (isAbsolute) {
+			fullyResolvedUrl = urlOrKeyOrPath;
+			from = 'absolute';
+		} else if (urlOrKeyOrPath in SPOONACULAR_ENDPOINTS) {
+			// Endpoint Key
+			const { id, ...query } = params;
+			endpointPath = this._buildEndpointWithParameters(
+				/** @type {keyof typeof SPOONACULAR_ENDPOINTS} */ (urlOrKeyOrPath),
+				id != null ? { id } : {}
+			);
+
+			if (pathNeedsId(endpointPath)) {
+				throw new CustomError('[FIRST_FETCH] Missing id for endpoint path');
+			}
+
+			fullyResolvedUrl = this._buildUrl(endpointPath, query);
+			from = 'live';
+		} else {
+			const { id, ...query } = params;
+			endpointPath = buildIdPath(endpointPath, { id });
+
+			if (pathNeedsId(endpointPath)) {
+				throw new CustomError('[FIRST_FETCH] Missing id for path template');
+			}
+
+			fullyResolvedUrl = this._buildUrl(endpointPath, query);
+			from = 'live';
+		}
+
+		/** @type {ErrorMeta} */
+		const metaBase = {
+			from,
+			endpoint: isAbsolute ? undefined : endpointPath,
+			urlAbs: fullyResolvedUrl,
+			params,
+			opts
+		};
+
+		return this.#_fetchFromApi(fullyResolvedUrl, opts, metaBase);
+	}
+
+	/**
+	 *
+	 * @param {string} fullyResolvedUrl
+	 * @param {RequestInit|{}} [opts={}]
+	 * @param {ErrorMeta} [metaBase={}]
+	 * @param {boolean} [fromRefetch=false]
+	 * @param {boolean} [forcedRefetch=false]
+	 * @returns {Promise<FetchResult>}
+	 */
+	async #_fetchFromApi(
+		fullyResolvedUrl,
+		opts = {},
+		metaBase = {},
+		fromRefetch = false,
+		forcedRefetch = false
+	) {
+		const fetchUrl = new URL(fullyResolvedUrl, this.apiUrl);
+		if ('params' in metaBase) {
+			fetchUrl.searchParams.append('id', metaBase?.params.id);
+		}
+
+		// DEV
+
+		const dev_402_Url = new URL(fullyResolvedUrl, this.apiUrl);
+		if (!forcedRefetch) {
+			dev_402_Url.searchParams.append('test_402', 'true');
+			if ('params' in metaBase) {
+				dev_402_Url.searchParams.append('id', metaBase?.params.id);
+			}
+		}
+		if (fromRefetch) {
+			dev_402_Url.searchParams.append('override', 'true');
+			if ('params' in metaBase) {
+				dev_402_Url.searchParams.append('id', metaBase?.params.id);
+			}
+		}
+
+		/** @type {Response|undefined} */
+		let response;
+		try {
+			// Dev only
+			const reqOpts = /** @type {RequestInit} */ (opts);
+			const formData = new FormData();
+			formData.append('send402', 'true');
+
+			response = await fetch(dev_402_Url, opts);
+
+			/** @type {ErrorMeta} */
+			const meta = {
+				...metaBase,
+				status: response.status,
+				urlAbs: fullyResolvedUrl
+			};
+
+			if (!response.ok) {
+				// error handling for HTTP errors
+
+				const detail = await safeText(response);
+
+				const scope = /** @type {ErrorScope} */ (getCurrentRouteScope());
+
+				handleHttpStatus(appStore, scope, response.status, meta, detail);
+
+				throw new HttpError(response, { detail, meta });
+			}
+
+			// Check custom header
+			const liveAllowed =
+				response.headers.get('x-cayenne-live-allowed') === '1';
+			if (liveAllowed) appStore.setState({ useLive: true });
+
+			const text = await response.text();
+			/** @type {{} & {allowLive?: boolean, data?: any}} */
+			const data = text ? this.tryJson(text) : null;
+
+			return { data, meta };
+		} catch (error) {
+			/** @type {ErrorMeta} */
+			const meta = {
+				...metaBase,
+				urlAbs: fullyResolvedUrl,
+				status: response?.status
+			};
+			// Preserve existing HttpError
+			if (/** @type {any} */ (error)?.name === 'HttpError') throw error;
+
+			// error handling for unhandled (non HTTP)
+			if (/** @type {any} */ (error)?.name === 'AbortError') {
+				throw new AbortError(meta);
+			}
+			// Default NetworkError
+			throw new NetworkError(meta);
+		}
+	}
+
+	/**
+	 *
+	 * @param {Response} res
+	 * @returns {Promise<string>}
+	 */
+	async tryText(res) {
+		try {
+			return await res.text();
+		} catch {
+			return '';
+		}
+	}
+
+	/**
+	 *
+	 * @param {string} text
+	 * @returns {{} | string}
+	 */
+	tryJson(text) {
+		try {
+			return JSON.parse(text);
+		} catch {
+			return text;
+		}
+	}
+
+	/**
+	 * Retry the exact same URL you just attempted (no re-resolution).
+	 * Not sure if needed yet - better to have and not need
+	 * @param {ErrorMeta} meta
+	 * @param {RequestInit} [opts={}]
+	 * @returns {Promise<FetchResult>}
+	 */
+	async #_retrySame(meta, opts = {}) {
+		const url = meta.urlAbs;
+		const metaBase = { ...meta, opts };
+		return this.#_fetchFromApi(url, opts, metaBase);
+	}
+
+	/**
+	 *
+	 * @param {Record<string, any>} params
+	 * @param {boolean|undefined} useCache
+	 */
+	#_withCachedFlags(params = {}, useCache) {
+		/** @type {Record<string, any> & {useCache?: boolean}} */
+		const next = { ...params, refetch: true };
+		if (useCache !== undefined) next.useCache = useCache;
+		return next;
 	}
 }

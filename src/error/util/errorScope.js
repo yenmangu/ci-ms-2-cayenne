@@ -1,5 +1,5 @@
 /**
- * @typedef {import("../types/errorTypes.js").ErrorScope} ErrorScope
+ * @typedef {import("../../types/errorTypes.js").ErrorScope} ErrorScope
  */
 
 /**

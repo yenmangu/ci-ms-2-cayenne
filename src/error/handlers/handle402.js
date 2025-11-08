@@ -6,6 +6,7 @@
  * @typedef {import("../../types/errorTypes.js").ErrorType} ErrorType
  */
 
+import { HttpError } from '../errors/httpError.js';
 import { reportRefetch } from '../util/errorReporter.js';
 
 /**
@@ -23,13 +24,19 @@ export function switchToTestOnce(store) {
  * @param {ErrorMeta} meta
  */
 export function handleQuotaExceed(store, scope, meta) {
-	switchToTestOnce(store);
-	reportRefetch(store, scope, meta);
+	// console.log('meta in handleQuotaExceed: ', meta);
 
-	const err = new Error(
-		'API quota exceeded (404) - switched to test data from proxy API'
+	switchToTestOnce(store);
+	reportRefetch(store, scope, {
+		...meta,
+		params: { ...(meta.params || {}), refetch: true, useCache: true }
+	});
+
+	const err = new HttpError(
+		'API quota exceeded (402) - switched to test data from proxy API'
 	);
 	/** @type {any} */ (err).__reported = true;
+	/** @type {any} */ (err).status = 402;
 
 	throw err;
 }

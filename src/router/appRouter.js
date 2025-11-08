@@ -3,9 +3,13 @@
  * @typedef {import('../types/componentTypes.js').Ctor<ComponentLike>} ComponentCtor
  * - aliased from Ctor
  * @typedef {import('../types/routerTypes.js').RouteHandler} RouteHandler
+ * @typedef {import('../types/errorTypes.js').ErrorScope} ErrorScope
  */
 
 import { appStore } from '../appStore.js';
+import { ErrorController } from '../error/error-component/error.controller.js';
+import { reportError, reportNotFound } from '../error/util/errorReporter.js';
+import { makeRouteScope } from '../error/util/errorScope.js';
 import { normaliseParams } from './paramValidator.js';
 import { parseHashRoute } from './parseHashRoute.js';
 import { NOT_FOUND, routeMap } from './routeMap.js';
@@ -46,6 +50,9 @@ function resolveRoute(path, rawParams = {}) {
 export const startRouter = appRoot => AppRouter.init(appRoot);
 
 export const AppRouter = {
+	/** @type {ErrorController | null} */
+	_routeErrorController: null,
+
 	/** @type {Record<string, ComponentLike | null>} */
 	currentInstances: {},
 
@@ -56,6 +63,10 @@ export const AppRouter = {
 			}
 		});
 		AppRouter.currentInstances = {};
+		if (this._routeErrorController) {
+			this._routeErrorController.destroy();
+			this._routeErrorController = null;
+		}
 	},
 
 	/**
@@ -72,26 +83,55 @@ export const AppRouter = {
 		const { entry, params, resolvedPath } = resolveRoute(path, raw);
 		routerService.setActiveRouteKey(path);
 
+		const slot = document.getElementById('route-error-slot');
+		if (slot) {
+			this._routeErrorController?.destroy();
+			this._routeErrorController = new ErrorController(slot, {
+				mode: 'inline',
+				scope: makeRouteScope(resolvedPath),
+				store: appStore,
+				title: 'Something went wrong'
+			});
+			this._routeErrorController.init();
+		}
+
+		const scope = /** @type {ErrorScope} */ (`route:${path}`);
+
+		if (resolvedPath === NOT_FOUND) {
+			reportNotFound(appStore, scope, {
+				userMessage: 'That page does not exist'
+			});
+		}
+
 		const last = this.currentInstances[this.lastActivePath];
 		if (last?.destroy) last.destroy();
 
 		delete this.currentInstances[this.lastActivePath];
 
 		appStore.setState({ route: entry });
-
-		const maybeInstance = entry.handler(appRoot, resolvedPath, {
-			...params,
-			dev: isDev
-		});
+		let maybeInstance;
+		try {
+			maybeInstance = entry.handler(appRoot, resolvedPath, {
+				...params,
+				dev: isDev
+			});
+		} catch (error) {
+			reportError(appStore, error, { context: { params, path, scope } });
+			return;
+		}
 
 		// Ensure all return values are treated as resolves promises.
 
-		Promise.resolve(maybeInstance).then(
-			/** @param {ComponentLike} instance */ instance => {
-				if (instance && typeof instance.destroy === 'function')
-					AppRouter.currentInstances[path] = instance || null;
-			}
-		);
+		Promise.resolve(maybeInstance)
+			.then(
+				/** @param {ComponentLike} instance */ instance => {
+					if (instance && typeof instance.destroy === 'function')
+						AppRouter.currentInstances[path] = instance || null;
+				}
+			)
+			.catch(err => {
+				reportError(appStore, err, { context: { params, path, scope } });
+			});
 
 		// entry.handler(appRoot, path, { ...params, dev: isDev });
 		if (entry.title) {

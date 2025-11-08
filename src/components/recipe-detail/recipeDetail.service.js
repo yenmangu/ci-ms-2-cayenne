@@ -1,6 +1,7 @@
 /**
  * @typedef {import('../../types/recipeTypes.js').RecipeFull} RecipeFull
  * @typedef {import('../../types/recipeTypes.js').RecipeSummary} Summary
+ * @typedef {import('../../types/errorTypes.js').ErrorScope} ErrorScope
  */
 
 /**
@@ -17,8 +18,11 @@
  */
 
 import { getClient } from '../../api/client.singleton.js';
-import { addImagePlaceholder } from '../../data/addImagePlaceholder.js';
+import { appStore } from '../../appStore.js';
+import { SPOONACULAR_ENDPOINTS } from '../../config/endpoints.js';
 import { testRecipe, testRecipeSummary } from '../../data/testRecipe.js';
+import { reportRefetchMany } from '../../error/util/errorReporter.js';
+import { getCurrentRouteScope } from '../../error/util/errorScope.js';
 
 /**
  *
@@ -70,14 +74,30 @@ export async function fetchRecipeDetail(recipeId) {
 			recipe = getTestRecipe().testRecipe;
 			summary = getTestRecipe().testRecipeSummary;
 		} else {
-			recipe = await client.getRecipeInformation(recipeId);
+			recipe = /** @type {RecipeFull} */ (
+				(await client.getRecipeInformation(recipeId)).data
+			);
 			// summary = recipe.summary
 
-			summary = await client.getRecipeSummary(recipeId);
+			summary = /** @type {Summary} */ (
+				(await client.getRecipeSummary(recipeId)).data
+			);
 		}
 
 		return { recipe, summary };
 	} catch (error) {
+		const scope = /** @type {ErrorScope} */ (getCurrentRouteScope());
+		const metas = [
+			{
+				endpoint: SPOONACULAR_ENDPOINTS['getRecipeInformation'],
+				params: { id: recipeId }
+			},
+			{
+				endpoint: SPOONACULAR_ENDPOINTS['summarizeRecipe'],
+				params: { id: recipeId }
+			}
+		];
+		reportRefetchMany(appStore, scope, metas);
 		throw error;
 	}
 }

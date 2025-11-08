@@ -27,17 +27,42 @@ export function reportError(store, err, hints = {}) {
 export function reportRefetch(
 	store,
 	scope,
-	{ endpoint, opts, params, url } = {}
+	// { endpoint, opts, params, url } = {}
+	meta = {}
 ) {
+	const { endpoint, opts, params, urlAbs: url, status } = meta;
+	// console.log('meta in reportRefetch: ', meta);
+
 	/** @type {NormalisedError} */
 	const networkError = {
 		code: 'RETRYABLE',
 		context: { cmd: 'refetch', endpoint, opts, params, scope, url },
 		retry: true,
 		type: 'network',
-		userMessage: 'Network issue. Please try again.'
+		userMessage:
+			status === 402
+				? 'API quota exceeded (402) - retry with test data from Cayenne API'
+				: 'Network issue. Please try again.'
 	};
 	store.dispatch(addError(networkError));
+}
+
+/**
+ *
+ * @param {AppStore} store
+ * @param {ErrorScope} scope
+ * @param {ErrorMeta[]} metas
+ */
+export function reportRefetchMany(store, scope, metas) {
+	store.dispatch(
+		addError({
+			code: 'RETRYABLE_MANY',
+			context: { cmd: 'refetchMany', metas, scope },
+			retry: true,
+			type: 'network',
+			userMessage: 'Network issue. Please try again.'
+		})
+	);
 }
 
 /**

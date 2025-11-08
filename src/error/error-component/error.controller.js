@@ -1,15 +1,39 @@
 /**
- * @typedef {import('../types/stateTypes.js').AppStore}AppStore
- * @typedef {import('../types/stateTypes.js').ErrorScope} ErrorScope
+ * @typedef {import('../../types/stateTypes.js').AppStore}AppStore
+ * @typedef {import('../../types/stateTypes.js').ErrorScope} ErrorScope
  * @typedef {import('./error.view.js').ErrorRenderMode} ErrorRenderMode
- * @typedef {import('../types/stateTypes.js').ErrorEntry}ErrorEntry
- * @typedef {import('../event/store.js').StoreChainApi} StoreChainApi
+ * @typedef {import('../../types/stateTypes.js').ErrorEntry}ErrorEntry
+ * @typedef {import('../../event/store.js').StoreChainApi} StoreChainApi
+ * @typedef {import('../../types/errorTypes.js').ErrorMeta} ErrorMeta
  */
 
-import { getClient } from '../api/client.singleton.js';
-import { resolveError } from './error.model.js';
-import { renderError } from './error.view.js';
-import { reportError } from './errorReporter.js';
+/**
+ * Minimal interface the controller needs from the client.
+ * Keeps tests easy and avoids requiring a full SpoonacularClient shape.
+ * @typedef {{ refetchFromMeta(meta: any): Promise<any> }} RefetchCapableClient
+ */
+
+/**
+ * Dependencies contract for DI.
+ * @typedef {object} ErrorControllerDeps
+ * @property {() => RefetchCapableClient} getClient
+ * @property {(list: ErrorEntry[], id: string) => ErrorEntry[]} resolveError
+ * @property {(store: AppStore, scope: ErrorScope, meta?: ErrorMeta) => void} reportRefetch
+ */
+
+import { getClient as _getClient } from '../../api/client.singleton.js';
+import { resolveError as _resolveError } from '../error.model.js';
+import { renderError as _renderError } from './error.view.js';
+
+import { reportRefetch as _reportRefetch } from '../util/errorReporter.js';
+
+/** @type {ErrorControllerDeps} */
+const DEFAULT_DEPS = {
+	/** @returns {RefetchCapableClient} */
+	getClient: () => _getClient(),
+	resolveError: _resolveError,
+	reportRefetch: _reportRefetch
+};
 
 /**
  * ErrorController class renders latest error for a given scope.
@@ -21,6 +45,11 @@ export class ErrorController {
 	#_sub;
 
 	/**
+	 * @type {ErrorControllerDeps}
+	 * */
+	deps;
+
+	/**
 	 * @param {HTMLElement} container
 	 * @param {{
 	 * store?: AppStore,
@@ -28,9 +57,10 @@ export class ErrorController {
 	 * mode?: ErrorRenderMode,
 	 * title?: string
 	 * }} opts
+	 * @param {Partial<ErrorControllerDeps>} [deps]
 	 *
 	 */
-	constructor(container, { mode = 'inline', scope, store, title } = {}) {
+	constructor(container, { mode = 'inline', scope, store, title } = {}, deps) {
 		/** @type {HTMLElement} */
 		this.el = container;
 
@@ -43,6 +73,9 @@ export class ErrorController {
 		/** @type {string|undefined} */ this.title = title;
 
 		this.#_sub = null;
+
+		/** @type {ErrorControllerDeps} */
+		this.deps = { ...DEFAULT_DEPS, ...(deps || {}) };
 	}
 
 	/**
@@ -53,8 +86,16 @@ export class ErrorController {
 		const meta = entry.meta || {};
 		switch (meta.cmd) {
 			case 'refetch':
+				return async () => _getClient().refetchFromMeta(meta);
+			case 'refetchMany':
 				return async () => {
-					await getClient().refetchFromMeta(meta);
+					const client = _getClient();
+					const metas = Array.isArray(meta.metas) ? meta.metas : [];
+					if (!metas.length) return null;
+					const results = await Promise.all(
+						metas.map(m => client.refetchFromMeta(m))
+					);
+					return { recipe: results[0], summary: results[1] };
 				};
 			case 'reloadRoute':
 				return async () => {
@@ -85,7 +126,7 @@ export class ErrorController {
 				'click',
 				() => {
 					const list = this.store.getState().errors || [];
-					this.store.setState({ errors: resolveError(list, entry.id) });
+					this.store.setState({ errors: _resolveError(list, entry.id) });
 				},
 				{ once: true }
 			);
@@ -98,13 +139,27 @@ export class ErrorController {
 				'click',
 				async () => {
 					try {
-						await onRetry();
+						const data = await onRetry();
+						console.log('data from onRetry: ', data);
+
 						const list = this.store.getState().errors || [];
-						this.store.setState({ errors: resolveError(list, entry.id) });
+						this.store.setState({ errors: _resolveError(list, entry.id) });
+						const detail = { data, meta: entry.meta, scope: this.scope || {} };
+						console.log('Detail: ', detail);
+
+						window.dispatchEvent(
+							new CustomEvent('cayenne:refetch-success', {
+								detail: { data, meta: entry.meta, scope: this.scope || {} }
+							})
+						);
 					} catch (err) {
-						reportError(this.store, err, {
-							context: { cmd: 'refetch', scope: this.scope }
-						});
+						const prevMeta = entry.meta || {};
+
+						_reportRefetch(this.store, this.scope, prevMeta);
+
+						// reportError(this.store, err, {
+						// 	context: { cmd: 'refetch', scope: this.scope }
+						// });
 					}
 				},
 				{ once: true }
@@ -115,7 +170,9 @@ export class ErrorController {
 	init() {
 		this.#_sub = this.store
 			.subscribe(({ errors }) => {
-				this.render(errors);
+				// console.log('Err: ', errors);
+
+				this.#_render(errors);
 			}, 'errors')
 			.immediate();
 	}
@@ -124,7 +181,7 @@ export class ErrorController {
 	 *
 	 * @param {ErrorEntry[]} errors
 	 */
-	render(errors) {
+	#_render(errors) {
 		// Fallback if render() is called without args
 		const list = errors ?? (this.store.getState().errors || []);
 		const entry = list.filter(e => e.scope === this.scope).at(-1);
@@ -136,7 +193,7 @@ export class ErrorController {
 
 		const onRetry = this.#_deriveRetry(entry);
 
-		this.el.innerHTML = renderError(
+		this.el.innerHTML = _renderError(
 			{
 				code: entry.code,
 				message: entry.message,

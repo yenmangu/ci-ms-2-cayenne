@@ -14,6 +14,7 @@
  * @property {function(): void} updateStoreRandomRecipe
  * @property {function(RecipeFull): RecipeCardObject} extractCard
  * @property {function(RecipeFull | SingleRecipeEnvelope): RecipeFull} toRecipeCard
+ * @property {number}[counter]
  *
  */
 import { getClient } from '../../api/client.singleton.js';
@@ -30,7 +31,8 @@ export const createLandingService = opts => {
 	/** @type {LandingService} */
 	const service = {
 		client,
-		/** @type {RecipeFull} */ /**
+		counter: 0,
+		/**
 		 *
 		 * @param {RecipeFull} recipe
 		 * @returns {RecipeCardObject}
@@ -45,9 +47,10 @@ export const createLandingService = opts => {
 				title: recipe.title
 			};
 		},
+		/** @type {RecipeFull} */
 		fetchedRecipe: null,
-		recipeCard: null,
 
+		recipeCard: null,
 		recipeId: null,
 		/**
 		 *
@@ -60,7 +63,9 @@ export const createLandingService = opts => {
 		},
 
 		updateStoreRandomRecipe: async () => {
-			const recipe = await client.getRandomRecipe();
+			service.counter++;
+			const { data, meta } = await client.getRandomRecipe();
+			const recipe = /** @type {RecipeFull} */ (data);
 			appStore.setState({ currentRandom: recipe });
 		}
 	};

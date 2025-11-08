@@ -17,6 +17,11 @@ import { handleQuotaExceed } from './handle402.js';
  */
 export function handleHttpStatus(store, scope, status, meta, detail) {
 	// Explicit paths first
+	// console.log('meta in handleHttpStatus: ', meta);
+
+	if (status) {
+		meta.status = status;
+	}
 
 	if (status === 402) {
 		handleQuotaExceed(store, scope, meta);

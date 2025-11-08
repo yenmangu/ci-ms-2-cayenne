@@ -1,15 +1,15 @@
 /**
- * @typedef {import("../types/errorTypes.js").NormalisedError} NormalisedError
- * @typedef {import("../types/stateTypes.js").ErrorEntry} ErrorEntry
- * @typedef {import("../types/stateTypes.js").ErrorScope} ErrorScope
- * @typedef {import("../types/stateTypes.js").StoreAction} StoreAction
+ * @typedef {import("../../types/errorTypes.js").NormalisedError} NormalisedError
+ * @typedef {import("../../types/stateTypes.js").ErrorEntry} ErrorEntry
+ * @typedef {import("../../types/stateTypes.js").ErrorScope} ErrorScope
+ * @typedef {import("../../types/stateTypes.js").StoreAction} StoreAction
  */
 
-import { pushError } from './error.model.js';
+import { pushError } from '../error.model.js';
 
 /**
  *
- * @param {Error} err
+ * @param {unknown} err
  * @param {Partial<NormalisedError>} [hints]
  * @returns {NormalisedError}
  */
@@ -22,6 +22,94 @@ export function normaliseError(err, hints = {}) {
 			...hints
 		};
 	}
+	if (hints?.code === 'API_QUOTA_EXCEEDED' || hints?.status === 402) {
+		return {
+			code: 'API_QUOTA_EXCEEDED',
+			context: hints?.context ?? { scope: 'global' },
+			retry: true,
+			type: 'network',
+			userMessage: 'Live API quota reached. Switched to test data — try again.'
+		};
+	}
+
+	// Handle custom classes
+	if (err && typeof err === 'object' && 'name' in err) {
+		const name = /** @type {{name?: string}} */ (err).name;
+
+		if (name === 'HttpError' && 'status' in (err ?? {})) {
+			const s = /** @type {{status?: number}} */ (err).status ?? 0;
+
+			if (s >= 500)
+				return {
+					code: 'HTTP_5XX',
+					status: s,
+					type: 'server',
+					userMessage: 'Server error. Please try again.',
+					...hints
+				};
+
+			if (s === 404)
+				return {
+					code: 'HTTP_404',
+					status: s,
+					type: 'not_found',
+					userMessage: "We couldn't find that.",
+					...hints
+				};
+
+			// Optionally honour 402/Quota via hints you already use:
+			if (hints?.code === 'API_QUOTA_EXCEEDED' || hints?.status === 402) {
+				return {
+					code: 'API_QUOTA_EXCEEDED',
+					context: hints?.context || {
+						scope: hints.context?.scope ?? 'global'
+					},
+					retry: true,
+					type: 'network',
+					userMessage:
+						'Live API quota reached. Switched to test data — try again.'
+				};
+			}
+
+			if (s === 429)
+				return {
+					code: 'HTTP_429',
+					status: s,
+					type: 'rate_limit',
+					userMessage: 'Too many requests. Try later',
+					...hints
+				};
+
+			return {
+				code: 'HTTP_4XX',
+				status: s,
+				type: 'client',
+				userMessage: 'There was a problem with your request.',
+				...hints
+			};
+		}
+		if (name === 'AbortError') {
+			return {
+				code: 'ABORTED',
+				type: 'network',
+				retry: true,
+				userMessage: 'The request was cancelled or timed out.',
+				...hints
+			};
+		}
+
+		// C) NetworkError → same bucket as your fetch TypeError path
+		if (name === 'NetworkError') {
+			return {
+				code: 'NETWORK',
+				type: 'network',
+				retry: true,
+				userMessage: 'Network issue. Check your connection',
+				...hints
+			};
+		}
+	}
+
 	if (err && typeof err === 'object' && 'status' in err) {
 		const s = /** @type {{status?: number}} */ (err).status ?? 0;
 		if (s >= 500)
@@ -41,16 +129,7 @@ export function normaliseError(err, hints = {}) {
 				...hints
 			};
 		}
-		if (hints?.code === 'API_QUOTA_EXCEEDED' || hints?.status === 402) {
-			return {
-				code: 'API_QUOTA_EXCEEDED',
-				context: hints?.context || { scope: hints.context.scope ?? 'global' },
-				retry: true,
-				type: 'network',
-				userMessage:
-					'Live API quota reached. Switched to test data — try again.'
-			};
-		}
+
 		if (s === 429) {
 			return {
 				code: 'HTTP_429',

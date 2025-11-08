@@ -1,6 +1,10 @@
 export {};
 
 /**
+ * @typedef {import("./errorTypes.js").ErrorMeta} ErrorMeta
+ */
+
+/**
  * @typedef {import("./recipeTypes.js").RecipeCard} RecipeCard
  */
 
@@ -25,4 +29,10 @@ export {};
  * 	totalResults?: number,
  * 	[key:string]: any
  * }} SearchResponse
+ */
+
+/**
+ * @typedef {object} FetchResult
+ * @property {unknown} data
+ * @property {ErrorMeta} meta
  */

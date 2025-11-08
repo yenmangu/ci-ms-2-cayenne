@@ -38,3 +38,18 @@ export class NetworkError extends CustomError {
 		super('[NetworkError] Failed to fetch', meta);
 	}
 }
+
+export class TeapotError extends CustomError {
+	/**
+	 *
+	 * @param {ErrorMeta|{}} meta
+	 */
+	constructor(meta = {}) {
+		super(
+			'[TEAPOT] Router signalled fallback required: details not cached.',
+			meta
+		);
+	}
+	// On TeapotError, show a brief “We’ve refreshed your recommendations.”
+	// banner when redirecting home—this makes the transition feel intentional rather than broken.
+}

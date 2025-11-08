@@ -11,7 +11,15 @@ export {};
  */
 
 /**
- * @typedef {'global'|`route:${string}`| `section:${string}`} ErrorScope
+ * @typedef {'global'|
+ * `route:${string}`|
+ * `section:${string}`|
+ * 'router'|
+ * 'domain'|
+ * 'component'|
+ * 'network'
+ * } ErrorScope
+ *
  * @typedef {import("./errorTypes.js").ErrorCommand} ErrorCommand
  */
 
@@ -19,9 +27,12 @@ export {};
  * @typedef {object} ErrorMeta
  * @property {ErrorCommand} [cmd]
  * @property {string} [endpoint]
- * @property {string} [url]
+ * @property {string} [urlAbs]
  * @property {Record<string, any>} [params]
  * @property {RequestInit} [opts]
+ * @property {ErrorMeta[]} [metas]
+ * @property {'live'|'test'|'absolute'} [from]
+ * @property {number} [status]
  */
 
 /**
