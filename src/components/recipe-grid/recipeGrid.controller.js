@@ -4,7 +4,6 @@
 
 import { appStore } from '../../appStore.js';
 import { RecipeCard } from '../recipe-card/recipeCard.controller.js';
-import * as service from './recipeGrid.service.js';
 import {
 	getCardWrapperClass as getCardWrapperClassName,
 	renderGridContainer,
@@ -22,7 +21,6 @@ export class RecipeGrid {
 	 */
 	constructor(appRoot, recipes, opts = {}) {
 		this.appRoot = appRoot;
-		this.service = service.createGridService();
 
 		/** @type {RecipeCardObject[]} */
 		this.recipes = recipes;
@@ -52,11 +50,6 @@ export class RecipeGrid {
 			.immediate();
 	}
 
-	/**
-	 *
-	 * @param {number} id
-	 * @returns {RecipeCard | undefined}
-	 */
 	_preRenderCardInstances() {
 		this.cardInstances = this.recipes.map(recipe => {
 			const wrapper = document.createElement('div');
@@ -162,6 +155,11 @@ export class RecipeGrid {
 		this.updateCards(filtered);
 	}
 
+	/**
+	 *
+	 * @param {number} id
+	 * @returns {RecipeCard | undefined}
+	 */
 	getCardById(id) {
 		return this.cardInstances.find(card => card.recipe.id === id);
 	}
