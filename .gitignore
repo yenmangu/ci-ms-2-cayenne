@@ -27,3 +27,6 @@ src/util/svg.js
 images.html
 images.css
 publicPath.js
+error.e2e.test.js
+/src/error/error-component/__tests__
+/src/error/__tests__

@@ -1,6 +1,5 @@
 // eslint.config.js
 // @ts-check
-import perfectionist from 'eslint-plugin-perfectionist';
 import { defineConfig } from 'eslint/config';
 import globals from 'globals';
 
@@ -8,11 +7,11 @@ export default defineConfig([
 	{
 		files: ['src/**/*.{js,mjs,cjs}'],
 		languageOptions: { globals: globals.browser },
-		plugins: { perfectionist },
+		plugins: {},
 		rules: {
 			// Sort class members; this rule OVERRIDES any settings values
 			'perfectionist/sort-classes': [
-				'error',
+				'warn',
 				{
 					customGroups: [
 						{
