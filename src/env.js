@@ -2,8 +2,6 @@
  * Comments here are specifically for enabling different env configs
  */
 
-import { appStore } from './appStore.js';
-
 const PROD_HOSTNAMES = ['yenmangu.github.io'];
 
 const env = {
@@ -25,7 +23,8 @@ const isProd = PROD_HOSTNAMES.includes(window.location.hostname);
 // export const ENV = env.prod;
 
 export const ENV = {
-	API_URL: env.prod.API_URL,
+	// API_URL: env.prod.API_URL,
+	API_URL: env.dev.API_URL,
 	HOME_URL: isProd ? env.prod.HOME_URL : env.dev.HOME_URL
 };
 

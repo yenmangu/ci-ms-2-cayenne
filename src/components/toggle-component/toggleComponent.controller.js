@@ -4,11 +4,10 @@
  * @typedef {import('./toggleComponent.view.js').ToggleConfig} ToggleConfig
  */
 
-import * as service from './toggleComponent.service.js';
 import { appStore } from '../../appStore.js';
-import { renderToggleComponent } from './toggleComponent.view.js';
 import { config } from '../../config/stateConfigs.js';
 import { stringToHtml } from '../../util/htmlToElement.js';
+import { renderToggleComponent } from './toggleComponent.view.js';
 
 export class ToggleComponent {
 	/**
@@ -40,14 +39,7 @@ export class ToggleComponent {
 			this.latestState[this.key] === this.toggleConfig.onValue;
 	}
 
-	/**
-	 *
-	 * @param {string} key
-	 * @param {*} val
-	 */
 	#_updateToggleText() {
-		console.log(this.toggle.id);
-
 		const label = document.querySelector(
 			`label[for="${this.toggleConfig.key}"]`
 		);
@@ -101,6 +93,11 @@ export class ToggleComponent {
 		});
 	}
 
+	/**
+	 *
+	 * @param {string} key
+	 * @param {*} val
+	 */
 	setStateProp(key, val) {
 		appStore.setState({ [key]: val }, { global: true });
 	}

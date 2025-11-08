@@ -11,7 +11,6 @@ import {
 	preloadIcons
 } from './util/icon/icon-component/icon.service.js';
 
-// Dev
 import { appStore } from './appStore.js';
 import { installGlobalErrorHooks } from './error/util/installGlobalErrorHooks.js';
 
@@ -27,7 +26,7 @@ async function initCayenne() {
 	installGlobalErrorHooks(appStore);
 
 	// Dev logging
-	// console.log('isProd? ', isProd);
+	console.log('isProd? ', !!isProd);
 
 	initNavbar();
 	// Main injection site

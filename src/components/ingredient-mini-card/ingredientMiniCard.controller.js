@@ -9,7 +9,6 @@ import { iconButtonConfigs } from '../../data/icons/index.js';
 import { stringToHtml } from '../../util/htmlToElement.js';
 import { getIconRegistry } from '../../util/icon/icon-component/icon.service.js';
 import { IconButton } from '../../util/icon/icon-component/iconButton.controller.js';
-import * as service from './ingredientMiniCard.service.js';
 import { renderIngredientMiniCard } from './ingredientMiniCard.view.js';
 
 export class IngredientMiniCard {

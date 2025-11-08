@@ -61,7 +61,7 @@ export class AppHeader {
 		/** @type {UnitLength} */
 		this.unitLength = 'unitShort';
 
-		this.dev = false;
+		this.dev = dev;
 
 		this.subscription = appStore.subscribe(state => {
 			this.unitLength = state.unitLength ?? 'unitShort';

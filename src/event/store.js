@@ -118,9 +118,17 @@ export function createStateStore(initialState = {}) {
 					});
 					break;
 				case 'useLive':
+					// console.log(
+					// 	'[STORE: ]: useLive switch block hit. updates: ',
+					// 	updates.useLive,
+					// 	'state: ',
+					// 	state.useLive
+					// );
+
 					emitter.publish('state:useLive', {
 						[key]: state.useLive
 					});
+
 					break;
 				case 'errors':
 					emitter.publish('state:errors', { [key]: state.errors });
@@ -307,10 +315,10 @@ export function createStateStore(initialState = {}) {
 	}
 
 	function persistState() {
-		const { likedRecipes, shoppingList, unitLocale, useLive } = state;
+		const { likedRecipes, shoppingList, unitLocale } = state;
 		localStorage.setItem(
 			CAYENNE_STATE,
-			JSON.stringify({ likedRecipes, shoppingList, unitLocale, useLive })
+			JSON.stringify({ likedRecipes, shoppingList, unitLocale })
 		);
 	}
 

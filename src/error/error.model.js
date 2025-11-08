@@ -24,7 +24,7 @@ const dedupeMap = new Map();
  */
 function makeDedupeKey(e) {
 	const m = e.meta ?? {};
-	const slim = { cmd: m.cmd, endpoint: m.endpoint ?? m.url };
+	const slim = { cmd: m.cmd, endpoint: m.endpoint ?? m.urlAbs };
 	return JSON.stringify({
 		code: e.code,
 		meta: slim,

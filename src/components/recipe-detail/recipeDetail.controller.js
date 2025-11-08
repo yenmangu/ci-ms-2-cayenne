@@ -7,6 +7,7 @@
  * @typedef {import('../../types/stateTypes.js').UnitLocale} UnitLocale
  * @typedef {import('../../types/stateTypes.js').UnitLength} UnitLength
  * @typedef {import('../../types/imageTypes.js').ImageModel} ImageModel
+ * @typedef {import('../../types/errorTypes.js').ErrorScope} ErrorScope
  */
 
 import { appStore } from '../../appStore.js';
@@ -171,6 +172,21 @@ export class RecipeDetail {
 
 	/**
 	 *
+	 * @param {ErrorScope} expectedScope
+	 * @param {(...args)=> any} handler
+	 */
+	#_onRefetchSuccessOnce(expectedScope, handler) {
+		const eHandler = event => {
+			const detail = event?.detail;
+			if (!detail || detail.scope !== expectedScope) return;
+			window.removeEventListener('cayenne:refetch-success', eHandler);
+			handler(detail.data, detail.meta);
+		};
+		window.addEventListener('cayenne:refetch-success', eHandler);
+	}
+
+	/**
+	 *
 	 * @param {ImageModel} recipeImage
 	 */
 	#_renderImage(recipeImage) {
@@ -220,6 +236,12 @@ export class RecipeDetail {
 	}
 
 	async init() {
+		const scope = /** @type {ErrorScope} */ ('/route:/recipe');
+		this.#_onRefetchSuccessOnce(scope, ({ recipe, summary }) => {
+			this.fetchedRecipe = recipe;
+			this.recipeSummary = summary;
+			this.render();
+		});
 		if (!this.subscription) {
 			this.subscription = appStore.subscribe(state => {
 				this.handleStateChange(state);
