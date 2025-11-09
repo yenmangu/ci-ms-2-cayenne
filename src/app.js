@@ -15,6 +15,7 @@ import { appStore } from './appStore.js';
 import { installGlobalErrorHooks } from './error/util/installGlobalErrorHooks.js';
 
 let appHeader = null;
+let devMode = true;
 
 /**
  * Single point of logic for collecting 'appRoot' element.
@@ -23,6 +24,7 @@ let appHeader = null;
  */
 async function initCayenne() {
 	// Start error handling instantly
+	appStore.setState({ devMode: devMode });
 	installGlobalErrorHooks(appStore);
 
 	// Dev logging
@@ -32,7 +34,6 @@ async function initCayenne() {
 	// Main injection site
 	const appRoot = document.getElementById('app-root');
 	appHeader = new AppHeader(appRoot, !isProd);
-	const headerStack = document.getElementById('header-stack');
 
 	appRoot.insertAdjacentElement('beforebegin', appHeader.header);
 
@@ -59,7 +60,7 @@ window.addEventListener('DOMContentLoaded', () => {
 	initStickyFooter();
 	initAppHeader(appHeader, 300);
 
-	// ---- enable the probe only when requested (and not in prod) ----
+	/* ===== enable probe only when requested ===== */
 	// const probeOn =
 	// 	!isProd && new URLSearchParams(location.search).has('probePadding');
 	// if (probeOn) {
@@ -84,5 +85,5 @@ window.addEventListener('DOMContentLoaded', () => {
 	// 		{ once: true }
 	// 	);
 	// }
-	// ----------------------------------------------------------------
+	/* ================== end dev ================= */
 });

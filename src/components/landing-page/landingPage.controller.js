@@ -5,6 +5,8 @@
  */
 
 import { appStore } from '../../appStore.js';
+import { getCurrentRouteScope } from '../../error/util/errorScope.js';
+import { hasPendingRetry } from '../../error/util/hasPendingRetry.js';
 import { stringToHtml } from '../../util/htmlToElement.js';
 import { Loading } from '../loading/loading.controller.js';
 import { RecipeCard } from '../recipe-card/recipeCard.controller.js';
@@ -42,6 +44,8 @@ export class LandingPage {
 		this.loadingComponent = null;
 
 		this.subscription = appStore.subscribe(state => {
+			const scope = getCurrentRouteScope();
+			if (hasPendingRetry(appStore, scope)) return;
 			if (state.currentRandom) {
 				this.randomRecipe = this.service.extractCard(state.currentRandom);
 				if (this.loadingComponent) {
@@ -86,7 +90,9 @@ export class LandingPage {
 			const detail = event?.detail;
 			if (!detail || detail.scope !== expectedScope) return;
 			window.removeEventListener('cayenne:refetch-success', eHandler);
-			handler(detail.data, detail.meta);
+			if (detail.data && detail.meta) {
+				handler(detail.data, detail.meta);
+			}
 		};
 		window.addEventListener('cayenne:refetch-success', eHandler);
 	}

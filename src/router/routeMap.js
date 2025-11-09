@@ -6,8 +6,9 @@ import { loadNotFoundPage } from '../pages/404.js';
 import { loadHome } from '../pages/cayenne.js';
 import { loadLikedRecipes } from '../pages/likedRecipes.js';
 import { loadRecipeDetail } from '../pages/recipe.js';
-import { loadRecipes, recipes } from '../pages/recipes.js';
+import { recipes } from '../pages/recipes.js';
 import { loadShoppingList } from '../pages/shoppingList.js';
+import { escapeHtml } from '../util/escapeHtml.js';
 
 export const NOT_FOUND = '/not-found';
 
@@ -46,7 +47,13 @@ export const routeMap = {
 		path: '/recipe-grid',
 		title: 'Recipe Results',
 		validate(params) {
-			return Boolean(params.id);
+			if (Array.isArray(params.search)) {
+				params.search.forEach(s => {
+					return escapeHtml(s) !== null;
+				});
+				return true;
+			}
+			return escapeHtml(params.search) !== null;
 		}
 	},
 

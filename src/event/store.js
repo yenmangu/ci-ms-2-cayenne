@@ -315,10 +315,10 @@ export function createStateStore(initialState = {}) {
 	}
 
 	function persistState() {
-		const { likedRecipes, shoppingList, unitLocale } = state;
+		const { likedRecipes, shoppingList, unitLocale, devMode } = state;
 		localStorage.setItem(
 			CAYENNE_STATE,
-			JSON.stringify({ likedRecipes, shoppingList, unitLocale })
+			JSON.stringify({ likedRecipes, shoppingList, unitLocale, devMode })
 		);
 	}
 

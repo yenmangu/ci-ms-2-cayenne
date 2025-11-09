@@ -11,6 +11,7 @@ const userState = persisted ? JSON.parse(persisted) : {};
 
 /** @type {AppState} */
 const initialState = {
+	devMode: true,
 	currentRecipe: null,
 	likedRecipes: [],
 	recipeResults: [],

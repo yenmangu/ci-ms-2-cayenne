@@ -13,17 +13,12 @@
 import { appStore } from '../appStore.js';
 import { SPOONACULAR_ENDPOINTS, buildEndpoint } from '../config/endpoints.js';
 import { ENV } from '../env.js';
-import {
-	AbortError,
-	CustomError,
-	NetworkError
-} from '../error/errors/customError.js';
+import { CustomError } from '../error/errors/customError.js';
 import { HttpError } from '../error/errors/httpError.js';
-import { handleHttpStatus } from '../error/handlers/handleHttpStatus.js';
+import { createErrorPublishing } from '../error/pipe/publishFactory.js';
 import { getCurrentRouteScope } from '../error/util/errorScope.js';
 import { isAbsoluteUrl } from '../util/isAbsolute.js';
 import { buildIdPath, pathNeedsId } from '../util/pathInjection.js';
-import { safeText } from '../util/safeText.js';
 
 /**
  * @class SpoonacularClient
@@ -31,6 +26,8 @@ import { safeText } from '../util/safeText.js';
  */
 export class SpoonacularClient {
 	#sub = null;
+	__reqId = 0;
+
 	constructor() {
 		if (!ENV.API_URL) {
 			throw new Error(
@@ -124,14 +121,20 @@ export class SpoonacularClient {
 	/**
 	 *
 	 * @param {string[]} ingredients
-	 * @param {number} recipes - Max num of recipes to return between 1 and 100
+	 * @param {number} number - Max num of recipes to return between 1 and 100
 	 * @returns {Promise<FetchResult>}
 	 */
-	async findByIngredients(ingredients, recipes) {
+	async findByIngredients(ingredients, number) {
+		// const reqId = ++this.__reqId;
+		// console.trace('[client.findByIngredients] start', {
+		// 	reqId,
+		// 	params: { ingredients, number }
+		// });
+
 		const searchString = this._buildSearchString(ingredients);
 		const queryParams = {
 			ingredients: searchString,
-			number: recipes.toString()
+			number: number.toString()
 		};
 		const key = /** @type {EndpointKey} */ ('searchRecipesByIngredients');
 		const endpoint = this._buildEndpointWithParameters(key);
@@ -140,9 +143,7 @@ export class SpoonacularClient {
 				endpoint,
 				queryParams
 			);
-		const responseJson = await this.firstFetch(endpoint, queryParams);
 		return apiResponse;
-		return responseJson;
 	}
 
 	/**
@@ -344,6 +345,14 @@ export class SpoonacularClient {
 		return this.#_fetchFromApi(fullyResolvedUrl, opts, metaBase);
 	}
 
+	#_makeParamsFromMeta(url, meta) {
+		url = String(url);
+		if (meta.params) {
+			url.sParams = new URLSearchParams(meta.params);
+		}
+		return /** @type {URL} */ (url);
+	}
+
 	/**
 	 *
 	 * @param {string} fullyResolvedUrl
@@ -360,9 +369,19 @@ export class SpoonacularClient {
 		fromRefetch = false,
 		forcedRefetch = false
 	) {
+		console.count('[client.#_fetchFromApi]');
+		// console.log('[client.#_fetchFromApi] fetch about to run', {
+		// 	id: this.__reqId,
+		// 	url: fullyResolvedUrl,
+		// 	opts
+		// });
 		const fetchUrl = new URL(fullyResolvedUrl, this.apiUrl);
 		if ('params' in metaBase) {
-			fetchUrl.searchParams.append('id', metaBase?.params.id);
+			const { params } = metaBase.params;
+			const s_params = new URLSearchParams(params);
+			if (metaBase.params.id) {
+				fetchUrl.searchParams.append('id', metaBase?.params.id);
+			}
 		}
 
 		// DEV
@@ -370,14 +389,21 @@ export class SpoonacularClient {
 		const dev_402_Url = new URL(fullyResolvedUrl, this.apiUrl);
 		if (!forcedRefetch) {
 			dev_402_Url.searchParams.append('test_402', 'true');
-			if ('params' in metaBase) {
-				dev_402_Url.searchParams.append('id', metaBase?.params.id);
+			const { params } = metaBase.params;
+			const s_params = new URLSearchParams(params);
+
+			if ('params' in metaBase?.params) {
+				if (metaBase.params.id) {
+					dev_402_Url.searchParams.append('id', metaBase?.params.id);
+				}
 			}
 		}
 		if (fromRefetch) {
 			dev_402_Url.searchParams.append('override', 'true');
 			if ('params' in metaBase) {
-				dev_402_Url.searchParams.append('id', metaBase?.params.id);
+				if (metaBase.params.id) {
+					dev_402_Url.searchParams.append('id', metaBase?.params.id);
+				}
 			}
 		}
 
@@ -400,14 +426,17 @@ export class SpoonacularClient {
 
 			if (!response.ok) {
 				// error handling for HTTP errors
-
-				const detail = await safeText(response);
-
+				const err = new HttpError(response, `HTTP ${response.status}`);
 				const scope = /** @type {ErrorScope} */ (getCurrentRouteScope());
-
-				handleHttpStatus(appStore, scope, response.status, meta, detail);
-
-				throw new HttpError(response, { detail, meta });
+				createErrorPublishing().routeError(
+					appStore,
+					scope,
+					new HttpError(response),
+					meta,
+					undefined,
+					response
+				);
+				return null;
 			}
 
 			// Check custom header
@@ -417,25 +446,29 @@ export class SpoonacularClient {
 
 			const text = await response.text();
 			/** @type {{} & {allowLive?: boolean, data?: any}} */
-			const data = text ? this.tryJson(text) : null;
 
+			const data = text ? this.tryJson(text) : null;
+			if (!data) {
+				return;
+			}
 			return { data, meta };
 		} catch (error) {
+			console.log('Logging to the console for brevity: ', error);
+
 			/** @type {ErrorMeta} */
 			const meta = {
 				...metaBase,
 				urlAbs: fullyResolvedUrl,
 				status: response?.status
 			};
-			// Preserve existing HttpError
-			if (/** @type {any} */ (error)?.name === 'HttpError') throw error;
-
-			// error handling for unhandled (non HTTP)
-			if (/** @type {any} */ (error)?.name === 'AbortError') {
-				throw new AbortError(meta);
-			}
-			// Default NetworkError
-			throw new NetworkError(meta);
+			createErrorPublishing().routeError(
+				appStore,
+				getCurrentRouteScope(),
+				error,
+				meta,
+				undefined,
+				response
+			);
 		}
 	}
 

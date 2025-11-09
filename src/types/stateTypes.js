@@ -7,6 +7,7 @@ export {};
  * @typedef {import('./ingredientTypes.js').IngredientResultCard} ShoppingListItem
  * @typedef {import("./routerTypes.js").RouteEntry} RouteEntry
  * @typedef {import("./errorTypes.js").ErrorType} ErrorType
+ * @typedef {import("./errorTypes.js").ErrorDetails} ErrorDetails
  *
  */
 
@@ -33,6 +34,13 @@ export {};
  * @property {ErrorMeta[]} [metas]
  * @property {'live'|'test'|'absolute'} [from]
  * @property {number} [status]
+ * @property {boolean}[isDev]
+ *
+ * @typedef {ErrorMeta[]} ErrorMetas
+ */
+
+/**
+ * @typedef {'error'|'warning'|'info'} Severity
  */
 
 /**
@@ -45,10 +53,13 @@ export {};
  * @property {number} [status]
  * @property {string} [message]
  * @property {ErrorScope} scope
- * @property {'error'|'warning'|'info'} [severity]
+ * @property {Severity} [severity]
  * @property {boolean} [sticky]
  * @property {number} ts
  * @property {ErrorMeta} [meta]
+ * @property {ErrorDetails} [details]
+ * @property {ErrorScope} [scope]
+ * @property {boolean} [retry]
  */
 
 /**
@@ -86,6 +97,8 @@ export {};
 
 /**
  * @typedef {object} AppState
+ * @property {boolean} [devMode]
+ * @property {boolean} [isInitial]
  * @property {UnitLocale} unitLocale - User's preferred units
  * @property {UnitLength} unitLength - User's preferred unit length
  * @property {RecipeCard[]} recipeResults - Results from last recipe search
@@ -103,6 +116,7 @@ export {};
  */
 /**
  * @typedef {object} PartialAppState
+ * @property {boolean} [devMode]
  * @property {boolean} [isInitial]
  * @property {UnitLocale} [unitLocale] - User's preferred units
  * @property {UnitLength} [unitLength] - User's preferred unit length

@@ -8,7 +8,7 @@
 
 import { appStore } from '../appStore.js';
 import { ErrorController } from '../error/error-component/error.controller.js';
-import { reportError, reportNotFound } from '../error/util/errorReporter.js';
+import { createErrorPublishing } from '../error/pipe/publishFactory.js';
 import { makeRouteScope } from '../error/util/errorScope.js';
 import { normaliseParams } from './paramValidator.js';
 import { parseHashRoute } from './parseHashRoute.js';
@@ -47,7 +47,9 @@ function resolveRoute(path, rawParams = {}) {
 	};
 }
 
-export const startRouter = appRoot => AppRouter.init(appRoot);
+export const startRouter = appRoot => {
+	return AppRouter.init(appRoot);
+};
 
 export const AppRouter = {
 	/** @type {ErrorController | null} */
@@ -74,6 +76,9 @@ export const AppRouter = {
 	 * @param {HTMLElement} appRoot
 	 */
 	handleRouteChange(appRoot) {
+		console.log('Handling route change');
+
+		const pubs = createErrorPublishing();
 		const hash = window.location.hash;
 		/** @type {{path: string, params: Record<string,string> | {}}} */
 		const { params: raw, path } = parseHashRoute(hash);
@@ -98,7 +103,7 @@ export const AppRouter = {
 		const scope = /** @type {ErrorScope} */ (`route:${path}`);
 
 		if (resolvedPath === NOT_FOUND) {
-			reportNotFound(appStore, scope, {
+			pubs.reportNotFound(appStore, scope, {
 				userMessage: 'That page does not exist'
 			});
 		}
@@ -116,7 +121,7 @@ export const AppRouter = {
 				dev: isDev
 			});
 		} catch (error) {
-			reportError(appStore, error, { context: { params, path, scope } });
+			pubs.reportError(appStore, error, scope);
 			return;
 		}
 
@@ -130,7 +135,7 @@ export const AppRouter = {
 				}
 			)
 			.catch(err => {
-				reportError(appStore, err, { context: { params, path, scope } });
+				pubs.reportError(appStore, err, scope);
 			});
 
 		// entry.handler(appRoot, path, { ...params, dev: isDev });

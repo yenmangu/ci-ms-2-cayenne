@@ -19,6 +19,8 @@
  */
 import { getClient } from '../../api/client.singleton.js';
 import { appStore } from '../../appStore.js';
+import { createErrorPublishing } from '../../error/pipe/publishFactory.js';
+import { getCurrentRouteScope } from '../../error/util/errorScope.js';
 
 /**
  *
@@ -64,9 +66,24 @@ export const createLandingService = opts => {
 
 		updateStoreRandomRecipe: async () => {
 			service.counter++;
-			const { data, meta } = await client.getRandomRecipe();
-			const recipe = /** @type {RecipeFull} */ (data);
-			appStore.setState({ currentRandom: recipe });
+
+			try {
+				const fetchResult = await client.getRandomRecipe();
+				if (!fetchResult) return;
+				const { data } = fetchResult;
+				const recipe = /** @type {RecipeFull} */ (data);
+				appStore.setState({ currentRandom: recipe });
+			} catch (error) {
+				// throw error;
+				createErrorPublishing().routeError(
+					appStore,
+					getCurrentRouteScope(),
+					error,
+					undefined,
+					undefined,
+					{}
+				);
+			}
 		}
 	};
 
