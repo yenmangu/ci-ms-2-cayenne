@@ -2,6 +2,7 @@
  * @typedef {import("../../types/errorTypes.js").ErrorType} ErrorType
  * @typedef {import("../../types/stateTypes.js").ErrorScope} ErrorScope
  * @typedef {import("../../types/stateTypes.js").ErrorEntry} ErrorEntry
+ * @typedef {import('../../types/errorTypes.js').ErrorDetails} ErrorDetails
  */
 
 import { escapeHtml } from '../../util/escapeHtml.js';
@@ -13,6 +14,7 @@ import { escapeHtml } from '../../util/escapeHtml.js';
  * @property {string} userMessage
  * @property {string} [message] - Optional technical detail
  * @property {boolean} [retry=false] - Show retry button?
+ * @property {ErrorDetails} [details]
  */
 
 /**
@@ -24,7 +26,7 @@ import { escapeHtml } from '../../util/escapeHtml.js';
  * Returns a Bootstrap-flavoured alert block.
  *
  * @param {RenderErrorInput} e
- * @param {{mode?: ErrorRenderMode, title?:string}} [opts={}]
+ * @param {{mode?: ErrorRenderMode, title?:string, isDev? : boolean}} [opts={}]
  */
 export function renderError(e, opts = {}) {
 	const { mode = 'inline', title } = opts;
@@ -39,9 +41,16 @@ export function renderError(e, opts = {}) {
 		e.type
 	)} · ${escapeHtml(e.code)})</div>`;
 	const text = e.message
-		? `<details class=""mt-1 small>
+		? `<details class="mt-1 small data-error-details">
 		<summary>Details</summary>
 			<pre class="mb-0">${escapeHtml(e.message)}</pre>
+		</details>`
+		: '';
+
+	const stack = e?.details?.stack
+		? `<details class="mt-1 small data-error-stack">
+		<summary>Stack</summary>
+			<pre class="mb-0">${escapeHtml(e?.details?.stack)}</pre>
 		</details>`
 		: '';
 	return `
@@ -52,6 +61,7 @@ export function renderError(e, opts = {}) {
         <p class="mb-1">${escapeHtml(e.userMessage)}</p>
 
         ${text}
+				${opts.isDev ? stack : ''}
         ${
 					e.retry
 						? `<button class="btn btn-sm btn-dark mt-2" data-error-retry>Retry</button>`

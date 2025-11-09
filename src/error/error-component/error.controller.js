@@ -25,14 +25,15 @@ import { getClient as _getClient } from '../../api/client.singleton.js';
 import { resolveError as _resolveError } from '../error.model.js';
 import { renderError as _renderError } from './error.view.js';
 
-import { reportRefetch as _reportRefetch } from '../util/errorReporter.js';
+import { appStore } from '../../appStore.js';
+import { createErrorPublishing } from '../pipe/publishFactory.js';
 
 /** @type {ErrorControllerDeps} */
 const DEFAULT_DEPS = {
 	/** @returns {RefetchCapableClient} */
 	getClient: () => _getClient(),
 	resolveError: _resolveError,
-	reportRefetch: _reportRefetch
+	reportRefetch: createErrorPublishing().reportRefetch
 };
 
 /**
@@ -76,20 +77,29 @@ export class ErrorController {
 
 		/** @type {ErrorControllerDeps} */
 		this.deps = { ...DEFAULT_DEPS, ...(deps || {}) };
+		this.pubs = createErrorPublishing();
 	}
 
 	/**
 	 *
 	 * @param {ErrorEntry} entry
+	 * @returns {(()=> Promise<any|null>)}
 	 */
 	#_deriveRetry(entry) {
 		const meta = entry.meta || {};
-		switch (meta.cmd) {
+		const client = _getClient();
+		const hasTransport = !!(
+			meta.endpoint ||
+			meta.urlAbs ||
+			meta.opts ||
+			meta.params
+		);
+		const cmd = meta.cmd ?? (hasTransport ? 'refetch' : undefined);
+		switch (cmd) {
 			case 'refetch':
-				return async () => _getClient().refetchFromMeta(meta);
+				return async () => client.refetchFromMeta(meta);
 			case 'refetchMany':
 				return async () => {
-					const client = _getClient();
 					const metas = Array.isArray(meta.metas) ? meta.metas : [];
 					if (!metas.length) return null;
 					const results = await Promise.all(
@@ -101,9 +111,7 @@ export class ErrorController {
 				return async () => {
 					window.location.reload();
 				};
-			case 'retryAction':
-				// future action registry hook
-				return null;
+
 			default:
 				return null;
 		}
@@ -155,7 +163,7 @@ export class ErrorController {
 					} catch (err) {
 						const prevMeta = entry.meta || {};
 
-						_reportRefetch(this.store, this.scope, prevMeta);
+						this.pubs.reportRefetch(this.store, this.scope, prevMeta);
 
 						// reportError(this.store, err, {
 						// 	context: { cmd: 'refetch', scope: this.scope }
@@ -170,7 +178,7 @@ export class ErrorController {
 	init() {
 		this.#_sub = this.store
 			.subscribe(({ errors }) => {
-				// console.log('Err: ', errors);
+				console.log('Err: ', errors);
 
 				this.#_render(errors);
 			}, 'errors')
@@ -192,6 +200,7 @@ export class ErrorController {
 		}
 
 		const onRetry = this.#_deriveRetry(entry);
+		const isDev = appStore.getState().devMode ?? false;
 
 		this.el.innerHTML = _renderError(
 			{
@@ -199,9 +208,10 @@ export class ErrorController {
 				message: entry.message,
 				retry: !!onRetry,
 				type: entry.type,
-				userMessage: entry.userMessage
+				userMessage: entry.userMessage,
+				details: entry?.details
 			},
-			{ mode: this.mode, title: this.title }
+			{ mode: this.mode, title: this.title, isDev }
 		);
 		this.#_wireHandlers(entry, onRetry);
 	}

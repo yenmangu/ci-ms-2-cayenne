@@ -12,9 +12,10 @@ export class HttpError extends CustomError {
 	/**
 	 *
 	 * @param {Response|{}|undefined} [response]
+	 * @param {string} [message]
 	 * @param {{status?: number, detail?:string, meta?:ErrorMeta}} [info]
 	 */
-	constructor(response, { status, detail, meta } = {}) {
+	constructor(response, message, { status, detail, meta } = {}) {
 		const isHttp = response instanceof Response;
 		const resolvedStatus = isHttp ? response.status : status;
 
