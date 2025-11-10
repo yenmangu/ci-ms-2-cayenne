@@ -54,6 +54,7 @@ export class LandingPage {
 				this.randomRecipe = this.service.extractCard(state.currentRandom);
 				if (this.loadingComponent) {
 					this.loadingComponent.destroy();
+					this.loadingComponent = null;
 				}
 
 				this.#_renderRandomRecipe();
@@ -79,6 +80,11 @@ export class LandingPage {
 		this.#_renderTitle();
 	}
 	#_onFetchNewRandom() {
+		if (this.loadingComponent) {
+			this.loadingComponent.destroy();
+			this.loadingComponent = null;
+		}
+
 		this.loadingComponent = new Loading(this.container);
 		this.loadingComponent.render();
 
@@ -103,14 +109,17 @@ export class LandingPage {
 	}
 
 	#_renderRandomRecipe() {
-		if (!this.randomRecipeCard) {
+		const card =
+			this.randomRecipeCard ??
+			new RecipeCard(this.randomRecipeContainer, this.randomRecipe);
+
+		if (card) {
 			this.randomRecipeCard = new RecipeCard(
 				this.randomRecipeContainer,
 				this.randomRecipe
 			);
-			this.randomRecipeCard.cardEl.classList.add('recipe-card__landing');
-			this.randomRecipeCard.render();
-		} else {
+			card.cardEl.classList.add('recipe-card__landing');
+			card.render();
 			this.randomRecipeCard.update(this.randomRecipe);
 		}
 	}
@@ -157,8 +166,6 @@ export class LandingPage {
 
 		this.#_collectContainers();
 		this.#_onRefetchSuccessOnce(scope, ({ data, meta }) => {
-			// console.log(payload);
-
 			const recipe = this.service.toRecipeCard(data);
 			appStore.setState({ currentRandom: recipe });
 			this.usingCache = true;

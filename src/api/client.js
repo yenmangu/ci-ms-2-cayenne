@@ -96,9 +96,6 @@ export class SpoonacularClient {
 	 * @returns {{endpoint: string, params: Record<string, any>}}
 	 */
 	_resolveEndpointForMode(endpoint, params = {}) {
-		console.log('[_resolveEndpointForMode]: endpoint:', endpoint);
-		console.log('[_resolveEndpointForMode]: useLive:', this.useLive);
-
 		if (this.useLive) return { endpoint, params };
 
 		if (endpoint === '/recipes/random' || endpoint === '/recipes/test-random') {
@@ -150,7 +147,6 @@ export class SpoonacularClient {
 	async getRandomRecipe(single = true) {
 		const key = /** @type {EndpointKey} */ ('getRandomRecipes');
 		const endpoint = this._buildEndpointWithParameters(key);
-		console.log('Endpoint: ', endpoint);
 
 		const response = await this.firstFetch(endpoint);
 		return response;
@@ -259,7 +255,6 @@ export class SpoonacularClient {
 	async subsequentFetch(urlOrKeyOrPath, params = {}, opts = {}, meta = {}) {
 		const str = String(urlOrKeyOrPath);
 		const status = meta.status ?? undefined;
-		console.log('subsequentFetch path: ', urlOrKeyOrPath);
 
 		const resolvedParams = this.#_withCachedFlags(
 			params,
@@ -297,11 +292,8 @@ export class SpoonacularClient {
 	 * @returns {Promise<FetchResult>}
 	 */
 	async firstFetch(urlOrKeyOrPath, params = {}, opts = {}) {
-		console.log('urlOrKeyOrPath: ', urlOrKeyOrPath);
 		const endpoint = buildEndpoint(urlOrKeyOrPath, params);
 		const resolvedUrl = this._buildUrl(endpoint, params);
-		console.log('endpoint: ', endpoint);
-		console.log('endpointKey: ', resolvedUrl);
 
 		/** @type {ErrorMeta} */
 		const metaBase = {
@@ -312,7 +304,6 @@ export class SpoonacularClient {
 			opts,
 			isDev: appStore.getState().devMode ?? false
 		};
-		console.log('Metabase: ', metaBase);
 
 		return this.#_fetchFromApi(resolvedUrl, opts, metaBase, false);
 	}
@@ -341,24 +332,24 @@ export class SpoonacularClient {
 		fromRefetch = false,
 		forcedRefetch = false
 	) {
-		// console.log('Metabase: ', metaBase);
-		console.log(
-			'Type of request: ',
-			'from refetch: ',
-			fromRefetch,
-			' 	forcedRefetch: ',
-			forcedRefetch
-		);
+		// Dev
+		// console.log(
+		// 	'Type of request: ',
+		// 	'from refetch: ',
+		// 	fromRefetch,
+		// 	' 	forcedRefetch: ',
+		// 	forcedRefetch
+		// );
 
 		const dev = appStore.getState().devMode ?? false;
-		console.log('DEV:    ', dev);
 
 		const useLive = appStore.getState().useLive ?? true;
 		let useCache;
-		// console.log('useLive?: ', useLive);
 
 		const pubs = createErrorPublishing();
 		const scope = getCurrentRouteScope();
+
+		// Dev
 		// console.count('[client.#_fetchFromApi]');
 
 		const fetchUrl = new URL(fullyResolvedUrl, this.apiUrl);
@@ -441,8 +432,6 @@ export class SpoonacularClient {
 			}
 		}
 
-		console.log('dev_402_Url: ', dev_402_Url.href);
-
 		/** @type {Response|undefined} */
 		let response;
 		try {
@@ -491,8 +480,6 @@ export class SpoonacularClient {
 			}
 			return { data, meta };
 		} catch (error) {
-			console.log('Logging to the console for brevity: ', error);
-
 			/** @type {ErrorMeta} */
 			const meta = {
 				...metaBase,

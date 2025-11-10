@@ -149,13 +149,10 @@ export class ErrorController {
 				async () => {
 					try {
 						const data = await onRetry();
-						console.log('data from onRetry: ', data);
 
 						const list = this.store.getState().errors || [];
 						this.store.setState({ errors: _resolveError(list, entry.id) });
 						const detail = { data, meta: entry.meta, scope: this.scope || {} };
-						console.log('Detail: ', detail);
-						console.log('dispatching-event with scope: ', detail.scope);
 
 						window.dispatchEvent(
 							new CustomEvent(EVENTS.refetchSuccess, {
@@ -180,7 +177,8 @@ export class ErrorController {
 	init() {
 		this.#_sub = this.store
 			.subscribe(({ errors }) => {
-				console.log('Err: ', errors);
+				// Dev
+				// console.log('Err: ', errors);
 
 				this.#_render(errors);
 			}, 'errors')

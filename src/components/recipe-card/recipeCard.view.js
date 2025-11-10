@@ -8,7 +8,7 @@
  * @returns {string}
  */
 export function renderRecipeCard(recipe) {
-	return `<div class="wrapper wrapper--card wrapper--random-card">
+	return `<div class="wrapper wrapper__card wrapper__card--random">
 		<a href="#/recipe?id=${recipe.id}" class="card h-100 text-decoration-none text-dark">
 		    <div data-label-image-wrapper="card"></div>
 

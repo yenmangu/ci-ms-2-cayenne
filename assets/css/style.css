@@ -11,8 +11,15 @@
 	--header-transition: ease;
 	--main-pad-top: 0px;
 	--app-header-speed: 0;
-
 	--footer-offset-height: 0px;
+	--site-text-colour: #1a1a1a;
+	--site-heading-colour: var(--cayenne-colour-red-dark);
+	--site-heading-secondary-colour: var(--cayenne-colour-green-dark);
+	--site-heading-p: var(--cayenne-colour-green-light);
+	--site-background-main: #f2f2f2;
+	--site-background-secondary: #555555;
+	--site-section-bg-even: var(--cayenne-colour-red-light);
+	--site-section-bg-odd: var(--cayenne-colour-green-light);
 }
 
 /* Global styles */
@@ -95,7 +102,6 @@ textarea {
 /* When active (e.g., aria-pressed="true") */
 .icon-button[aria-pressed='true'],
 .icon-button--active {
-	/* background: var(--app-header-active-bg, #fff); */
 	border-radius: 0.35em;
 }
 
@@ -126,8 +132,15 @@ main:not(#cayenne-main) {
 	right: 0;
 	z-index: 1098;
 	background: var(--colour-surface);
-	/* border-top: 1px solid var(--border-subtle); */
-	padding-bottom: max(1rem, env(safe-area-inset-bottom));
+	padding-bottom: var(--safe-area-inset-bottom);
+}
+
+footer p {
+	color: var(--site-background-main);
+}
+
+footer small {
+	color: var(--border-subtle-static);
 }
 
 /* Custom header/ app-stack styles */
@@ -147,7 +160,6 @@ main:not(#cayenne-main) {
 	z-index: 1100;
 	transform: translateY(0);
 	transition: transform var(--app-header-speed, 300ms) var(--header-transition);
-	/* will-change: transfom; */
 }
 
 #header-stack.header-stack--hidden {
@@ -180,7 +192,6 @@ main:not(#cayenne-main) {
 	list-style: none;
 	display: flex;
 	flex-direction: row;
-	/* gap: 2rem; */
 	margin-bottom: 0;
 	padding-left: 0;
 	width: 100%;
@@ -274,12 +285,6 @@ button.btn--like:focus {
 	outline: 2px solid #6a0dad;
 }
 
-/* App Header Shadow */
-/* .header-app-stack--scroll .app-header {
-	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.07);
-	border-bottom: 1px solid #ddd;
-} */
-
 /* App header internals */
 
 .app-header__icon {
@@ -306,8 +311,6 @@ button.btn--like:focus {
 
 .app-header__toggles {
 	width: max-content;
-	/* position: relative;
-	right: 1rem; */
 }
 .app-header__toggles > div {
 	/* Toggle containers auto-size, but this gives space if empty */
@@ -347,7 +350,6 @@ button.btn--like:focus {
 }
 
 .unit-slider-toggle .form-check-input:focus {
-	/* box-shadow: 0 0 0 0.1rem rgba(40, 167, 69, 0.25); */
 	outline: none !important;
 	box-shadow: none !important;
 }
@@ -363,8 +365,6 @@ button.btn--like:focus {
 	padding-left: 1rem;
 	padding-right: 1rem;
 }
-
-/* Error */
 
 /* Landing Page */
 
@@ -397,8 +397,6 @@ button.btn--like:focus {
 	margin: 0;
 }
 
-/* Shopping List */
-
 #shopping-list-container {
 	max-width: 1140px;
 	margin: auto;
@@ -413,31 +411,38 @@ button.btn--like:focus {
 	margin-top: 1rem;
 }
 
-/* Loading Component */
-
 .loading-container {
 	margin: auto;
 	display: flex;
 	justify-content: center;
 }
 
-/* Cards - Recipe Cards, Ingredient Cards etc */
+.wrapper__card a.card {
+	display: block;
+	box-sizing: border-box;
+	padding: 5%;
+	max-width: calc(556px + 10%);
+	margin-inline: auto;
+}
+
+.card {
+	width: 100%;
+	max-width: none;
+}
 
 .card-img-top {
 	width: 100%;
 	object-fit: cover;
 }
 
-/* Card removal animation */
 .ingredient-mini-card--leaving,
 .recipe-card--leaving {
 	opacity: 0;
-	transform: scale (0.35);
 	transition: opacity 450ms cubic-bezier(0.4, 0, 0.2, 1),
-		transform 450ms cubic-bezier(0.4, 0, 0.2, 1);
+		transform 450ms cubic-bezier(0.4, 0, 0.2, 1), scale 0.35s;
 }
 
-/* Placeholder shimmer effect */
+/* Place Holder Shimmer Effect */
 
 .placeholder-shimmer .placeholder {
 	position: relative;
@@ -556,34 +561,6 @@ main.recipe-detail {
 	width: 100%;
 }
 
-/* Non app styles */
-
-/* index.html */
-
-body[data-page='index'] a {
-	text-decoration: none;
-}
-
-body[data-page='index'] h2,
-body[data-page='index'] h3,
-body[data-page='index'] h4 {
-	color: var(--colour-surface);
-}
-
-.row.row__top-row {
-	align-items: center;
-}
-
-.row.row__top-row div:last-child img {
-}
-
-img.shakshuka {
-	/* display: block; */
-	width: 80%;
-	/* margin: 0 auto;
-	margin-left: auto;
-	margin-right: auto; */
-}
 /* Media Queries */
 
 @media (max-width: 480px) {
@@ -601,7 +578,6 @@ img.shakshuka {
 	.ingredient-mini-card__left {
 		flex-basis: 30%;
 		font-size: smaller;
-		/* min-width: 60px; */
 	}
 
 	.ingredient-mini-card__middle {

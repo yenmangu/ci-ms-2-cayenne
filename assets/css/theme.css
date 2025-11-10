@@ -36,7 +36,7 @@
 	--bs-link-color: var(--colour-accent);
 	--bs-link-hover-color: var(--colour-accent-hover);
 
-	--bs-secondary-color: var(var(--border-subtle)) !important;
+	--bs-secondary-color: var(--border-subtle) !important;
 
 	/* Subtle backgrounds & borders */
 	--bs-primary-bg-subtle: color-mix(in oklab, var(--colour-accent) 15%, white);
@@ -59,7 +59,7 @@
 	);
 }
 
-@supports (color: color-mix(in oklab, white, black)) {
+@supports (background: color-mix(in oklab, white, black)) {
 	:root {
 		--border-subtle: color-mix(
 			in oklab,

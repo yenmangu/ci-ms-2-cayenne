@@ -40,6 +40,7 @@ import { addError, publishDecision } from './publish.js';
  * @property {(store: AppStore) => void} switchToTestOnce
  */
 
+import { appStore } from '../../appStore.js';
 import { serialiseError } from '../util/serialiseError.js';
 /**
  *
@@ -48,22 +49,23 @@ import { serialiseError } from '../util/serialiseError.js';
 export function createErrorPublishing() {
 	return {
 		routeError(store, scope, source, meta, detailString, response, deps = {}) {
-			// console.log('source in routeError: ', source);
 			const _normaliseError = deps.normaliseError ?? normaliseError;
 			const _applyErrorPolicy = deps.applyErrorPolicy ?? applyErrorPolicy;
 			const _publishDecision = deps.publishDecision ?? publishDecision;
 			const publishers = deps.publishers ?? createErrorPublishing();
 			const deduper = deps.deduper ?? createDeduper();
 
-			console.log(
-				'Logging for brevity: ',
-				source,
-				' 	response: ',
-				response,
-				'  meta: ',
-				meta
-			);
-
+			if (appStore.getState().devMode) {
+				// Uncomment for dev logging
+				// console.log(
+				// 	'Logging for brevity: ',
+				// 	source,
+				// 	' 	response: ',
+				// 	response,
+				// 	'  meta: ',
+				// 	meta
+				// );
+			}
 			// Build hints once: include transport/meta and serialised stack/cause.
 			const hints = {
 				context: { ...meta },
@@ -137,7 +139,6 @@ export function createErrorPublishing() {
 		 */
 		reportRefetch(store, scope, meta) {
 			const { endpoint, opts, params, urlAbs: url, status } = meta;
-			// console.log('meta in reportRefetch: ', meta);
 
 			/** @type {NormalisedError} */
 			const retryable = {

@@ -15,15 +15,12 @@ let installed = false;
  */
 export function installGlobalErrorHooks(store) {
 	const devMode = store.getState().devMode ?? false;
-	console.log('dev reading in global hooks: ', devMode);
 	if (installed) return;
 	installed = true;
 	const pubs = createErrorPublishing();
 	/** @param {any} ev */
 	function onUnhandledRejection(ev) {
 		console.warn('unhandledrejection: ', ev);
-
-		console.log('dev reading in global hooks: ', devMode);
 
 		const scope = getCurrentRouteScope();
 

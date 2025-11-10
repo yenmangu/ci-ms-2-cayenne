@@ -118,10 +118,11 @@ export function createStateStore(initialState = {}) {
 					});
 					break;
 				case 'useLive':
-					console.trace(
-						'[STORE: ]: useLive switch block hit. updates: ',
-						updates.useLive
-					);
+					// Dev - useful to see what has triggered this
+					// console.trace(
+					// 	'[STORE: ]: useLive switch block hit. updates: ',
+					// 	updates.useLive
+					// );
 
 					emitter.publish('state:useLive', {
 						[key]: state.useLive
@@ -188,7 +189,7 @@ export function createStateStore(initialState = {}) {
 
 	/**
 	 *
-	 * @param {number} recipeId
+	 * @param {RecipeCard} recipeId
 	 */
 	function removeLikedRecipe(recipeId) {
 		const { likedRecipes = [] } = state;

@@ -15,7 +15,7 @@ import { appStore } from './appStore.js';
 import { installGlobalErrorHooks } from './error/util/installGlobalErrorHooks.js';
 
 let appHeader = null;
-let devMode = false;
+let devMode = true;
 
 /**
  * Single point of logic for collecting 'appRoot' element.
@@ -29,7 +29,7 @@ async function initCayenne() {
 	installGlobalErrorHooks(appStore);
 
 	// Dev logging
-	console.log('isProd? ', !!isProd);
+	// console.log('isProd? ', !!isProd);
 
 	initNavbar();
 	// Main injection site
