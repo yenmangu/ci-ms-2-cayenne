@@ -6,7 +6,6 @@
 import { appStore } from '../../appStore.js';
 import { AppRouter } from '../../router/appRouter.js';
 import { stringToHtml } from '../../util/htmlToElement.js';
-import { renderNoResults } from './noResults.view.js';
 import { renderSearchBar } from './searchBar.view.js';
 
 export class SearchBar {
@@ -80,9 +79,6 @@ export class SearchBar {
 		this.submitButton = this.searchComponent.querySelector(
 			'button[type="submit"]'
 		);
-		if (this.submitButton) {
-			console.log('Submit button found');
-		}
 
 		this.#_wireEventListeners();
 		this.render();

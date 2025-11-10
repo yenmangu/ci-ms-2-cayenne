@@ -29,8 +29,6 @@ import { escapeHtml } from '../../util/escapeHtml.js';
  * @param {{mode?: ErrorRenderMode, title?:string, isDev? : boolean}} [opts={}]
  */
 export function renderError(e, opts = {}) {
-	console.log('e: ', e);
-
 	const { mode = 'inline', title } = opts;
 	const isPage = mode === 'page';
 

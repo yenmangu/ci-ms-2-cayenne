@@ -84,8 +84,6 @@ export const AppRouter = {
 	 * @param {HTMLElement} appRoot
 	 */
 	handleRouteChange(appRoot) {
-		console.log('Handling route change');
-
 		const pubs = createErrorPublishing();
 		const hash = window.location.hash;
 		/** @type {{path: string, params: Record<string,string> | {}}} */
@@ -117,11 +115,8 @@ export const AppRouter = {
 		}
 
 		const last = this.currentInstances[this.lastActivePath];
-		console.log('Last in route: ', last);
 
 		if (last?.destroy) {
-			console.log('Destroying: ', last);
-
 			last.destroy();
 		}
 

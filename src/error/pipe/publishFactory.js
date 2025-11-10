@@ -54,7 +54,6 @@ export function createErrorPublishing() {
 			const _publishDecision = deps.publishDecision ?? publishDecision;
 			const publishers = deps.publishers ?? createErrorPublishing();
 			const deduper = deps.deduper ?? createDeduper();
-			console.log('error publishing creation');
 
 			if (appStore.getState().devMode) {
 				// if (source instanceof Error) throw source;
