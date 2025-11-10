@@ -15,7 +15,7 @@ import { appStore } from './appStore.js';
 import { installGlobalErrorHooks } from './error/util/installGlobalErrorHooks.js';
 
 let appHeader = null;
-let devMode = true;
+let devMode = false;
 
 /**
  * Single point of logic for collecting 'appRoot' element.
@@ -25,6 +25,7 @@ let devMode = true;
 async function initCayenne() {
 	// Start error handling instantly
 	appStore.setState({ devMode: devMode });
+	appStore.setState({ useLive: !devMode });
 	installGlobalErrorHooks(appStore);
 
 	// Dev logging

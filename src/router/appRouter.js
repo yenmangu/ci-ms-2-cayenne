@@ -7,13 +7,19 @@
  */
 
 import { appStore } from '../appStore.js';
+import { EVENTS } from '../config/events.js';
 import { ErrorController } from '../error/error-component/error.controller.js';
 import { createErrorPublishing } from '../error/pipe/publishFactory.js';
-import { makeRouteScope } from '../error/util/errorScope.js';
+import {
+	getCurrentRouteScope,
+	makeRouteScope
+} from '../error/util/errorScope.js';
 import { normaliseParams } from './paramValidator.js';
 import { parseHashRoute } from './parseHashRoute.js';
 import { NOT_FOUND, routeMap } from './routeMap.js';
 import { routerService } from './routerService.js';
+
+let cleanupRetryListener = null;
 
 /**
  *
@@ -48,7 +54,9 @@ function resolveRoute(path, rawParams = {}) {
 }
 
 export const startRouter = appRoot => {
-	return AppRouter.init(appRoot);
+	AppRouter.init(appRoot);
+	armRetry(appRoot);
+	return AppRouter;
 };
 
 export const AppRouter = {
@@ -188,5 +196,43 @@ export function withComponent(ComponentClass) {
 		const instance = new ComponentClass(appRoot, pathName, params);
 		instance.render();
 		return instance;
+	};
+}
+
+export function armRetry(appRoot) {
+	if (cleanupRetryListener) {
+		console.log('[router] retry listener already armed');
+		return;
+	}
+	/** @param {CustomEvent<{scope?: string, data?:any}>} e */
+	const onRetrySuccess = e => {
+		appStore.setState({ useLive: false });
+		console.log('[router] RETRY SUCCESS handler fired', e?.detail);
+
+		// Derive explicit scope
+		const { path, params } = parseHashRoute(window.location.hash);
+
+		const preload = e?.detail.data ?? null;
+
+		// const scopeForPath = `${path || '/'}`;
+		const scopeForPath = getCurrentRouteScope();
+		console.log('Scope required by router: ', scopeForPath);
+
+		if (e.detail?.scope && e.detail?.scope !== scopeForPath) return;
+
+		const entry = routeMap[path];
+		if (entry?.handler) {
+			if (routeMap[path]?.path !== '/') {
+				routeMap[path]?.handler?.(appRoot, path, {
+					...params,
+					__preload: preload
+				});
+			}
+		}
+	};
+	window.addEventListener(EVENTS.refetchSuccess, onRetrySuccess);
+	cleanupRetryListener = () => {
+		window.removeEventListener(EVENTS.refetchSuccess, onRetrySuccess);
+		console.log('[router] retry listener installed for', EVENTS.refetchSuccess);
 	};
 }

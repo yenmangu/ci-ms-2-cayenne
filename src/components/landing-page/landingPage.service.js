@@ -11,7 +11,7 @@
  * @property {RecipeFull} fetchedRecipe
  * @property {number} recipeId
  * @property {RecipeCardObject} recipeCard
- * @property {function(): void} updateStoreRandomRecipe
+ * @property {(preload?: boolean, preloadData?: any)=> void} updateStoreRandomRecipe
  * @property {function(RecipeFull): RecipeCardObject} extractCard
  * @property {function(RecipeFull | SingleRecipeEnvelope): RecipeFull} toRecipeCard
  * @property {number}[counter]
@@ -64,15 +64,24 @@ export const createLandingService = opts => {
 			return recipe;
 		},
 
-		updateStoreRandomRecipe: async () => {
+		updateStoreRandomRecipe: async (preload = false, preloadData = {}) => {
 			service.counter++;
 
 			try {
-				const fetchResult = await client.getRandomRecipe();
-				if (!fetchResult) return;
-				const { data } = fetchResult;
-				const recipe = /** @type {RecipeFull} */ (data);
-				appStore.setState({ currentRandom: recipe });
+				/** @type {RecipeFull} */
+				let recipe;
+				if (preload) {
+					recipe = /** @type {RecipeFull} */ (preloadData);
+					appStore.setState({ currentRandom: recipe });
+					return;
+				} else {
+					const fetchResult = await client.getRandomRecipe();
+					if (!fetchResult) return;
+					const { data } = fetchResult;
+					recipe = /** @type {RecipeFull} */ (data);
+					appStore.setState({ currentRandom: recipe });
+					return;
+				}
 			} catch (error) {
 				// throw error;
 				createErrorPublishing().routeError(

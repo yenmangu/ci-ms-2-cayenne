@@ -26,6 +26,7 @@ import { resolveError as _resolveError } from '../error.model.js';
 import { renderError as _renderError } from './error.view.js';
 
 import { appStore } from '../../appStore.js';
+import { EVENTS } from '../../config/events.js';
 import { createErrorPublishing } from '../pipe/publishFactory.js';
 
 /** @type {ErrorControllerDeps} */
@@ -154,9 +155,10 @@ export class ErrorController {
 						this.store.setState({ errors: _resolveError(list, entry.id) });
 						const detail = { data, meta: entry.meta, scope: this.scope || {} };
 						console.log('Detail: ', detail);
+						console.log('dispatching-event with scope: ', detail.scope);
 
 						window.dispatchEvent(
-							new CustomEvent('cayenne:refetch-success', {
+							new CustomEvent(EVENTS.refetchSuccess, {
 								detail: { data, meta: entry.meta, scope: this.scope || {} }
 							})
 						);

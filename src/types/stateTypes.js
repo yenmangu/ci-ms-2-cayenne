@@ -32,7 +32,7 @@ export {};
  * @property {Record<string, any>} [params]
  * @property {RequestInit} [opts]
  * @property {ErrorMeta[]} [metas]
- * @property {'live'|'test'|'absolute'} [from]
+ * @property {'live'|'test'|'absolute'|'refetch'} [from]
  * @property {number} [status]
  * @property {boolean}[isDev]
  *

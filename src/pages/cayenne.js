@@ -1,16 +1,18 @@
-import { multipleRecipes } from '../data/multipleRecipes.js';
-import { RecipeGrid } from '../components/recipe-grid/recipeGrid.controller.js';
-import { RecipeDetail } from '../components/recipe-detail/recipeDetail.controller.js';
 import { LandingPage } from '../components/landing-page/landingPage.controller.js';
+import { multipleRecipes } from '../data/multipleRecipes.js';
 
 /**
  * The public '/' route handler
  *
  * @param {HTMLElement} appRoot
  * @param {string} pathName
- * @param {Record<string, string>} [params]
+ * @param {Record<string, string& {__preload?: {data?: any}, [key: string]:any}>} [params]
  */
 export function loadHome(appRoot, pathName, params) {
+	// if (params?.__preload) {
+	// 	const raw = params.__preload.data;
+	// 	const landing = initCayenneApp(appRoot, pathName, { ...params });
+	// }
 	const landing = initCayenneApp(appRoot, pathName, params);
 	return landing || null;
 }

@@ -30,3 +30,4 @@ publicPath.js
 error.e2e.test.js
 /src/error/error-component/__tests__
 /src/error/__tests__
+/src/error/pipe/__tests__

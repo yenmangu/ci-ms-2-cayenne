@@ -118,12 +118,10 @@ export function createStateStore(initialState = {}) {
 					});
 					break;
 				case 'useLive':
-					// console.log(
-					// 	'[STORE: ]: useLive switch block hit. updates: ',
-					// 	updates.useLive,
-					// 	'state: ',
-					// 	state.useLive
-					// );
+					console.trace(
+						'[STORE: ]: useLive switch block hit. updates: ',
+						updates.useLive
+					);
 
 					emitter.publish('state:useLive', {
 						[key]: state.useLive

@@ -13,12 +13,10 @@
 import { appStore } from '../appStore.js';
 import { SPOONACULAR_ENDPOINTS, buildEndpoint } from '../config/endpoints.js';
 import { ENV } from '../env.js';
-import { CustomError } from '../error/errors/customError.js';
 import { HttpError } from '../error/errors/httpError.js';
 import { createErrorPublishing } from '../error/pipe/publishFactory.js';
 import { getCurrentRouteScope } from '../error/util/errorScope.js';
 import { isAbsoluteUrl } from '../util/isAbsolute.js';
-import { buildIdPath, pathNeedsId } from '../util/pathInjection.js';
 
 /**
  * @class SpoonacularClient
@@ -150,14 +148,12 @@ export class SpoonacularClient {
 	 * @returns {Promise<FetchResult>}
 	 */
 	async getRandomRecipe(single = true) {
-		if (this.useLive) {
-			const key = /** @type {EndpointKey} */ ('getRandomRecipes');
-			const endpoint = this._buildEndpointWithParameters(key);
-			const response = await this.firstFetch(endpoint);
-			return response;
-		} else {
-			return await this.getTestApiRecipes(single);
-		}
+		const key = /** @type {EndpointKey} */ ('getRandomRecipes');
+		const endpoint = this._buildEndpointWithParameters(key);
+		console.log('Endpoint: ', endpoint);
+
+		const response = await this.firstFetch(endpoint);
+		return response;
 	}
 
 	/**
@@ -225,7 +221,7 @@ export class SpoonacularClient {
 	 */
 	async refetchFromMeta(meta) {
 		if (meta?.endpoint) {
-			return this.subsequentFetch(meta.endpoint, meta.params, meta.opts);
+			return this.subsequentFetch(meta.endpoint, meta.params, meta.opts, meta);
 		}
 		if (meta?.urlAbs) {
 			return this._fetchAbsolute(meta.urlAbs, meta.opts);
@@ -256,13 +252,14 @@ export class SpoonacularClient {
 	/**
 	 *
 	 * @param {string} urlOrKeyOrPath
-	 * @param {Record<string, any>|{}} [params={}]
+	 * @param {Record<string, any> & {[key:string]: any}} [params={}]
 	 * @param {RequestInit & {status?: number}} [opts={}]
 	 * @returns {Promise<FetchResult>}
 	 */
-	async subsequentFetch(urlOrKeyOrPath, params = {}, opts = {}) {
+	async subsequentFetch(urlOrKeyOrPath, params = {}, opts = {}, meta = {}) {
 		const str = String(urlOrKeyOrPath);
-		const status = /** @type {number | undefined} */ (opts.status);
+		const status = meta.status ?? undefined;
+		console.log('subsequentFetch path: ', urlOrKeyOrPath);
 
 		const resolvedParams = this.#_withCachedFlags(
 			params,
@@ -270,15 +267,22 @@ export class SpoonacularClient {
 		);
 
 		const isAbsolute = isAbsoluteUrl(str);
-		const fullUrl = isAbsolute ? str : this._buildUrl(str, resolvedParams);
+		if (!isAbsolute) {
+			const endpoint = buildEndpoint(urlOrKeyOrPath);
+			// const fullUrl =
+		}
 
+		const fullUrl = isAbsolute ? str : this._buildUrl(str, resolvedParams);
+		const refetch = params.refetch ? true : false;
+		const useCache = params.useCache ? true : false;
 		/** @type {ErrorMeta} */
 		const metaBase = {
-			from: isAbsolute ? 'absolute' : undefined,
+			from: refetch ? 'refetch' : 'live',
 			endpoint: isAbsolute ? undefined : str,
 			urlAbs: fullUrl,
 			params: resolvedParams,
-			opts
+			opts,
+			isDev: appStore.getState().devMode ?? false
 		};
 
 		return this.#_fetchFromApi(fullUrl, opts, metaBase, true, true);
@@ -293,56 +297,24 @@ export class SpoonacularClient {
 	 * @returns {Promise<FetchResult>}
 	 */
 	async firstFetch(urlOrKeyOrPath, params = {}, opts = {}) {
-		const isAbsolute = isAbsoluteUrl(urlOrKeyOrPath);
-
-		/** @type {'absolute'|'live'|'test'} */
-		let from = 'absolute';
-
-		/** @type {string} endpoint */
-		let endpointPath = urlOrKeyOrPath;
-
-		/** @type {string} */
-		let fullyResolvedUrl;
-
-		if (isAbsolute) {
-			fullyResolvedUrl = urlOrKeyOrPath;
-			from = 'absolute';
-		} else if (urlOrKeyOrPath in SPOONACULAR_ENDPOINTS) {
-			// Endpoint Key
-			const { id, ...query } = params;
-			endpointPath = this._buildEndpointWithParameters(
-				/** @type {keyof typeof SPOONACULAR_ENDPOINTS} */ (urlOrKeyOrPath),
-				id != null ? { id } : {}
-			);
-
-			if (pathNeedsId(endpointPath)) {
-				throw new CustomError('[FIRST_FETCH] Missing id for endpoint path');
-			}
-
-			fullyResolvedUrl = this._buildUrl(endpointPath, query);
-			from = 'live';
-		} else {
-			const { id, ...query } = params;
-			endpointPath = buildIdPath(endpointPath, { id });
-
-			if (pathNeedsId(endpointPath)) {
-				throw new CustomError('[FIRST_FETCH] Missing id for path template');
-			}
-
-			fullyResolvedUrl = this._buildUrl(endpointPath, query);
-			from = 'live';
-		}
+		console.log('urlOrKeyOrPath: ', urlOrKeyOrPath);
+		const endpoint = buildEndpoint(urlOrKeyOrPath, params);
+		const resolvedUrl = this._buildUrl(endpoint, params);
+		console.log('endpoint: ', endpoint);
+		console.log('endpointKey: ', resolvedUrl);
 
 		/** @type {ErrorMeta} */
 		const metaBase = {
-			from,
-			endpoint: isAbsolute ? undefined : endpointPath,
-			urlAbs: fullyResolvedUrl,
+			from: 'live',
+			endpoint,
+			urlAbs: resolvedUrl,
 			params,
-			opts
+			opts,
+			isDev: appStore.getState().devMode ?? false
 		};
+		console.log('Metabase: ', metaBase);
 
-		return this.#_fetchFromApi(fullyResolvedUrl, opts, metaBase);
+		return this.#_fetchFromApi(resolvedUrl, opts, metaBase, false);
 	}
 
 	#_makeParamsFromMeta(url, meta) {
@@ -369,53 +341,119 @@ export class SpoonacularClient {
 		fromRefetch = false,
 		forcedRefetch = false
 	) {
-		console.count('[client.#_fetchFromApi]');
-		// console.log('[client.#_fetchFromApi] fetch about to run', {
-		// 	id: this.__reqId,
-		// 	url: fullyResolvedUrl,
-		// 	opts
-		// });
+		// console.log('Metabase: ', metaBase);
+		console.log(
+			'Type of request: ',
+			'from refetch: ',
+			fromRefetch,
+			' 	forcedRefetch: ',
+			forcedRefetch
+		);
+
+		const dev = appStore.getState().devMode ?? false;
+		console.log('DEV:    ', dev);
+
+		const useLive = appStore.getState().useLive ?? true;
+		let useCache;
+		// console.log('useLive?: ', useLive);
+
+		const pubs = createErrorPublishing();
+		const scope = getCurrentRouteScope();
+		// console.count('[client.#_fetchFromApi]');
+
 		const fetchUrl = new URL(fullyResolvedUrl, this.apiUrl);
-		if ('params' in metaBase) {
-			const { params } = metaBase.params;
-			const s_params = new URLSearchParams(params);
-			if (metaBase.params.id) {
-				fetchUrl.searchParams.append('id', metaBase?.params.id);
+		const { params } = metaBase;
+		if (!params) {
+			pubs.routeError(
+				appStore,
+				scope,
+				new Error('[Client]: No params handed to client'),
+				metaBase,
+				undefined,
+				undefined
+			);
+		}
+		if (params.id) {
+			if (!fetchUrl.searchParams.has('id')) {
+				fetchUrl.searchParams.append('id', params.id);
+			}
+		}
+
+		if (fromRefetch || useLive) {
+			forcedRefetch = false;
+		}
+
+		if (!useLive) {
+			useCache = true;
+
+			if (!fetchUrl.searchParams.has('useCache')) {
+				fetchUrl.searchParams.append('useCache', 'true');
+			}
+
+			if (!fetchUrl.searchParams.has('refetch')) {
+				fetchUrl.searchParams.append('refetch', 'true');
 			}
 		}
 
 		// DEV
 
 		const dev_402_Url = new URL(fullyResolvedUrl, this.apiUrl);
-		if (!forcedRefetch) {
-			dev_402_Url.searchParams.append('test_402', 'true');
-			const { params } = metaBase.params;
-			const s_params = new URLSearchParams(params);
 
-			if ('params' in metaBase?.params) {
-				if (metaBase.params.id) {
-					dev_402_Url.searchParams.append('id', metaBase?.params.id);
+		if (forcedRefetch) {
+			if (!dev_402_Url.searchParams.has('test_402')) {
+				dev_402_Url.searchParams.append('test_402', 'true');
+			}
+			if (params.id) {
+				if (!dev_402_Url.searchParams.has('id')) {
+					dev_402_Url.searchParams.append('id', `${params.id}`);
 				}
 			}
 		}
+
 		if (fromRefetch) {
-			dev_402_Url.searchParams.append('override', 'true');
-			if ('params' in metaBase) {
-				if (metaBase.params.id) {
-					dev_402_Url.searchParams.append('id', metaBase?.params.id);
+			if (!dev_402_Url.searchParams.has('override')) {
+				dev_402_Url.searchParams.append('override', 'true');
+			}
+
+			if (params.id)
+				if (!dev_402_Url.searchParams.has('id')) {
+					dev_402_Url.searchParams.append('id', `${params.id}`);
 				}
+
+			if (!dev_402_Url.searchParams.has('test_402')) {
+				dev_402_Url.searchParams.delete('test_402');
 			}
 		}
+
+		if (!useLive) {
+			if (!dev_402_Url.searchParams.has('useCache')) {
+				dev_402_Url.searchParams.append('useCache', 'true');
+			}
+			if (!dev_402_Url.searchParams.has('refetch')) {
+				dev_402_Url.searchParams.append('refetch', 'true');
+			}
+			if (!dev_402_Url.searchParams.has('override')) {
+				dev_402_Url.searchParams.append('override', 'true');
+			}
+
+			if (dev_402_Url.searchParams.has('test_402')) {
+				dev_402_Url.searchParams.delete('test_402');
+			}
+		}
+
+		console.log('dev_402_Url: ', dev_402_Url.href);
 
 		/** @type {Response|undefined} */
 		let response;
 		try {
 			// Dev only
 			const reqOpts = /** @type {RequestInit} */ (opts);
-			const formData = new FormData();
-			formData.append('send402', 'true');
 
-			response = await fetch(dev_402_Url, opts);
+			if (dev) {
+				response = await fetch(dev_402_Url, opts);
+			} else {
+				response = await fetch(fetchUrl, opts);
+			}
 
 			/** @type {ErrorMeta} */
 			const meta = {

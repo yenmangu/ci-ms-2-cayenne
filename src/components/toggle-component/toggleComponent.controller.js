@@ -25,7 +25,8 @@ export class ToggleComponent {
 		this.key = options.key;
 		this.toggleText = '';
 		this.latestState = null;
-		this.subscription = null;
+		this.lengthSub = null;
+		this.unitSub = null;
 		this.init();
 	}
 
@@ -68,10 +69,15 @@ export class ToggleComponent {
 			renderToggleComponent(this.toggleConfig)
 		);
 
-		this.subscription = appStore.subscribe(state => {
+		this.lengthSub = appStore.subscribe(state => {
 			this.latestState = state;
 			this.#_hydrateToggle();
-		});
+		}, 'unitLength');
+
+		this.unitSub = appStore.subscribe(state => {
+			this.latestState = state;
+			this.#_hydrateToggle();
+		}, 'unitLocale');
 	}
 
 	render() {

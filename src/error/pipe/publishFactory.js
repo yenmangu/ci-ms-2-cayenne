@@ -55,7 +55,14 @@ export function createErrorPublishing() {
 			const publishers = deps.publishers ?? createErrorPublishing();
 			const deduper = deps.deduper ?? createDeduper();
 
-			console.log('Logging for brevity: ', source, response);
+			console.log(
+				'Logging for brevity: ',
+				source,
+				' 	response: ',
+				response,
+				'  meta: ',
+				meta
+			);
 
 			// Build hints once: include transport/meta and serialised stack/cause.
 			const hints = {

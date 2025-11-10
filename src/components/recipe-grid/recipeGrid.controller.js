@@ -3,6 +3,8 @@
  */
 
 import { appStore } from '../../appStore.js';
+import { getCurrentRouteScope } from '../../error/util/errorScope.js';
+import { hasPendingRetry } from '../../error/util/hasPendingRetry.js';
 import { RecipeCard } from '../recipe-card/recipeCard.controller.js';
 import {
 	getCardWrapperClass as getCardWrapperClassName,
@@ -43,6 +45,8 @@ export class RecipeGrid {
 
 		this.subscription = appStore
 			.subscribe(state => {
+				const scope = getCurrentRouteScope();
+				if (hasPendingRetry(appStore, scope)) return;
 				if (state && state.route) {
 					this.title = state.route.title || '';
 				}

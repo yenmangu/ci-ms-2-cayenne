@@ -5,6 +5,7 @@
  */
 
 import { appStore } from '../../appStore.js';
+import { EVENTS } from '../../config/events.js';
 import { getCurrentRouteScope } from '../../error/util/errorScope.js';
 import { hasPendingRetry } from '../../error/util/hasPendingRetry.js';
 import { stringToHtml } from '../../util/htmlToElement.js';
@@ -21,6 +22,9 @@ export class LandingPage {
 	constructor(container) {
 		/** @type {HTMLElement} */
 		this.container = container;
+
+		/** @type {boolean} */
+		this.usingCache = false;
 
 		this.landingPageComponent = null;
 
@@ -77,6 +81,7 @@ export class LandingPage {
 	#_onFetchNewRandom() {
 		this.loadingComponent = new Loading(this.container);
 		this.loadingComponent.render();
+
 		this.service.updateStoreRandomRecipe();
 	}
 
@@ -89,12 +94,12 @@ export class LandingPage {
 		const eHandler = event => {
 			const detail = event?.detail;
 			if (!detail || detail.scope !== expectedScope) return;
-			window.removeEventListener('cayenne:refetch-success', eHandler);
+			window.removeEventListener(EVENTS.refetchSuccess, eHandler);
 			if (detail.data && detail.meta) {
 				handler(detail.data, detail.meta);
 			}
 		};
-		window.addEventListener('cayenne:refetch-success', eHandler);
+		window.addEventListener(EVENTS.refetchSuccess, eHandler);
 	}
 
 	#_renderRandomRecipe() {
@@ -147,14 +152,16 @@ export class LandingPage {
 	}
 
 	async init() {
+		const scope = getCurrentRouteScope();
 		this.landingPageComponent = stringToHtml(renderLandingPage());
 
 		this.#_collectContainers();
-		this.#_onRefetchSuccessOnce('route:/', ({ data, meta }) => {
+		this.#_onRefetchSuccessOnce(scope, ({ data, meta }) => {
 			// console.log(payload);
 
 			const recipe = this.service.toRecipeCard(data);
 			appStore.setState({ currentRandom: recipe });
+			this.usingCache = true;
 		});
 
 		this.#_onFetchNewRandom();
