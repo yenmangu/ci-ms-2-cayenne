@@ -109,6 +109,13 @@ section.index .row:nth-of-type(even) {
 	background-color: var(--site-section-bg-even);
 }
 
+section.how-to-use:nth-of-type(odd) {
+	background-color: var(--site-section-bg-odd);
+}
+section.how-to-use:nth-of-type(even) {
+	background-color: var(--site-section-bg-even);
+}
+
 section.index .row:nth-of-type(odd) {
 	background-color: var(--site-section-bg-odd);
 }
