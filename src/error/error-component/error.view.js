@@ -29,6 +29,8 @@ import { escapeHtml } from '../../util/escapeHtml.js';
  * @param {{mode?: ErrorRenderMode, title?:string, isDev? : boolean}} [opts={}]
  */
 export function renderError(e, opts = {}) {
+	console.log('e: ', e);
+
 	const { mode = 'inline', title } = opts;
 	const isPage = mode === 'page';
 
@@ -58,7 +60,7 @@ export function renderError(e, opts = {}) {
       <div class="flex-shrink-0 pt-1" aria-hidden="true">⚠️</div>
       <div class="flex-grow-1">
         ${heading}
-        <p class="mb-1">${escapeHtml(e.userMessage)}</p>
+        <p class="mb-1">${e.userMessage}</p>
 
         ${text}
 				${opts.isDev ? stack : ''}

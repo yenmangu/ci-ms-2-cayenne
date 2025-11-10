@@ -54,17 +54,19 @@ export function createErrorPublishing() {
 			const _publishDecision = deps.publishDecision ?? publishDecision;
 			const publishers = deps.publishers ?? createErrorPublishing();
 			const deduper = deps.deduper ?? createDeduper();
+			console.log('error publishing creation');
 
 			if (appStore.getState().devMode) {
+				// if (source instanceof Error) throw source;
 				// Uncomment for dev logging
-				// console.log(
-				// 	'Logging for brevity: ',
-				// 	source,
-				// 	' 	response: ',
-				// 	response,
-				// 	'  meta: ',
-				// 	meta
-				// );
+				console.trace(
+					'Logging for brevity: ',
+					source,
+					' 	response: ',
+					response,
+					'  meta: ',
+					meta
+				);
 			}
 			// Build hints once: include transport/meta and serialised stack/cause.
 			const hints = {

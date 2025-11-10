@@ -7,7 +7,22 @@ import { createStateStore } from './event/store.js';
 const persisted = localStorage.getItem('cayenneUserState');
 
 /** @type {PersistableState} */
-const userState = persisted ? JSON.parse(persisted) : {};
+let userState = {};
+try {
+	const raw = localStorage.getItem('cayenneUserState');
+	if (raw) {
+		const parsed = JSON.parse(raw) ?? {};
+		const {
+			likedRecipes = [],
+			unitLocale = 'metric',
+			shoppingList = [],
+			useLive = false
+		} = parsed;
+		userState = { likedRecipes, unitLocale, shoppingList, useLive };
+	}
+} catch {
+	userState = {};
+}
 
 /** @type {AppState} */
 const initialState = {

@@ -117,7 +117,13 @@ export const AppRouter = {
 		}
 
 		const last = this.currentInstances[this.lastActivePath];
-		if (last?.destroy) last.destroy();
+		console.log('Last in route: ', last);
+
+		if (last?.destroy) {
+			console.log('Destroying: ', last);
+
+			last.destroy();
+		}
 
 		delete this.currentInstances[this.lastActivePath];
 

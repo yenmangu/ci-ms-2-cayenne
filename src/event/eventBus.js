@@ -1,8 +1,5 @@
-import CayenneEventEmitter from './eventEmitter.js';
-import { createStateStore } from './store.js';
+import { createSingleEmitter } from './store.js';
 
-const stateEmitter = new CayenneEventEmitter();
+const singleEmitter = createSingleEmitter();
 
-const stateStore = createStateStore();
-
-export { stateEmitter };
+export { singleEmitter };

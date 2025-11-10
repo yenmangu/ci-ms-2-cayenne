@@ -93,6 +93,7 @@ export class AppHeader {
 			// );
 
 			btn.setToggled(routerService.isActiveRoute(btn.routeKey));
+			btn.setRouteActive(routerService.isActiveRoute(btn.routeKey));
 		});
 	}
 

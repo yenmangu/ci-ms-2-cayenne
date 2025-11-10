@@ -5,14 +5,10 @@
  */
 
 import { appStore } from '../../appStore.js';
-import { banana, bananas } from '../../data/banana.js';
+import { singleEmitter } from '../../event/eventBus.js';
 import { stringToHtml } from '../../util/htmlToElement.js';
 import { IngredientMiniCard } from '../ingredient-mini-card/ingredientMiniCard.controller.js';
-import {
-	renderInput,
-	renderShoppingList,
-	renderShoppingListItem
-} from './shoppingList.view.js';
+import { renderShoppingList } from './shoppingList.view.js';
 
 export class ShoppingList {
 	/**
@@ -24,14 +20,11 @@ export class ShoppingList {
 		/** @type {HTMLElement} */
 		this.container = container;
 
-		this.dev = params.dev;
+		this.dev = appStore.getState().devMode;
 		this.view = stringToHtml(renderShoppingList());
 
 		/** @type {ShoppingListItem[]} */
 		this.currentList = [];
-
-		/** @type {IngredientMiniCard[]} */
-		this.ingredientCardInstances = [];
 
 		/** @type {Record<number,HTMLButtonElement>} */
 		this.removeButtonMap = {};
@@ -39,72 +32,20 @@ export class ShoppingList {
 		/** @type {HTMLButtonElement} */
 		this.searchBtn = null;
 
+		/** @type {Map<number,IngredientMiniCard>} */
+		this.cardsById = new Map();
+
+		/** @type {Set<number>} */
+		this.pendingExit = new Set();
+
 		this.ul = null;
-		this.currentList = appStore.getState().shoppingList || [];
-		this.init();
-		this.#_render();
 		this.subscription = null;
-	}
 
-	#_buildIngredientCards() {
-		console.log('this.currentList: ', this.currentList);
-		console.log('Card instances: ', this.ingredientCardInstances);
+		this.removeCardEmitter = singleEmitter;
 
-		this.currentList.forEach(item => {
-			const recipeDetails = {
-				linkedRecipe: item.linkedRecipe ?? '',
-				linkedRecipeId: item.linkedRecipeId ?? 0
-			};
+		this.removeSub = null;
 
-			const tempItem = { ...item };
-
-			delete tempItem.linkedRecipe;
-			delete tempItem.linkedRecipeId;
-
-			const itemAsIngredient = /** @type {ExtendedIngredient} */ (tempItem);
-
-			const ingredientCard = new IngredientMiniCard(itemAsIngredient, {
-				inRecipeDetail: false,
-				system: appStore.getState().unitLocale,
-				unitLength: appStore.getState().unitLength,
-				...recipeDetails
-			});
-
-			const el = ingredientCard.render();
-			ingredientCard.init();
-
-			this.ingredientCardInstances.push(ingredientCard);
-
-			this.ul.appendChild(el);
-		});
-	}
-
-	/**
-	 *
-	 * @param {HTMLElement} cardEl
-	 * @param {()=> void} onDone
-	 */
-	#_getCardById(id) {
-		return this.ingredientCardInstances.find(card => card.ingredient.id === id);
-	}
-
-	// #_adaptIngredient(item) {
-	// 	const { linkedRecipe, linkedRecipeId, ...ingredient } = item;
-	// 	return ingredient;
-	// }
-
-	#_removeWithAnimation(cardEl, onDone) {
-		cardEl.classList.add('ingredient-mini-card--leaving');
-
-		cardEl.addEventListener(
-			'transitionend',
-			function handler(e) {
-				cardEl.removeEventListener('transitionend', handler);
-				// Once done, invoke onDone()
-				if (typeof onDone === 'function') onDone();
-			},
-			{ once: true }
-		);
+		this.#_render();
 	}
 
 	#_render() {
@@ -112,74 +53,99 @@ export class ShoppingList {
 			this.ul = document.createElement('ul');
 			this.ul.className = 'shopping-list__ul';
 		}
-
-		const shoppingListContainer = document.getElementById(
-			'shopping-list-container'
-		);
-		this.#_buildIngredientCards();
-		shoppingListContainer.appendChild(this.ul);
-
-		// if (this.container) {
-		// 	// This has been removed because time constraints
-		// 	// and api quota constraints have prevented me
-		// 	// from implementing the search properly
-		// 	// this.#_renderInput();
-		// }
 	}
 
-	/**
-	 *
-	 * @param {ShoppingListItem[]} updated
-	 */
-	#_updateList(updated) {
-		const toRemoveIds = this.currentList
-			.filter(prev => !updated.some(next => next.id === prev.id))
-			.map(i => i.id);
+	#_buildInitialList() {
+		this.currentList.forEach(item => {
+			if (this.cardsById.has(item.id)) return;
+			const recipeDetails = {
+				linkedRecipe: item.linkedRecipe ?? '',
+				linkedRecipeId: item.linkedRecipeId ?? 0
+			};
 
-		toRemoveIds.forEach(id => {
-			const ingredientCardInstance = this.#_getCardById(id);
-			if (ingredientCardInstance && ingredientCardInstance.el) {
-				this.#_removeWithAnimation(ingredientCardInstance.el, () => {
-					this.updateCards(updated);
-				});
-			}
+			const itemAsIngredient = /** @type {ExtendedIngredient} */ (item);
+
+			const card = new IngredientMiniCard(itemAsIngredient, {
+				inRecipeDetail: false,
+				system: appStore.getState().unitLocale,
+				unitLength: appStore.getState().unitLength,
+				linkedRecipeId: recipeDetails.linkedRecipeId,
+				linkedRecipe: recipeDetails.linkedRecipe
+			});
+
+			const el = card.buildEl();
+			this.cardsById.set(card.id, card);
+			card.init();
+			this.ul.appendChild(el);
 		});
+		this.container.appendChild(this.ul);
 	}
 
 	init() {
+		this.cardsById.clear();
 		this.container.appendChild(this.view);
+		if (this.currentList) this.currentList = [];
+		this.currentList = appStore.getState().shoppingList || [];
+		this.#_buildInitialList();
 
-		this.subscription = appStore.subscribe(state => {
-			if (state && state.shoppingList) {
-				this.#_updateList(state.shoppingList);
-			}
+		this.subscription = appStore.subscribe(({ shoppingList }) => {
+			this.currentList = shoppingList;
 		}, 'shoppingList');
 
 		if (this.dev) {
 			// appStore.setState({ shoppingList: [...bananas, ...bananas] });
 		}
+		/**
+		 *
+		 * @param {string} event
+		 * @param {ExtendedIngredient} payload
+		 */
+		const handler = (event, payload) => {
+			const id = payload.id;
+			this.#_handleRemoveIntent(id);
+		};
+		this.removeSub = this.removeCardEmitter.subscribe('card:remove', handler);
 	}
 
-	updateCards(updated) {
-		this.currentList = updated;
-		this.#_render();
+	/** @param {number} id  */
+	#_handleRemoveIntent(id) {
+		console.log('Handling remove intent');
+
+		if (!id || this.pendingExit.has(id)) {
+			console.log('returning early');
+			return;
+		}
+		const card = this.cardsById.get(id);
+		if (!card) {
+			appStore.removeIngredientById(id);
+			return;
+		}
+		this.pendingExit.add(id);
+
+		card
+			.removeSelf()
+			.then(() => {
+				appStore.removeIngredientById(id);
+				card.destroy();
+				this.cardsById.delete(id);
+			})
+			.finally(() => this.pendingExit.delete(id));
 	}
 
-	// /**
-	//  *
-	//  * @param {ShoppingListItem} item
-	//  */
-	// #_addItem(item) {
-	// 	const state = appStore.getState();
-	// 	const exists = state.shoppingList?.some(
-	// 		listItem => listItem.id === item.id
-	// 	);
-	// 	console.log('Exists: ', exists);
-	// 	if (!exists) {
-	// 		appStore.setState({ shoppingList: [...(state.shoppingList || [])] });
-	// 	}
-	// }
 	destroy() {
-		console.warn('Function destroy() not yet implemented.');
+		if (this.subscription) {
+			this.subscription.unsubscribe();
+			this.subscription = null;
+		}
+		if (this.removeSub) {
+			this.removeSub.unsubscribe();
+			this.removeSub = null;
+		}
+		this.cardsById.forEach(i => {
+			console.log(`Destroying instance: ${i.id}`);
+
+			i.destroy();
+		});
+		this.container.innerHTML = '';
 	}
 }

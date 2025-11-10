@@ -1,5 +1,4 @@
 import { AppHeader } from './components/app-header/appHeader.controller.js';
-import { isProd } from './env.js';
 import { initNavbar } from './global-ui/navbar.js';
 import { startRouter } from './router/appRouter.js';
 import { initDevBootstrap } from './util/dev/devBoostrap.js';
@@ -15,7 +14,7 @@ import { appStore } from './appStore.js';
 import { installGlobalErrorHooks } from './error/util/installGlobalErrorHooks.js';
 
 let appHeader = null;
-let devMode = true;
+let devMode;
 
 /**
  * Single point of logic for collecting 'appRoot' element.
@@ -24,9 +23,12 @@ let devMode = true;
  */
 async function initCayenne() {
 	// Start error handling instantly
-	appStore.setState({ devMode: devMode });
-	appStore.setState({ useLive: !devMode });
-	installGlobalErrorHooks(appStore);
+	appStore.setState({ devMode: devMode ?? false });
+	appStore.setState({ useLive: !devMode || true });
+	if (appStore.getState().devMode === true) {
+		installGlobalErrorHooks(appStore);
+	}
+	devMode = appStore.getState().devMode;
 
 	// Dev logging
 	// console.log('isProd? ', !!isProd);
@@ -34,7 +36,7 @@ async function initCayenne() {
 	initNavbar();
 	// Main injection site
 	const appRoot = document.getElementById('app-root');
-	appHeader = new AppHeader(appRoot, !isProd);
+	appHeader = new AppHeader(appRoot);
 
 	appRoot.insertAdjacentElement('beforebegin', appHeader.header);
 
@@ -53,10 +55,18 @@ async function initCayenne() {
 
 	// Start the client-side routing
 	startRouter(appRoot);
+
+	// Safety gate
+
+	appStore.subscribe(s => {
+		if (s.devMode && s.devMode === true) appStore.setState({ devMode: false });
+	}, 'devMode');
 }
 
 window.addEventListener('DOMContentLoaded', () => {
-	initDevBootstrap({ forceView: true });
+	if (appStore.getState().devMode && appStore.getState().devMode === true) {
+		initDevBootstrap({ forceView: true });
+	}
 	initCayenne();
 	initStickyFooter();
 	initAppHeader(appHeader, 300);

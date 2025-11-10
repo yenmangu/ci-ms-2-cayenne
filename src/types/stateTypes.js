@@ -52,7 +52,6 @@ export {};
  * @property {string} userMessage
  * @property {number} [status]
  * @property {string} [message]
- * @property {ErrorScope} scope
  * @property {Severity} [severity]
  * @property {boolean} [sticky]
  * @property {number} ts
@@ -114,6 +113,7 @@ export {};
  * @property {boolean} [useLive] - flag to indicate if app should use live
  *
  */
+
 /**
  * @typedef {object} PartialAppState
  * @property {boolean} [devMode]
@@ -126,12 +126,11 @@ export {};
  * @property {string[]} [searchQuery] - Current search query
  * @property {RecipeCard[]} [likedRecipes] - List of user-favourited recipes
  * @property {object} [activeFilters] - Structured object for filters (diets, cook time etc)
- * @property {boolean} [loading] - Loading flag *
+ * @property {boolean} [loading] - Loading flag
  * @property {RouteEntry} [route]
  * @property {ShoppingListItem[]} [shoppingList]
  * @property {ErrorEntry[]} [errors]
  * @property {boolean} [useLive] - flag to indicate if app should use live
-
  *
  */
 
@@ -155,9 +154,11 @@ export {};
  *  'loading' |
  * 	'likedRecipes' |
  * 	'shoppingList' |
+ *  'shoppingListItem'|
  *  'route'|
  *  'errors'|
- *  'useLive'
+ *  'useLive'|
+ *	'devMode'
  * } StateKey
  */
 

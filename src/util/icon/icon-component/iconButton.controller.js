@@ -47,20 +47,20 @@ const CSS_LENGTH_RE =
 	/^(-?(\d*\.)?\d+)((px)|(em)|(%)|(ex)|(ch)|(rem)|(vw)|(vh)|(vmin)|(vmax)|(cm)|(mm)|(in)|(pt)|(pc))$/gim;
 
 export class IconButton {
-	/** @type {HTMLButtonElement} */ #buttonAttrs;
-	/** @type {HTMLSpanElement} */ #buttonToggledAttrs;
-	/** @type {HTMLElement|null} */ #el;
-	/** @type {IconButtonOptions} */ #icon = null;
-	/** @type {Icon|null} */ #iconAttrs;
-	/** @type {IconRegistry} */ #iconHost;
-	/** @type {string} */ #iconToggledAttrs;
+	/** @type {HTMLButtonElement} */ #el;
+	/** @type {HTMLSpanElement} */ #iconHost;
+	/** @type {HTMLElement|null} */ #labelNode = null;
+	/** @type {IconButtonOptions} */ #opts;
+	/** @type {Icon|null} */ #icon = null;
+	/** @type {IconRegistry} */ #registry;
+	/** @type {string} */ #routeKey = null;
 
-	/** @type {IconAttributes} */ #labelNode = null;
-	/** @type {IconAttributes} */ #opts;
+	/** @type {IconAttributes} */ #iconAttrs;
+	/** @type {IconAttributes} */ #iconToggledAttrs;
 
-	/** @type {ButtonAttributes} */ #registry;
-	/** @type {ButtonAttributes} */ #routeKey = null;
-
+	/** @type {ButtonAttributes} */ #buttonAttrs;
+	/** @type {ButtonAttributes} */ #buttonToggledAttrs;
+	/** @type {boolean} */ #toggleLocked = false;
 	/**
 	 * @param {Registry} registry
 	 * @param {IconButtonOptions} opts
@@ -117,18 +117,38 @@ export class IconButton {
 		// No direct aria-label or title setting here; all handled in render()
 
 		this.#el.addEventListener('click', event => {
-			if (typeof this.#opts.toggled === 'boolean') {
+			if (!this.#toggleLocked && typeof this.#opts.toggled === 'boolean') {
 				this.setToggled(!this.#opts.toggled);
 			}
 			this.#opts.onClick?.(event, this);
 		});
 	}
 
-	/**
-	 *
-	 * @param {Element} el
-	 * @param {object} attrs
-	 */
+	setRouteActive(isActive) {
+		this.setToggled(!!isActive);
+		this.lockToggle(!!isActive, {
+			ariaCurrent: true,
+			disable: true
+		});
+	}
+
+	lockToggle(isLocked, opts = { ariaCurrent: true, disable: true }) {
+		this.#toggleLocked = !!isLocked;
+
+		if (opts.ariaCurrent) {
+			if (isLocked) {
+				this.#el.setAttribute('aria-current', 'page');
+			} else {
+				this.#el.removeAttribute('aria-current');
+			}
+
+			if (opts.disable) {
+				this.#el.disabled = !!isLocked;
+			}
+			void this.render();
+		}
+	}
+
 	#classList() {
 		const v = this.#opts.variant;
 		const s = this.#opts.size;
@@ -147,6 +167,11 @@ export class IconButton {
 		return span;
 	}
 
+	/**
+	 *
+	 * @param {Element} el
+	 * @param {object} attrs
+	 */
 	#setLabelAttributes(el, attrs) {
 		for (const [key, attrName] of Object.entries(ARIA_ATTRS)) {
 			const value = attrs[key];
@@ -192,10 +217,6 @@ export class IconButton {
 			: { ...this.#iconAttrs };
 	}
 
-	/**
-	 *
-	 * @param {boolean} on
-	 */
 	isToggled() {
 		return !!this.#opts.toggled;
 	}
@@ -292,6 +313,10 @@ export class IconButton {
 		void this.render();
 	}
 
+	/**
+	 *
+	 * @param {boolean} on
+	 */
 	setToggled(on) {
 		this.toggled = !!on;
 		this.#opts.toggled = !!on;

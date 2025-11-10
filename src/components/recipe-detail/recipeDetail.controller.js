@@ -108,7 +108,8 @@ export class RecipeDetail {
 					linkedRecipe: this.fetchedRecipe.title,
 					linkedRecipeId: this.recipeId
 				});
-				card.render();
+				card.buildEl();
+				card.init();
 				this.ingredientCardInstances.push(card);
 				ingredientsContainer.appendChild(card.el);
 			});
@@ -371,5 +372,6 @@ export class RecipeDetail {
 		if (this.imageHost) {
 			this.imageHost.destroy();
 		}
+		this.ingredientCardInstances.forEach(i => i.destroy());
 	}
 }

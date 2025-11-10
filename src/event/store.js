@@ -33,10 +33,17 @@
  * - Returns a new subscription pipeline
  */
 
+import { appStore } from '../appStore.js';
+import { createErrorPublishing } from '../error/pipe/publishFactory.js';
 import CayenneEventEmitter from './eventEmitter.js';
 
 const STATE_CHANGE = 'state:change';
 const CAYENNE_STATE = 'cayenneUserState';
+
+export function createSingleEmitter() {
+	const emitter = new CayenneEventEmitter();
+	return emitter;
+}
 
 export function createStateStore(initialState = {}) {
 	const emitter = new CayenneEventEmitter();
@@ -210,6 +217,14 @@ export function createStateStore(initialState = {}) {
 		}
 	}
 
+	function removeIngredientById(id) {
+		const { shoppingList } = getState();
+		const exists = shoppingList.some(item => item.id === id);
+		if (exists) {
+			setState({ shoppingList: shoppingList.filter(item => item.id !== id) });
+		}
+	}
+
 	/**
 	 *
 	 * @param {string} string
@@ -308,9 +323,20 @@ export function createStateStore(initialState = {}) {
 	}
 
 	async function resetState() {
-		await resetLocalStorage();
-		state = { ...initialState };
-		emitter.publish('state:change', { ...state });
+		await resetLocalStorage()
+			.then(() => {
+				state = { ...initialState };
+				emitter.publish('state:change', { ...state });
+			})
+			.catch(err => {
+				createErrorPublishing().routeError(
+					appStore,
+					'global',
+					err,
+					undefined,
+					undefined
+				);
+			});
 	}
 
 	function persistState() {
@@ -334,6 +360,7 @@ export function createStateStore(initialState = {}) {
 		dispatch,
 		getState,
 		removeLikedRecipe,
+		removeIngredientById,
 		resetState,
 		saveRecipe,
 		setState,

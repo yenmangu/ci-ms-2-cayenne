@@ -60,7 +60,10 @@ export function normaliseError(err, hints = {}) {
 				code: 'HTTP_402',
 				status: s,
 				type: 'network',
-				userMessage: 'Quota exceeded.',
+				userMessage: `Quota exceeded for alive API usage. <strong>Retry</strong> to switch to server-cached data.
+				See <a class="error-link"
+					style="color: var(--cayenne-colour-red-dark)"
+					href="../../../how-to-use.html">How to use</a> for more information.`,
 				retry: true,
 				...hints
 			};
