@@ -56,7 +56,6 @@ export function createErrorPublishing() {
 			const deduper = deps.deduper ?? createDeduper();
 
 			if (appStore.getState().devMode) {
-				// if (source instanceof Error) throw source;
 				// Uncomment for dev logging
 				console.trace(
 					'Logging for brevity: ',
