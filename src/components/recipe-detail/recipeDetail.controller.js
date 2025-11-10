@@ -8,6 +8,7 @@
  * @typedef {import('../../types/stateTypes.js').UnitLength} UnitLength
  * @typedef {import('../../types/imageTypes.js').ImageModel} ImageModel
  * @typedef {import('../../types/errorTypes.js').ErrorScope} ErrorScope
+ * @typedef {import('../../types/recipeTypes.js').RecipeCard} RecipeCard
  */
 
 import { appStore } from '../../appStore.js';
@@ -17,7 +18,7 @@ import { mountImage } from '../../util/mountImage.js';
 import { IngredientMiniCard } from '../ingredient-mini-card/ingredientMiniCard.controller.js';
 import { ToggleComponent } from '../toggle-component/toggleComponent.controller.js';
 import * as service from './recipeDetail.service.js';
-import { renderRecipeDetail } from './recipeDetail.view.js';
+import { renderLikeButton, renderRecipeDetail } from './recipeDetail.view.js';
 
 /**
  * @component
@@ -66,6 +67,11 @@ export class RecipeDetail {
 		/** @type {ToggleComponent} */
 		this.unitLengthToggle = null;
 
+		/** @type {HTMLButtonElement} */
+		this.likeBtn = /** @type {HTMLButtonElement} */ (
+			stringToHtml(renderLikeButton())
+		);
+
 		this.imageHost = null;
 
 		/** @type {IngredientMiniCard[]} */
@@ -73,6 +79,7 @@ export class RecipeDetail {
 
 		this.lastState = null;
 		this.subscription = null;
+		this.likeButtonSubscription = null;
 
 		this.componentReady = false;
 
@@ -82,14 +89,16 @@ export class RecipeDetail {
 
 	#_buildIngredientCards() {
 		if (this.fetchedRecipe && this.fetchedRecipe.extendedIngredients) {
-			if (!Array.isArray(this.fetchedRecipe.extendedIngredients)) {
-				// Handle no ingredients
-				console.log('Ingredients not array');
-			}
-			const ingredients = this.fetchedRecipe.extendedIngredients;
 			const ingredientsContainer = /** @type {HTMLElement} */ (
 				this.recipeDetailComponent.querySelector('#recipe-ingredients')
 			);
+			const ingredients = this.fetchedRecipe.extendedIngredients;
+
+			if (!ingredients || !Array.isArray(ingredients)) {
+				// Handle no ingredients
+				ingredientsContainer.innerHTML =
+					'<h4>Sorry no ingredients found for this recipe</h4>';
+			}
 
 			ingredientsContainer.innerHTML = '';
 
@@ -196,10 +205,53 @@ export class RecipeDetail {
 			)
 		);
 		if (imageWrapper) {
-			this.imageHost = mountImage(imageWrapper, recipeImage);
+			const card = /** @type {RecipeCard} */ ({
+				id: this.recipeId,
+				title: this.fetchedRecipe.title ?? 'No Title Found',
+				image: this.fetchedRecipe.image ?? '',
+				imageType: this.fetchedRecipe.imageType ?? ''
+			});
+			this.imageHost = mountImage(imageWrapper, recipeImage, 'recipe');
+			imageWrapper.appendChild(this.likeBtn);
 		}
 
 		// const imageEl = stringToHtml(renderImage(recipeImage));
+	}
+
+	/**
+	 *
+	 * @param {HTMLElement} icon
+	 */
+	checkIsLiked(icon) {
+		const liked = appStore.getState().likedRecipes || [];
+		const isLiked = liked.some(id => id === this.fetchedRecipe.id);
+		this.#_toggleIcon(icon, isLiked);
+	}
+
+	/**
+	 *
+	 * @param {HTMLElement} icon
+	 * @param {boolean} [on=true]
+	 */
+	#_toggleIcon(icon, on = true) {
+		if (on) {
+			icon.classList.remove('fa-regular');
+			icon.classList.add('fa-solid');
+		} else {
+			icon.classList.remove('fa-solid');
+			icon.classList.add('fa-regular');
+		}
+		const likeBtn = this.likeBtn;
+		if (!likeBtn) {
+			throw new Error('Cannot find like button');
+		}
+		this.likeBtn.setAttribute('aria-pressed', on ? 'true' : 'false');
+		this.likeBtn.setAttribute('title', on ? 'Remove like' : 'Like this recipe');
+		const likeText = this.likeBtn.querySelector('span.btn__like-text');
+		if (!likeText) {
+			throw new Error('Cannot update like text: Cannot find element.');
+		}
+		likeText.textContent = on ? 'Remove like' : 'Like this recipe';
 	}
 
 	_getIdFromUrl() {
@@ -253,6 +305,27 @@ export class RecipeDetail {
 			this.fetchedRecipe = fetchedRecipe;
 			this.summary = summary;
 		}
+		if (!this.likeButtonSubscription) {
+			this.likeButtonSubscription = appStore.subscribe(state => {
+				let found;
+				if (state && state.likedRecipes) {
+					found = state.likedRecipes.some(r => r.id === this.recipeId);
+				}
+				this.icon = this.likeBtn?.querySelector('i');
+
+				if (!this.icon) {
+					throw new Error(
+						`Like button icon not found for recipe id: ${this.recipeId}`
+					);
+				}
+				this.#_toggleIcon(this.icon, found);
+			}, 'likedRecipes');
+			this.likeBtn.addEventListener('click', e => {
+				e.preventDefault();
+				e.stopPropagation();
+				this.#_onLikeClicked();
+			});
+		}
 
 		// Build the component using the HTML string;
 		this.recipeDetailComponent = stringToHtml(
@@ -263,6 +336,15 @@ export class RecipeDetail {
 
 	async publicTest() {
 		await this._testEndpoint(this.recipeId);
+	}
+	#_onLikeClicked() {
+		const card = /** @type {RecipeCard} */ ({
+			id: this.recipeId,
+			title: this.fetchedRecipe.title,
+			image: this.fetchedRecipe.image,
+			imageType: this.fetchedRecipe.imageType
+		});
+		appStore.toggleLikedrecipe(card);
 	}
 
 	render() {

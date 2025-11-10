@@ -55,7 +55,8 @@ function ingredientMiniCard(item, system = 'metric', unitLength = 'unitShort') {
 			data-ingredient-id="${item.id}"
 			data-card-type="ingredientCard"
 		>
-      ${imgHtml}
+
+
       <div>
         <span class="fw-bold">${item.nameClean || item.name}</span>
 				<div class="ingredient-units-amounts">
@@ -84,9 +85,6 @@ function ingredientMiniCard(item, system = 'metric', unitLength = 'unitShort') {
  */
 export function renderRecipeDetail(recipe, summaryObj, opts) {
 	const { system = 'metric', unitType = 'unitShort' } = opts || {};
-	// Dev logging
-	// console.log('Recipe passed to view: ', recipe);
-	// console.log('Opts passed to view: ', opts);
 
 	/**
 	 * User facing feedback if value not available
@@ -189,4 +187,19 @@ export function renderRecipeDetail(recipe, summaryObj, opts) {
 `;
 
 	return recipeTemplate;
+}
+
+export function renderLikeButton() {
+	return `<button
+				class="btn btn--like"
+				data-like-btn
+				tabindex="0"
+				aria-pressed="false"
+				title="Like this recipe"
+				>
+				<span class="btn__like-text">Like this recipe</span>
+				<i class="fa-regular fa-heart">
+					<span class="visually-hidden">Like</span>
+				</i>
+			</button>`;
 }
