@@ -9,27 +9,42 @@
 
 I have used the recommended [HTML W3C Validator](https://validator.w3.org) to validate all of my HTML files.
 
-| Directory | File | URL | Screenshot |
-| --------- | ---- | --- | ---------- |
+| File                       | URL                                                                  | Screenshot                                                      |
+| -------------------------- | -------------------------------------------------------------------- | --------------------------------------------------------------- |
+| [index](./index.html)      | [Home]('https://yenmangu.github.io/ci-ms-2-cayenne/')                | ![index](./documentation/validation/validation__index.png)      |
+| [index](./features.html)   | [Home]('https://yenmangu.github.io/ci-ms-2-cayenne/features.html')   | ![index](./documentation/validation/validation__features.png)   |
+| [index](./cayenne.html)    | [Home]('https://yenmangu.github.io/ci-ms-2-cayenne/cayenne.html')    | ![index](./documentation/validation/validation__cayenne.png)    |
+| [index](./how-to-use.html) | [Home]('https://yenmangu.github.io/ci-ms-2-cayenne/how-to-use.html') | ![index](./documentation/validation/validation__how-to-use.png) |
 
 ### CSS
 
 I have used the recommended [CSS Jigsaw Validator](https://jigsaw.w3.org/css-validator) to validate all of my CSS files.
 
-| Directory                        | File | URL | Screenshot |
-| -------------------------------- | ---- | --- | ---------- |
-| [index]('../../index.html')      |      |     |            |
-| [features]('../../features.html) |      |     |            |
-| [cayenne]('../../cayenne.html')  |      |     |            |
-|                                  |      |     |            |
+| File                                | About                                               | Result           | Screenshot                                              |
+| ----------------------------------- | --------------------------------------------------- | ---------------- | ------------------------------------------------------- |
+| [style.css](./assets/css/style.css) | Global and SPA styles                               | Pass             | [!style.css](./documentation/validation/css__style.png) |
+| [style.css](./assets/css/site.css)  | HTML page specific styles                           | Pass             | [!style.css](./documentation/validation/css__site.png)  |
+| [style.css](./assets/css/theme.css) | Bootstrap overrides, root vars and light/dark rules | Fail (See below) | [!style.css](./documentation/validation/css__theme.png) |
+
+> [!Note]
+> As per [this mdn GitHub issue](https://github.com/mdn/content/issues/36714) > `color-mix(in...)` is not supported by W3C.
+> This appears to be becaue W3C validation is outdated.
+> I am using the correct formal syntax as described [here](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Values/color_value/color-mix)
 
 ## Responsiveness
 
 I've tested my deployed project to check for responsiveness issues. I have also tested on my own device, as
 
-| Page | Mobile | Tablet | Desktop | iPhone | Notes |
-| ---- | ------ | ------ | ------- | ------ | ----- |
-|      |        |        |         |        |       |
+| Page            | Mobile | Tablet | Desktop               | iPhone (Mine) | Notes |
+| --------------- | ------ | ------ | --------------------- | ------------- | ----- |
+| index.html      |        |        | [!index\_\_desktop]() |               |       |
+| features.html   |        |        |                       |               |       |
+| how-to-use.html |        |        |                       |               |       |
+| cayenne.html    |        |        |                       |               |       |
+
+| App Page | Mobile | Tablet | Desktop | iPhone (Mine) | Notes |
+| -------- | ------ | ------ | ------- | ------------- | ----- |
+|          |        |        |         |               |       |
 
 ## Browser Compatibility
 

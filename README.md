@@ -259,17 +259,17 @@ Because cross-origin requests to the Spoonacular CDN do not return CORS headers,
 
 #### Key References
 
-- **MDN Web Docs** – [HTMLImageElement / Image() constructor](https://developer.mozilla.org/en-US/docs/Web/API/HTMLImageElement/Image)
+- **MDN Web Docs** - [HTMLImageElement / Image() constructor](https://developer.mozilla.org/en-US/docs/Web/API/HTMLImageElement/Image)
   Defines how detached image objects initiate requests and expose `onload` / `onerror` events.
-- **MDN Web Docs** – [HTMLImageElement.decoding](https://developer.mozilla.org/en-US/docs/Web/API/HTMLImageElement/decoding)
+- **MDN Web Docs** - [HTMLImageElement.decoding](https://developer.mozilla.org/en-US/docs/Web/API/HTMLImageElement/decoding)
   Describes the `async` decoding hint used to improve paint performance.
-- **MDN Web Docs** – [CORS settings attributes](https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_settings_attributes)
+- **MDN Web Docs** - [CORS settings attributes](https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_settings_attributes)
   Explains why cross-origin images cannot be verified with `fetch()` in client-side code.
-- **CSS-Tricks** – [Better Image Loading with Promises](https://css-tricks.com/better-image-loading-with-promises/)
+- **CSS-Tricks** - [Better Image Loading with Promises](https://css-tricks.com/better-image-loading-with-promises/)
   Demonstrates wrapping image loading in Promises for modern async workflows.
-- **Stack Overflow** – [How to preload images in JavaScript](https://stackoverflow.com/questions/3646036/preloading-images-with-javascript)
+- **Stack Overflow** - [How to preload images in JavaScript](https://stackoverflow.com/questions/3646036/preloading-images-with-javascript)
   Discusses the canonical `new Image()` pattern and event handling.
-- **Stack Overflow** – [Check if image exists without CORS](https://stackoverflow.com/questions/18837735/check-if-image-exists-on-server-using-javascript)
+- **Stack Overflow** - [Check if image exists without CORS](https://stackoverflow.com/questions/18837735/check-if-image-exists-on-server-using-javascript)
   Confirms that `onerror` and `naturalWidth === 0` are the only reliable cross-origin failure checks.
 
 This combination of sources underpins the final implementation used in `imagePreloader.js`, ensuring a reliable, CORS-safe method of confirming image availability before rendering.

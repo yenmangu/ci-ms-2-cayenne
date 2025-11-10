@@ -13,15 +13,15 @@ This method delegates status handling to a central policy layer that ensures:
 
 ### Key Components
 
-- **`handleHttpStatus()`** – routes HTTP statuses to the correct reporter.
+- **`handleHttpStatus()`** - routes HTTP statuses to the correct reporter.
   Uses existing helpers:
   - `handleQuotaExceeded()` → switches to test mode on **402**.
   - `reportRefetch()` → adds a retryable error (e.g., **429**, **5xx**, network).
   - `reportError()` → logs non-retryable or user-visible errors (e.g., **404**, **401**, **403**).
-- **`handleQuotaExceeded()`** – flips the `useLive` flag in the store **once**, reports a retryable “refetch” error, and stops the current live request.
-- **`ErrorController`** – listens for error updates via store subscription, renders contextual messages, and wires **Dismiss** and **Retry** actions.
+- **`handleQuotaExceeded()`** - flips the `useLive` flag in the store **once**, reports a retryable “refetch” error, and stops the current live request.
+- **`ErrorController`** - listens for error updates via store subscription, renders contextual messages, and wires **Dismiss** and **Retry** actions.
   - **Retry** calls `getClient().refetchFromMeta(meta)` which replays the request using either live or test data.
-- **`reportRefetch()` / `reportError()`** – create standardised entries in the error state and render appropriate UI through the controller.
+- **`reportRefetch()` / `reportError()`** - create standardised entries in the error state and render appropriate UI through the controller.
 
 ### Behaviour by Status
 
