@@ -77,12 +77,14 @@
  * @typedef {object} NormalisedError
  * @property {string} code
  * @property {number} [status]
- * @property {ErrorType} type
+ * @property {ErrorType | string} type
  * @property {ErrorContext} [context]
  * @property {string} [message]
  * @property {string} [userMessage]
  * @property {boolean} [retry]
  * @property {string|{}} [details]
+ * @property {any} [cause]
+ * @property {any} [reason]
  */
 
 /**

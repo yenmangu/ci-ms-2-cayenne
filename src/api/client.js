@@ -16,6 +16,7 @@ import { ENV } from '../env.js';
 import { HttpError } from '../error/errors/httpError.js';
 import { createErrorPublishing } from '../error/pipe/publishFactory.js';
 import { getCurrentRouteScope } from '../error/util/errorScope.js';
+import { singleEmitter } from '../event/eventBus.js';
 import { isAbsoluteUrl } from '../util/isAbsolute.js';
 
 /**
@@ -34,6 +35,8 @@ export class SpoonacularClient {
 		}
 		this.useLive = appStore.getState().useLive;
 		this.apiUrl = ENV.API_URL;
+		this.unsub = null;
+		this.quotaEmitter = singleEmitter;
 		this.#sub = appStore.subscribe(state => {
 			this.useLive = state.useLive;
 		}, 'useLive');
@@ -438,11 +441,11 @@ export class SpoonacularClient {
 			// Dev only
 			const reqOpts = /** @type {RequestInit} */ (opts);
 
-			if (dev) {
-				response = await fetch(dev_402_Url, opts);
-			} else {
-				response = await fetch(fetchUrl, opts);
-			}
+			// if (dev) {
+			response = await fetch(dev_402_Url, opts);
+			// } else {
+			// 	response = await fetch(fetchUrl, opts);
+			// }
 
 			/** @type {ErrorMeta} */
 			const meta = {
@@ -452,6 +455,9 @@ export class SpoonacularClient {
 			};
 
 			if (!response.ok) {
+				if (response.status === 402) {
+					singleEmitter.publish('402', { error: 402 });
+				}
 				// error handling for HTTP errors
 				const err = new HttpError(response, `HTTP ${response.status}`);
 				const scope = /** @type {ErrorScope} */ (getCurrentRouteScope());

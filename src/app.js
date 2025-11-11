@@ -22,9 +22,14 @@ let devMode;
  *
  */
 async function initCayenne() {
-	// Start error handling instantly
+	// I am making a conscious decision to only use cached data
+	// The Spoonacular API keeps running out of quota
+	// and frankly I have had enough.
+	appStore.setState({ useLive: false });
+
 	appStore.setState({ devMode: devMode ?? false });
-	appStore.setState({ useLive: !devMode || true });
+
+	// Start error handling instantly
 	if (appStore.getState().devMode === true) {
 		installGlobalErrorHooks(appStore);
 	}

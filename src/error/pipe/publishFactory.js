@@ -5,6 +5,7 @@
  * @typedef {import("../../types/stateTypes.js").ErrorMetas} ErrorMetas
  * @typedef {import("../../types/stateTypes.js").ErrorScope} ErrorScope
  * @typedef {import('../../types/errorTypes.js').Decision} Decision
+ * @typedef {import('../../types/errorTypes.js').ErrorCommand} ErrorCommand
  */
 
 import { createDeduper } from './deduper.js';
@@ -29,7 +30,7 @@ import { addError, publishDecision } from './publish.js';
  * 	store: AppStore,
  * 	scope: ErrorScope,
  * 	source: unknown,
- * 	meta: ErrorMeta,
+ * 	meta?: ErrorMeta,
  * 	detailString?: string,
  * 	response?: Response | {}
  *	 ) => void } routeError
@@ -48,7 +49,15 @@ import { serialiseError } from '../util/serialiseError.js';
  */
 export function createErrorPublishing() {
 	return {
-		routeError(store, scope, source, meta, detailString, response, deps = {}) {
+		routeError(
+			store,
+			scope,
+			source,
+			meta = {},
+			detailString = '',
+			response = {},
+			deps = {}
+		) {
 			const _normaliseError = deps.normaliseError ?? normaliseError;
 			const _applyErrorPolicy = deps.applyErrorPolicy ?? applyErrorPolicy;
 			const _publishDecision = deps.publishDecision ?? publishDecision;
@@ -140,18 +149,39 @@ export function createErrorPublishing() {
 		reportRefetch(store, scope, meta) {
 			const { endpoint, opts, params, urlAbs: url, status } = meta;
 
-			/** @type {NormalisedError} */
-			const retryable = {
-				code: 'RETRYABLE',
-				context: { cmd: 'refetch', endpoint, opts, params, url },
+			const hints = {
 				retry: true,
-				type: 'network',
-				userMessage:
-					status === 402
-						? 'API quota exceeded (402) - retry with test data from Cayenne API'
-						: 'Network issue. Please try again.'
+				context: {
+					cmd: /** @type {ErrorCommand} */ ('refetch'),
+					endpoint,
+					opts,
+					params,
+					url
+				}
 			};
-			store.dispatch(addError(retryable, scope));
+			if (status === 402) {
+				hints.userMessage =
+					'API quota exceeded (402) - retry with test data from Cayenne API';
+			}
+			if (status == null) {
+				hints.cause = { name: 'ERR_CONNECTION_REFUSED' };
+			}
+			const n = normaliseError(new Error('Refetch requested'), hints);
+
+			// Deprecated
+			// /** @type {NormalisedError} */
+			// const retryable = {
+			// 	code: 'RETRYABLE',
+			// 	context: { cmd: 'refetch', endpoint, opts, params, url },
+			// 	retry: true,
+			// 	type: 'network',
+			// 	userMessage:
+			// 		status === 402
+			// 			? 'API quota exceeded (402) - retry with test data from Cayenne API'
+			// 			: 'Network issue. Please try again.'
+			// };
+
+			store.dispatch(addError(n, scope));
 		},
 		reportNotFound(store, scope, opts = {}) {
 			const {

@@ -208,7 +208,7 @@ export function armRetry(appRoot) {
 	/** @param {CustomEvent<{scope?: string, data?:any}>} e */
 	const onRetrySuccess = e => {
 		appStore.setState({ useLive: false });
-		console.log('[router] RETRY SUCCESS handler fired', e?.detail);
+		// console.log('[router] RETRY SUCCESS handler fired', e?.detail);
 
 		// Derive explicit scope
 		const { path, params } = parseHashRoute(window.location.hash);
@@ -217,7 +217,7 @@ export function armRetry(appRoot) {
 
 		// const scopeForPath = `${path || '/'}`;
 		const scopeForPath = getCurrentRouteScope();
-		console.log('Scope required by router: ', scopeForPath);
+		// console.log('Scope required by router: ', scopeForPath);
 
 		if (e.detail?.scope && e.detail?.scope !== scopeForPath) return;
 
@@ -234,6 +234,6 @@ export function armRetry(appRoot) {
 	window.addEventListener(EVENTS.refetchSuccess, onRetrySuccess);
 	cleanupRetryListener = () => {
 		window.removeEventListener(EVENTS.refetchSuccess, onRetrySuccess);
-		console.log('[router] retry listener installed for', EVENTS.refetchSuccess);
+		// console.log('[router] retry listener installed for', EVENTS.refetchSuccess);
 	};
 }

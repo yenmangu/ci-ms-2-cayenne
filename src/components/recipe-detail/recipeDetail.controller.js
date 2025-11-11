@@ -12,10 +12,13 @@
  */
 
 import { appStore } from '../../appStore.js';
+import { createErrorPublishing } from '../../error/pipe/publishFactory.js';
+import { getCurrentRouteScope } from '../../error/util/errorScope.js';
 import { escapeHtml } from '../../util/escapeHtml.js';
 import { stringToHtml } from '../../util/htmlToElement.js';
 import { mountImage } from '../../util/mountImage.js';
 import { IngredientMiniCard } from '../ingredient-mini-card/ingredientMiniCard.controller.js';
+import { Loading } from '../loading/loading.controller.js';
 import { ToggleComponent } from '../toggle-component/toggleComponent.controller.js';
 import * as service from './recipeDetail.service.js';
 import { renderLikeButton, renderRecipeDetail } from './recipeDetail.view.js';
@@ -82,6 +85,8 @@ export class RecipeDetail {
 		this.likeButtonSubscription = null;
 
 		this.componentReady = false;
+		this.deps = createErrorPublishing();
+		this.loading = new Loading(this.appRoot);
 
 		this.lastState = null;
 		// this.init();
@@ -288,13 +293,43 @@ export class RecipeDetail {
 		}
 	}
 
+	buildElements() {}
+
+	async attemptFetch() {
+		if (!this.subscription) {
+			this.subscription = appStore.subscribe(state => {
+				this.handleStateChange(state);
+			});
+			try {
+				const { fetchedRecipe, summary } = await this.service.fetchRecipeById(
+					this.recipeId,
+					{}
+				);
+				if (fetchedRecipe) this.fetchedRecipe = fetchedRecipe;
+				if (summary) this.summary = summary;
+				this.loading.isLoading = false;
+			} catch (err) {
+				const scope = getCurrentRouteScope();
+				this.deps.routeError(
+					appStore,
+					scope,
+					err,
+					undefined,
+					'Error caught attempting fetch'
+				);
+			}
+		}
+	}
+
 	async init() {
+		this.loading.isLoading = true;
 		const scope = /** @type {ErrorScope} */ ('/route:/recipe');
 		this.#_onRefetchSuccessOnce(scope, ({ recipe, summary }) => {
 			this.fetchedRecipe = recipe;
 			this.recipeSummary = summary;
 			this.render();
 		});
+
 		if (!this.subscription) {
 			this.subscription = appStore.subscribe(state => {
 				this.handleStateChange(state);
@@ -303,8 +338,9 @@ export class RecipeDetail {
 				this.recipeId,
 				{}
 			);
-			this.fetchedRecipe = fetchedRecipe;
-			this.summary = summary;
+			if (fetchedRecipe) this.fetchedRecipe = fetchedRecipe;
+			if (summary) this.summary = summary;
+			this.loading.isLoading = false;
 		}
 		if (!this.likeButtonSubscription) {
 			this.likeButtonSubscription = appStore.subscribe(state => {
