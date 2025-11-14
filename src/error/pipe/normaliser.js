@@ -1,6 +1,7 @@
 /**
  * @typedef {import("../../types/errorTypes.js").NormalisedError} NormalisedError
  * @typedef {import("../../types/stateTypes.js").ErrorScope} ErrorScope
+ * @typedef {import("../../types/stateTypes.js").ErrorType} ErrorType
  * @typedef {import("../../types/stateTypes.js").Severity} Severity
  */
 
@@ -89,7 +90,7 @@ export function normaliseError(err, hints = {}) {
 	if (isConnectionRefused(err) || isConnectionRefused(hints)) {
 		const detected = {
 			code: 'CONNECTION_REFUSED',
-			type: 'network',
+			type: /** @type {ErrorType} */ ('network'),
 			userMessage: "Can't reach the server right now. Please try again.",
 			retry: true
 		};
@@ -100,7 +101,7 @@ export function normaliseError(err, hints = {}) {
 	if (err instanceof TypeError && /fetch/i.test(String(err.message))) {
 		const detected = {
 			code: 'NETWORK',
-			type: 'network',
+			type: /** @type {ErrorType} */ ('network'),
 			userMessage: 'Network issue. Please try again.',
 			retry: true
 		};
@@ -113,7 +114,7 @@ export function normaliseError(err, hints = {}) {
 		if (name === 'AbortError') {
 			const detected = {
 				code: 'ABORTED',
-				type: 'network',
+				type: /** @type {ErrorType} */ ('network'),
 				userMessage: 'Request cancelled or timed out.',
 				retry: true
 			};
@@ -128,7 +129,7 @@ export function normaliseError(err, hints = {}) {
 	) {
 		const detected = {
 			code: 'CONNECTION_REFUSED',
-			type: 'network',
+			type: /** @type {ErrorType} */ ('network'),
 			userMessage: "Can't reach the server right now. Please try again.",
 			retry: true
 		};

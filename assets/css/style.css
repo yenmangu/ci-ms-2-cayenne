@@ -70,6 +70,10 @@ textarea {
 	font: inherit;
 }
 
+.cayenne-green--dark {
+	color: var(--cayenne-colour-green-dark);
+}
+
 .icon-button {
 	color: var(--colour-accent); /* Default red */
 	background: none;

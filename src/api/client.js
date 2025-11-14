@@ -469,7 +469,7 @@ export class SpoonacularClient {
 					undefined,
 					response
 				);
-				return null;
+				return { data: null, meta };
 			}
 
 			// Check custom header

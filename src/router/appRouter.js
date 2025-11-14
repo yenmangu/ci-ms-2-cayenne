@@ -36,7 +36,7 @@ function resolveRoute(path, rawParams = {}) {
 	// Does validate exist and is type 'function'
 	if (entry && typeof entry.validate === 'function') {
 		const ok = entry.validate(params);
-		console.log('[resolveRoute]: ', 'okay: ', ok);
+		// console.log('[resolveRoute]: ', 'okay: ', ok);
 
 		if (!ok)
 			return {
@@ -115,6 +115,7 @@ export const AppRouter = {
 		}
 
 		const last = this.currentInstances[this.lastActivePath];
+		console.log('Checking last instance: ', last);
 
 		if (last?.destroy) {
 			last.destroy();
@@ -141,18 +142,28 @@ export const AppRouter = {
 				/** @param {ComponentLike} instance */ instance => {
 					if (instance && typeof instance.destroy === 'function')
 						AppRouter.currentInstances[path] = instance || null;
+					console.log(
+						'checking current instance: ',
+						AppRouter.currentInstances[path]
+					);
 				}
 			)
 			.catch(err => {
 				pubs.reportError(appStore, err, scope);
 			});
 
+		console.log(
+			'checking current instance: ',
+			AppRouter.currentInstances[path]
+		);
 		// entry.handler(appRoot, path, { ...params, dev: isDev });
 		if (entry.title) {
 			document.title = entry.title;
 		}
 
 		// Assign new path to last active path for next navigation
+		console.log('Path before setting last Active: ', path);
+
 		AppRouter.lastActivePath = path;
 		// routerService.setActiveRouteKey(path); WAS HERE
 	},

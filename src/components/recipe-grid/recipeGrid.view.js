@@ -46,3 +46,32 @@ export function renderSkeletonCard() {
 export function getCardWrapperClass() {
 	return 'col-12 col-md-6 col-lg-4';
 }
+
+/**
+ *
+ * @param {string[]|string} searchQ
+ */
+export function renderNotFound(searchQ) {
+	let htmlStringArr = [];
+
+	console.groupCollapsed('recipe grid view');
+	if (Array.isArray(searchQ)) {
+		for (const s of searchQ) {
+			console.trace(s);
+			console.count(`el in query: ${s}`);
+
+			htmlStringArr.push(`<span class="cayenne-green--dark">${s}</span>`);
+		}
+		console.groupEnd();
+	} else {
+		htmlStringArr.push(searchQ);
+	}
+
+	const results = Array.isArray(searchQ) ? searchQ.join(' or ') : searchQ;
+
+	return `<div data-not-found class="container py-4 text-center not-found">
+		<h3>Could not find any results for:
+			${htmlStringArr.join(' or ')}
+		</h3>
+	</div`;
+}

@@ -5,7 +5,10 @@
  */
 
 import { getClient } from '../api/client.singleton.js';
+import { appStore } from '../appStore.js';
 import { RecipeGrid } from '../components/recipe-grid/recipeGrid.controller.js';
+import { createErrorPublishing } from '../error/pipe/publishFactory.js';
+import { getCurrentRouteScope } from '../error/util/errorScope.js';
 
 export async function recipes(appRoot, path, params) {
 	console.log('Recipe.js');
@@ -20,6 +23,8 @@ export async function recipes(appRoot, path, params) {
  * @param {Record<'search', *> & { __preload?: {data?: any}, [key:string]: any}} params
  */
 export async function loadRecipes(appRoot, path, params) {
+	const pubs = createErrorPublishing();
+	const scope = getCurrentRouteScope();
 	console.trace('loadRecipes params: ', params);
 	const client = getClient();
 
@@ -50,8 +55,17 @@ export async function loadRecipes(appRoot, path, params) {
 	try {
 		/** @type {FetchResult} */
 		const resp = await client.findByIngredients(array, 10);
+		console.log('Response: ', resp);
+
 		if (!resp) return null;
+		if (!resp.meta) {
+			pubs.routeError(appStore, scope, new Error('No meta in fetch response'));
+		}
+
 		const raw = resp.data;
+		if (!raw) {
+			recipeCards = [];
+		}
 		recipeCards = Array.isArray(raw) ? raw : toRecipeCardsFromResults(raw);
 	} catch (err) {
 		return null;

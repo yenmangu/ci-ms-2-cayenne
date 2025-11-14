@@ -56,7 +56,8 @@
  * 'validation'|
  * 'quota'|
  * 'rate_limit'|
- * 'unexpected'
+ * 'unexpected'|
+ * 	string
  * } ErrorType_
  */
 
@@ -77,7 +78,7 @@
  * @typedef {object} NormalisedError
  * @property {string} code
  * @property {number} [status]
- * @property {ErrorType | string} type
+ * @property {ErrorType} type
  * @property {ErrorContext} [context]
  * @property {string} [message]
  * @property {string} [userMessage]

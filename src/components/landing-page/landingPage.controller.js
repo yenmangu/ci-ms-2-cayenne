@@ -133,9 +133,12 @@ export class LandingPage {
 	#_renderTitle() {
 		const titleWrapper = document.createElement('div');
 		titleWrapper.classList = 'container container__landing-title';
+
 		const titleEl = document.createElement('h3');
+
 		const fetchNewRandomBtn = document.createElement('button');
 		this.randomButton = fetchNewRandomBtn;
+
 		fetchNewRandomBtn.classList = 'btn btn-primary btn__random';
 		fetchNewRandomBtn.innerText = 'New Random';
 		titleEl.innerText = 'Get Inspired';
@@ -154,11 +157,14 @@ export class LandingPage {
 	#_wireEvents() {
 		if (this.randomButton && !this.randomBtnWired) {
 			this.randomButton.addEventListener('click', () => {
+				this.#_checkCurrentHash();
 				this.#_onFetchNewRandom();
 			});
 			this.randomBtnWired = true;
 		}
 	}
+
+	#_checkCurrentHash() {}
 
 	async init() {
 		const scope = getCurrentRouteScope();
@@ -189,6 +195,10 @@ export class LandingPage {
 	}
 
 	destroy() {
-		if (this.subscription) this.subscription.unsubscribe();
+		if (this.subscription) {
+			this.subscription.unsubscribe();
+			this.subscription = null;
+		}
+		this.container.innerHTML = '';
 	}
 }

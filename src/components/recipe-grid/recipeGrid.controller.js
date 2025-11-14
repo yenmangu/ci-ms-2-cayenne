@@ -5,10 +5,12 @@
 import { appStore } from '../../appStore.js';
 import { getCurrentRouteScope } from '../../error/util/errorScope.js';
 import { hasPendingRetry } from '../../error/util/hasPendingRetry.js';
+import { stringToHtml } from '../../util/htmlToElement.js';
 import { RecipeCard } from '../recipe-card/recipeCard.controller.js';
 import {
 	getCardWrapperClass as getCardWrapperClassName,
 	renderGridContainer,
+	renderNotFound,
 	renderSkeletonCard
 } from './recipeGrid.view.js';
 // import { RecipeCard } from "../recipe-card/controller.js";
@@ -37,6 +39,9 @@ export class RecipeGrid {
 
 		/** @type {string[]} */
 		this.search = opts.search ?? [];
+
+		/** @type {HTMLElement} */
+		this.notFoundEl;
 
 		/** @type {RecipeCard[]} */
 		this.cardInstances = [];
@@ -199,6 +204,25 @@ export class RecipeGrid {
 	 * @returns {void}
 	 */
 	render() {
+		console.log('Rendering grid');
+		if (!this.recipes.length || !this.recipes) {
+			const notFound = /** @type {HTMLElement} */ (
+				this.appRoot.querySelector('[data-not-found')
+			);
+			if (notFound) {
+				this.appRoot.removeChild(notFound);
+			} else {
+			}
+
+			this.notFoundEl = /** @type {HTMLElement} */ stringToHtml(
+				renderNotFound(this.search)
+			);
+
+			this.appRoot.appendChild(this.notFoundEl);
+			// this.appRoot.replaceChildren(renderNotFound(this.search));
+			return;
+		}
+
 		this.appRoot.innerHTML = renderGridContainer(this.title, this.search);
 		this.grid = document.getElementById('recipeGrid');
 		if (!this.grid) {

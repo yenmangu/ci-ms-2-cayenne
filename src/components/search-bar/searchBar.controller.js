@@ -35,20 +35,6 @@ export class SearchBar {
 		this.noResultsEl = null;
 	}
 
-	/**
-	 *
-	 * @param {string} string
-	 */
-	#_addToState(string) {
-		appStore.addSearchString(string);
-	}
-
-	/**
-	 *
-	 * @param {RecipeCard[]} recipeArray
-	 */
-	#_handleResponse(recipeArray) {}
-
 	#_wireEventListeners() {
 		this.searchComponent.addEventListener('submit', e => {
 			e.preventDefault();
