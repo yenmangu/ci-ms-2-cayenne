@@ -2,6 +2,7 @@
  * @typedef {import('../../types/stateTypes.js').AppState} AppState
  * @typedef {import('../../types/stateTypes.js').PartialAppState} PartialAppState
  * @typedef {import('./toggleComponent.view.js').ToggleConfig} ToggleConfig
+ * @typedef {import('../../types/stateTypes.js').StateKey} StateKey
  */
 
 import { appStore } from '../../appStore.js';
@@ -22,11 +23,13 @@ export class ToggleComponent {
 
 		/** @type {HTMLInputElement} */
 		this.toggle = null;
+
+		/** @type {StateKey} */
 		this.key = options.key;
+
 		this.toggleText = '';
 		this.latestState = null;
-		this.lengthSub = null;
-		this.unitSub = null;
+		this.sub = null;
 		this.init();
 	}
 
@@ -36,22 +39,23 @@ export class ToggleComponent {
 	}
 
 	#_updateToggleState() {
-		this.toggle.checked =
-			this.latestState[this.key] === this.toggleConfig.onValue;
+		this.toggle.checked = this.latestState === this.toggleConfig.onValue;
 	}
 
 	#_updateToggleText() {
-		const label = document.querySelector(
-			`label[for="${this.toggleConfig.key}"]`
-		);
+		const label = document.querySelector(`label[for="${this.key}"]`);
 		if (!label) {
 			throw new Error(`Label for toggle: ${this.key} not found`);
 		}
 
-		label.textContent = config[this.latestState[this.key]];
+		label.textContent = config[this.latestState];
 	}
 
 	init() {
+		appStore.subscribe(state => {
+			this.latestState = state[this.key];
+			this.#_hydrateToggle();
+		}, this.key);
 		// Dev debugging
 		// console.debug(`ToggleComponent: ${this.toggleConfig.key}`);
 
@@ -68,16 +72,6 @@ export class ToggleComponent {
 		this.toggleWithWrapper = stringToHtml(
 			renderToggleComponent(this.toggleConfig)
 		);
-
-		this.lengthSub = appStore.subscribe(state => {
-			this.latestState = state;
-			this.#_hydrateToggle();
-		}, 'unitLength');
-
-		this.unitSub = appStore.subscribe(state => {
-			this.latestState = state;
-			this.#_hydrateToggle();
-		}, 'unitLocale');
 	}
 
 	render() {
@@ -105,8 +99,17 @@ export class ToggleComponent {
 	 * @param {*} val
 	 */
 	setStateProp(key, val) {
-		appStore.setState({ [key]: val }, { global: true });
+		appStore.setState({ [key]: val });
 	}
 
-	destroy() {}
+	destroy() {
+		if (this.unitSub) {
+			this.unitSub.unsubscribe();
+			this.unitSub = null;
+		}
+		if (this.sub) {
+			this.sub.unsubscribe();
+			this.sub = null;
+		}
+	}
 }

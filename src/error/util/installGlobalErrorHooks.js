@@ -24,7 +24,7 @@ export function installGlobalErrorHooks(store) {
 	const pubs = createErrorPublishing();
 	/** @param {any} ev */
 	function onUnhandledRejection(ev) {
-		// console.warn('unhandledrejection: ', ev);
+		console.warn('unhandledrejection: ', ev);
 
 		const scope = getCurrentRouteScope();
 
@@ -41,8 +41,8 @@ export function installGlobalErrorHooks(store) {
 
 	/** @param {ErrorEvent} ev */
 	function onWindowError(ev) {
-		// console.warn('dev reading in global hooks: ', devMode);
-		// console.warn('windowerror: ', ev);
+		console.warn('dev reading in global hooks: ', devMode);
+		console.warn('windowerror: ', ev);
 
 		const scope = getCurrentRouteScope();
 

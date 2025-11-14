@@ -30,9 +30,11 @@ async function initCayenne() {
 	appStore.setState({ devMode: devMode ?? false });
 
 	// Start error handling instantly
-	if (appStore.getState().devMode === true) {
-		installGlobalErrorHooks(appStore);
-	}
+	// if (appStore.getState().devMode === true) {
+	// 	installGlobalErrorHooks(appStore);
+	// }
+
+	installGlobalErrorHooks(appStore);
 	devMode = appStore.getState().devMode;
 
 	initNavbar();

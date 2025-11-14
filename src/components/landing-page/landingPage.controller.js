@@ -113,15 +113,13 @@ export class LandingPage {
 			this.randomRecipeCard ??
 			new RecipeCard(this.randomRecipeContainer, this.randomRecipe);
 
-		if (card) {
-			this.randomRecipeCard = new RecipeCard(
-				this.randomRecipeContainer,
-				this.randomRecipe
-			);
-			card.cardEl.classList.add('recipe-card__landing');
-			card.render();
-			this.randomRecipeCard.update(this.randomRecipe);
-		}
+		this.randomRecipeCard = new RecipeCard(
+			this.randomRecipeContainer,
+			this.randomRecipe
+		);
+		card.cardEl.classList.add('recipe-card__landing');
+		card.render();
+		this.randomRecipeCard.update(this.randomRecipe);
 	}
 
 	#_renderSearch() {

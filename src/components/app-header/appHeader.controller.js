@@ -63,10 +63,12 @@ export class AppHeader {
 
 		this.dev = dev;
 
-		this.subscription = appStore.subscribe(state => {
-			this.unitLength = state.unitLength ?? 'unitShort';
-			this.unitLocale = state.unitLocale ?? 'metric';
-		});
+		this.subscription = appStore
+			.subscribe(state => {
+				this.unitLength = state.unitLength ?? 'unitShort';
+				this.unitLocale = state.unitLocale ?? 'metric';
+			})
+			.immediate();
 		this.routeSubscription = appStore.subscribe(state => {
 			const { route } = state;
 			this.#_handleRouteChange(route.path);
@@ -129,7 +131,6 @@ export class AppHeader {
 			onValue: 'us'
 		});
 		this.unitLocaleToggleComponent.render();
-		this.#_updateColours();
 	}
 
 	#_renderIconLinks() {
@@ -183,11 +184,6 @@ export class AppHeader {
 			ul.appendChild(li);
 		});
 		nav.appendChild(ul);
-	}
-
-	#_updateColours() {
-		if (this.unitLocaleToggleComponent) {
-		}
 	}
 
 	init() {
