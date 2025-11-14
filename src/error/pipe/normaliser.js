@@ -18,12 +18,21 @@ import { extractMeta } from '../util/extractMeta.js';
 
 /**
  *
+ */
+
+/**
+ *
  * @param {unknown} err
  * @param {Partial<NormalisedError>} hints
  * @returns {NormalisedError}
  */
 export function normaliseError(err, hints = {}) {
 	// Honour these explicit hints first
+
+	console.groupCollapsed('normaliseError(err, hints)');
+	console.trace(err);
+	console.trace(hints);
+	console.groupEnd();
 
 	if (hints.type === 'not_found') {
 		return {
@@ -88,6 +97,8 @@ export function normaliseError(err, hints = {}) {
 	}
 
 	if (isConnectionRefused(err) || isConnectionRefused(hints)) {
+		console.log('Connection refused');
+
 		const detected = {
 			code: 'CONNECTION_REFUSED',
 			type: /** @type {ErrorType} */ ('network'),
@@ -97,13 +108,28 @@ export function normaliseError(err, hints = {}) {
 		return mergePreservingCore(detected, hints);
 	}
 
-	// Existing generic fetch/TypeError fallback
+	// Existing generic fetch/TypeError fallbacks
+	// Could not reach server at all - in client code this is the TypeError from fetch
 	if (err instanceof TypeError && /fetch/i.test(String(err.message))) {
+		console.log('Hit TypeError - fetch_failed block');
+
 		const detected = {
 			code: 'NETWORK',
 			type: /** @type {ErrorType} */ ('network'),
-			userMessage: 'Network issue. Please try again.',
-			retry: true
+			userMessage: 'Network issue. Please try again',
+			retry: true,
+			reaason: 'fetch_failed'
+		};
+		return mergePreservingCore(detected, hints);
+	}
+	if (err instanceof TypeError && !/fetch/i.test(String(err.message))) {
+		const detected = {
+			code: 'TYPE_ERROR',
+			type: /** @type {ErrorType} */ ('unexpected'),
+			userMessage: `Unexpected error occurred. <a class="error-link"
+					style="color: var(--cayenne-colour-red-dark)"
+					href="../../../cayenne.html">Please return home</a>`,
+			retry: false
 		};
 		return mergePreservingCore(detected, hints);
 	}
@@ -122,19 +148,6 @@ export function normaliseError(err, hints = {}) {
 		}
 	}
 
-	if (
-		isConnectionRefused(err) ||
-		isConnectionRefused(hints?.cause) ||
-		hints?.reason === 'connection_refused'
-	) {
-		const detected = {
-			code: 'CONNECTION_REFUSED',
-			type: /** @type {ErrorType} */ ('network'),
-			userMessage: "Can't reach the server right now. Please try again.",
-			retry: true
-		};
-		return mergePreservingCore(detected, hints);
-	}
 	if (hints && hints.retry === true) {
 		return {
 			code: 'RETRYABLE',
@@ -164,6 +177,8 @@ export function normaliseError(err, hints = {}) {
  * @param {ErrorScope} scope
  */
 export function normalisedToEntry(n, scope) {
+	console.log('[addError] creating action with entry:', n);
+
 	const meta = extractMeta(n);
 	return {
 		code: n.code,

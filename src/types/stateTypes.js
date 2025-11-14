@@ -35,6 +35,7 @@ export {};
  * @property {'live'|'test'|'absolute'|'refetch'} [from]
  * @property {number} [status]
  * @property {boolean}[isDev]
+ * @property {ErrorType} [type]
  *
  * @typedef {ErrorMeta[]} ErrorMetas
  */

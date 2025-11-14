@@ -32,8 +32,16 @@ export const routeMap = {
 		validate(params) {
 			const allowed = ['id'];
 
-			for (const key of Object.keys(params)) {
+			for (const [key, val] of Object.entries(params)) {
 				if (!allowed.includes(key)) {
+					return false;
+				}
+				if (!parseInt(val)) {
+					return false;
+				}
+
+				const re = /\D*/g;
+				if (!re.test(val)) {
 					return false;
 				}
 			}

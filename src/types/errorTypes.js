@@ -89,7 +89,7 @@
  */
 
 /**
- * @typedef {'network'|'server'|'client'|'not_found'|'unexpected'} ErrorType
+ * @typedef {'network'|'server'|'client'|'not_found'|'unexpected'|'ERR_CONNECTION_REFUSED'} ErrorType
  */
 
 /**

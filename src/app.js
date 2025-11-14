@@ -27,7 +27,7 @@ async function initCayenne() {
 	// and frankly I have had enough.
 	appStore.setState({ useLive: false });
 
-	appStore.setState({ devMode: devMode ?? false });
+	appStore.setState({ devMode: devMode });
 
 	// Start error handling instantly
 	// if (appStore.getState().devMode === true) {
@@ -40,7 +40,7 @@ async function initCayenne() {
 	initNavbar();
 	// Main injection site
 	const appRoot = document.getElementById('app-root');
-	appHeader = new AppHeader(appRoot);
+	appHeader = new AppHeader(appRoot, devMode);
 
 	appRoot.insertAdjacentElement('beforebegin', appHeader.header);
 
@@ -62,9 +62,9 @@ async function initCayenne() {
 
 	// Safety gate
 
-	appStore.subscribe(s => {
-		if (s.devMode && s.devMode === true) appStore.setState({ devMode: false });
-	}, 'devMode');
+	// appStore.subscribe(s => {
+	// 	if (s.devMode && s.devMode === true) appStore.setState({ devMode: false });
+	// }, 'devMode');
 }
 
 window.addEventListener('DOMContentLoaded', () => {

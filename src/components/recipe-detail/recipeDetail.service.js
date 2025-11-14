@@ -20,10 +20,8 @@
  */
 
 import { getClient } from '../../api/client.singleton.js';
-import { appStore } from '../../appStore.js';
 import { testRecipe, testRecipeSummary } from '../../data/testRecipe.js';
 import { createErrorPublishing } from '../../error/pipe/publishFactory.js';
-import { getCurrentRouteScope } from '../../error/util/errorScope.js';
 
 /**
  *
@@ -40,27 +38,23 @@ export const createDetailService = opts => {
 		 *
 		 * @param {number} [id]
 		 * @param {*} [params]
-		 * @returns {Promise<{fetchedRecipe: RecipeFull, summary:Summary}>}
+		 * @returns {Promise<{fetchedRecipe: RecipeFull, summary:Summary} | null>}
 		 */
 		fetchRecipeById: async (id, params = {}) => {
 			let results;
-			try {
-				results = await fetchRecipeDetail(id);
-				if (results) {
-					service.fetchedRecipe = results.recipe;
-					service.recipeSummary =
-						results.summary ??
-						/** @type {Summary} */ (
-							/** @type {unknown} */ (results.recipe.summary)
-						);
-				}
+
+			results = await fetchRecipeDetail(id);
+			if (results) {
+				service.fetchedRecipe = results.recipe;
+				service.recipeSummary =
+					results.summary ??
+					/** @type {Summary} */ (
+						/** @type {unknown} */ (results.recipe.summary)
+					);
 				return {
 					fetchedRecipe: service.fetchedRecipe,
 					summary: service.recipeSummary
 				};
-			} catch (err) {
-				pubs.routeError(appStore, getCurrentRouteScope(), err, undefined);
-				return null;
 			}
 		},
 		opts: {},
@@ -80,7 +74,7 @@ export const createDetailService = opts => {
 /**
  * Fetch recipe detail, using the embedded summary if present; otherwise fetch the summary.
  * @param {number} recipeId
- * @returns {Promise<{ recipe: RecipeFull, summary: Summary }>}
+ * @returns {Promise<{ recipe: RecipeFull, summary: Summary }> | null}
  */
 export async function fetchRecipeDetail(recipeId) {
 	const client = getClient();
@@ -88,10 +82,13 @@ export async function fetchRecipeDetail(recipeId) {
 	const infoResult = /** @type {FetchResult} */ (
 		await client.getRecipeInformation(recipeId)
 	);
+	if (!infoResult) {
+		return null;
+	}
 
 	const recipe = /** @type {RecipeFull} */ (infoResult.data);
 	if (!recipe || typeof recipe.id !== 'number') {
-		throw new Error('Recipe payload missing or invalid.');
+		return null;
 	}
 
 	// 2) Short-circuit if we can build a summary immediately
@@ -107,7 +104,7 @@ export async function fetchRecipeDetail(recipeId) {
 
 	const summary = /** @type {Summary} */ (sumResult.data);
 	if (!summary || summary.id !== recipe.id) {
-		throw new Error('Summary payload missing, invalid, or mismatched id.');
+		return null;
 	}
 
 	return { recipe, summary };

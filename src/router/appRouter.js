@@ -95,16 +95,40 @@ export const AppRouter = {
 		routerService.setActiveRouteKey(path);
 
 		const slot = document.getElementById('route-error-slot');
-		if (slot) {
-			this._routeErrorController?.destroy();
-			this._routeErrorController = new ErrorController(slot, {
-				mode: 'inline',
-				scope: makeRouteScope(resolvedPath),
-				store: appStore,
-				title: 'Something went wrong'
-			});
-			this._routeErrorController.init();
+		// if (slot) {
+		// 	this._routeErrorController?.destroy();
+		// 	this._routeErrorController = new ErrorController(slot, {
+		// 		mode: 'inline',
+		// 		scope: makeRouteScope(resolvedPath),
+		// 		store: appStore
+		// 		// title: 'Something went wrong - test'
+		// 	});
+		// 	this._routeErrorController.init();
+		// }
+
+		/**
+		 *
+		 * @param {string} title
+		 * @param {ErrorController} errorController
+		 * @returns
+		 */
+		function makeError(title, errorController) {
+			if (slot) {
+				errorController?.destroy();
+				return new ErrorController(slot, {
+					mode: 'inline',
+					scope: makeRouteScope(resolvedPath),
+					store: appStore,
+					title: title
+				});
+			}
 		}
+
+		this._routeErrorController = makeError(
+			'Error loading page',
+			this._routeErrorController
+		);
+		this._routeErrorController.init();
 
 		const scope = /** @type {ErrorScope} */ (`route:${path}`);
 

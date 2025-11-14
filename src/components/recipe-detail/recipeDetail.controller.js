@@ -13,7 +13,6 @@
 
 import { appStore } from '../../appStore.js';
 import { createErrorPublishing } from '../../error/pipe/publishFactory.js';
-import { getCurrentRouteScope } from '../../error/util/errorScope.js';
 import { escapeHtml } from '../../util/escapeHtml.js';
 import { stringToHtml } from '../../util/htmlToElement.js';
 import { mountImage } from '../../util/mountImage.js';
@@ -292,31 +291,34 @@ export class RecipeDetail {
 
 	buildElements() {}
 
-	async attemptFetch() {
-		if (!this.subscription) {
-			this.subscription = appStore.subscribe(state => {
-				this.handleStateChange(state);
-			});
-			try {
-				const { fetchedRecipe, summary } = await this.service.fetchRecipeById(
-					this.recipeId,
-					{}
-				);
-				if (fetchedRecipe) this.fetchedRecipe = fetchedRecipe;
-				if (summary) this.summary = summary;
-				this.loading.isLoading = false;
-			} catch (err) {
-				const scope = getCurrentRouteScope();
-				this.deps.routeError(
-					appStore,
-					scope,
-					err,
-					undefined,
-					'Error caught attempting fetch'
-				);
-			}
-		}
-	}
+	// async attemptFetch() {
+	// 	if (!this.subscription) {
+	// 		this.subscription = appStore.subscribe(state => {
+	// 			this.handleStateChange(state);
+	// 		});
+	// 		try {
+	// 			const fetch = await this.service.fetchRecipeById(this.recipeId, {});
+	// 			if (!fetch) {
+	// 			}
+	// 			const { fetchedRecipe, summary } = await this.service.fetchRecipeById(
+	// 				this.recipeId,
+	// 				{}
+	// 			);
+	// 			if (fetchedRecipe) this.fetchedRecipe = fetchedRecipe;
+	// 			if (summary) this.summary = summary;
+	// 			this.loading.isLoading = false;
+	// 		} catch (err) {
+	// 			const scope = getCurrentRouteScope();
+	// 			this.deps.routeError(
+	// 				appStore,
+	// 				scope,
+	// 				err,
+	// 				undefined,
+	// 				'Error caught attempting fetch'
+	// 			);
+	// 		}
+	// 	}
+	// }
 
 	async init() {
 		this.loading.isLoading = true;
@@ -331,10 +333,18 @@ export class RecipeDetail {
 			this.subscription = appStore.subscribe(state => {
 				this.handleStateChange(state);
 			});
-			const { fetchedRecipe, summary } = await this.service.fetchRecipeById(
-				this.recipeId,
-				{}
-			);
+
+			const fetchResult = await this.service.fetchRecipeById(this.recipeId, {});
+
+			// If no result - client has handled error
+			if (!fetchResult) {
+				this.loading.isLoading = false;
+				return null;
+			}
+			const { fetchedRecipe, summary } = fetchResult;
+			if (!fetchedRecipe || !summary) {
+				return;
+			}
 			if (fetchedRecipe) this.fetchedRecipe = fetchedRecipe;
 			if (summary) this.summary = summary;
 			this.loading.isLoading = false;
@@ -348,9 +358,11 @@ export class RecipeDetail {
 				this.icon = this.likeBtn?.querySelector('i');
 
 				if (!this.icon) {
-					throw new Error(
-						`Like button icon not found for recipe id: ${this.recipeId}`
-					);
+					// throw new Error(
+					// 	`Like button icon not found for recipe id: ${this.recipeId}`
+					// );
+					// Bailing out
+					return;
 				}
 				this.#_toggleIcon(this.icon, found);
 			}, 'likedRecipes');

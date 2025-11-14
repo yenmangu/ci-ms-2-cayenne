@@ -39,7 +39,11 @@ export function publishDecision(
 	// /** @param {Decision} decision */
 	switch (decision.kind) {
 		case 'show': {
-			if (!once(dedupeKey)) return;
+			if (!once(dedupeKey)) {
+				console.log('Duplicate error');
+
+				return;
+			}
 			/** @type {NormalisedError} */
 			const entry =
 				norm.status === 402
@@ -53,14 +57,29 @@ export function publishDecision(
 					  }
 					: { ...norm, context };
 
-			if (norm.status === 402) switchToTestOnce(store);
+			if (norm.status === 402) {
+				switchToTestOnce(store);
+			}
+
+			if (norm.type === 'ERR_CONNECTION_REFUSED') {
+				console.log('[publishDecision]: connection_refused: ', norm);
+			}
 			publishers.reportError(store, entry, scope);
+
 			break;
 		}
 		case 'retry': {
 			if (!once(dedupeKey)) return;
 			publishers.reportRefetch(store, scope, meta);
 			break;
+		}
+		case 'none': {
+			if (!once(dedupeKey)) return;
+			const entry = {
+				...norm,
+				context
+			};
+			publishers.reportError(store, entry, scope);
 		}
 	}
 }

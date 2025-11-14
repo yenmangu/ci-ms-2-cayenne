@@ -419,22 +419,22 @@ export class SpoonacularClient {
 
 		/** @type {Response|undefined} */
 		let response;
+		/** @type {ErrorMeta} */
+		const meta = {
+			...metaBase,
+
+			urlAbs: fullyResolvedUrl,
+			type: response ? 'ERR_CONNECTION_REFUSED' : 'network'
+		};
 		try {
 			// Dev only
 			const reqOpts = /** @type {RequestInit} */ (opts);
 
-			// if (dev) {
 			response = await fetch(dev_402_Url, opts);
-			// } else {
-			// 	response = await fetch(fetchUrl, opts);
-			// }
+			// if ERR_CONNECTION_REFUSED, jump to catch block
 
-			/** @type {ErrorMeta} */
-			const meta = {
-				...metaBase,
-				status: response.status,
-				urlAbs: fullyResolvedUrl
-			};
+			meta.status = response.status;
+			meta.type = 'network';
 
 			if (!response.ok) {
 				if (response.status === 402) {
@@ -446,7 +446,7 @@ export class SpoonacularClient {
 				createErrorPublishing().routeError(
 					appStore,
 					scope,
-					new HttpError(response),
+					err,
 					meta,
 					undefined,
 					response
@@ -468,12 +468,6 @@ export class SpoonacularClient {
 			}
 			return { data, meta };
 		} catch (error) {
-			/** @type {ErrorMeta} */
-			const meta = {
-				...metaBase,
-				urlAbs: fullyResolvedUrl,
-				status: response?.status
-			};
 			createErrorPublishing().routeError(
 				appStore,
 				getCurrentRouteScope(),

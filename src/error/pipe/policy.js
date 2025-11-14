@@ -32,8 +32,15 @@ export function applyErrorPolicy(n) {
 	}
 
 	if (n.type === 'network' && n.retry) {
-		return { kind: 'retry', meta };
+		return { kind: 'show', payload: n };
+	}
+	if (n.type === 'ERR_CONNECTION_REFUSED') {
+		return { kind: 'show', payload: n };
 	}
 
-	return { kind: 'show', payload: n };
+	if (n.type === 'unexpected' && !n.retry) {
+		return { kind: 'none' };
+	}
+
+	return { kind: 'none' };
 }
