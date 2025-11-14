@@ -24,8 +24,6 @@ export function installGlobalErrorHooks(store) {
 	const pubs = createErrorPublishing();
 	/** @param {any} ev */
 	function onUnhandledRejection(ev) {
-		console.warn('unhandledrejection: ', ev);
-
 		const scope = getCurrentRouteScope();
 
 		if (devMode) {

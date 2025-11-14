@@ -123,7 +123,6 @@ export function createErrorPublishing() {
 					: errLike && typeof errLike === 'object'
 					? errLike
 					: undefined;
-			console.trace(`pubbing - error: ${JSON.stringify(n)} `);
 
 			_publishDecision(
 				store,
@@ -142,8 +141,6 @@ export function createErrorPublishing() {
 		 * @param {NormalisedError} normalisedError
 		 */
 		reportError(store, normalisedError, scope) {
-			console.trace('reporting error', normalisedError);
-
 			store.dispatch(addError(normalisedError, scope));
 		},
 

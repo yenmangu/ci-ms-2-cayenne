@@ -40,8 +40,6 @@ export function publishDecision(
 	switch (decision.kind) {
 		case 'show': {
 			if (!once(dedupeKey)) {
-				console.log('Duplicate error');
-
 				return;
 			}
 			/** @type {NormalisedError} */
@@ -61,9 +59,6 @@ export function publishDecision(
 				switchToTestOnce(store);
 			}
 
-			if (norm.type === 'ERR_CONNECTION_REFUSED') {
-				console.log('[publishDecision]: connection_refused: ', norm);
-			}
 			publishers.reportError(store, entry, scope);
 
 			break;

@@ -203,7 +203,6 @@ export class RecipeGrid {
 
 	#_checkRouteScope() {
 		const scope = getCurrentRouteScope();
-		console.log('Scope: ', scope);
 
 		if (scope.includes('saved')) {
 			this.inSaved = true;

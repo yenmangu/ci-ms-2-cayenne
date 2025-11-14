@@ -59,8 +59,10 @@ export class SearchBar {
 
 		this.searchBarInput = this.searchComponent.querySelector('input');
 		if (!this.searchBarInput) {
-			throw new Error('Search input element not found');
+			return;
 		}
+
+		this.searchBarInput.pattern = `^[A-Za-z ,]+$`;
 
 		this.submitButton = this.searchComponent.querySelector(
 			'button[type="submit"]'

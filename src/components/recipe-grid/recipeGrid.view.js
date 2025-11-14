@@ -53,8 +53,6 @@ export function getCardWrapperClass() {
  * @param {boolean} inSaved
  */
 export function renderNotFound(searchQ, inSaved) {
-	console.log('Search q: ', searchQ);
-
 	let htmlStringArr = [];
 
 	// Console group left commented intentionally
