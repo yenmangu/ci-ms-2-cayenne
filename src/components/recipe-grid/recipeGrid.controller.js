@@ -48,6 +48,9 @@ export class RecipeGrid {
 
 		this.grid = null;
 
+		/** @type {boolean} */
+		this.inSaved;
+
 		this.subscription = appStore
 			.subscribe(state => {
 				const scope = getCurrentRouteScope();
@@ -57,6 +60,8 @@ export class RecipeGrid {
 				}
 			}, 'route')
 			.immediate();
+
+		this.#_checkRouteScope();
 	}
 
 	_preRenderCardInstances() {
@@ -196,6 +201,15 @@ export class RecipeGrid {
 		}
 	}
 
+	#_checkRouteScope() {
+		const scope = getCurrentRouteScope();
+		console.log('Scope: ', scope);
+
+		if (scope.includes('saved')) {
+			this.inSaved = true;
+		}
+	}
+
 	/**
 	 * Renders the grid and
 	 * either skeletons if loading === true,
@@ -214,7 +228,7 @@ export class RecipeGrid {
 			}
 
 			this.notFoundEl = /** @type {HTMLElement} */ stringToHtml(
-				renderNotFound(this.search)
+				renderNotFound(this.search, this.inSaved)
 			);
 
 			this.appRoot.appendChild(this.notFoundEl);

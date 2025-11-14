@@ -50,8 +50,11 @@ export function getCardWrapperClass() {
 /**
  *
  * @param {string[]|string} searchQ
+ * @param {boolean} inSaved
  */
-export function renderNotFound(searchQ) {
+export function renderNotFound(searchQ, inSaved) {
+	console.log('Search q: ', searchQ);
+
 	let htmlStringArr = [];
 
 	// Console group left commented intentionally
@@ -69,10 +72,14 @@ export function renderNotFound(searchQ) {
 		htmlStringArr.push(searchQ);
 	}
 
+	const text = !inSaved
+		? 'Could not find any results for: '
+		: 'No recipes saved..';
+
 	const results = Array.isArray(searchQ) ? searchQ.join(' or ') : searchQ;
 
 	return `<div data-not-found class="container py-4 text-center not-found">
-		<h3>Could not find any results for:
+		<h3>${text}
 			${htmlStringArr.join(' or ')}
 		</h3>
 	</div`;
