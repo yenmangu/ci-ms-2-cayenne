@@ -1,11 +1,12 @@
 /**
  * @typedef {import("../../types/stateTypes.js").UnitLocale} UnitLocale
  * @typedef {import("../../types/stateTypes.js").UnitLength} UnitLength
+ * @typedef {import("../../types/stateTypes.js").StateKey} StateKey
  */
 
 /**
  * @typedef {object} ToggleConfig
- * @property {string} key
+ * @property {StateKey} key
  * @property {string} onValue
  * @property {string} offValue
  * @property {UnitLocale | UnitLength} initialValue
@@ -13,8 +14,6 @@
  * @property {string} [id] - Input Id
  * @property {string} [label] - Label text
  */
-
-import { config as stateConfig } from '../../config/stateConfigs.js';
 
 /**
  * Renders the ToggleComponent component to the DOM
