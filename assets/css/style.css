@@ -190,6 +190,12 @@ footer small {
 .app-header__home-link {
 	text-decoration: none;
 	color: var(--colour-text);
+	display: flex;
+	justify-content: center;
+}
+.app-header__home-link > span {
+	margin-top: 3px;
+	font-weight: 600;
 }
 
 .app-header__nav-links {
@@ -309,7 +315,7 @@ button.btn--like:focus {
 }
 
 .app-header__title {
-	font-size: 1.1rem;
+	font-size: 1rem;
 	letter-spacing: 0.03em;
 }
 
@@ -339,7 +345,7 @@ button.btn--like:focus {
 .toggle-container > .form-check {
 	color: var(--colour-text);
 	width: max-content;
-	padding-left: 2rem;
+	padding-left: 2.8rem;
 }
 
 /* Custom styles for measure system toggle */
