@@ -154,7 +154,7 @@ export function renderRecipeDetail(recipe, summaryObj, opts) {
   <div class="accordion" id="recipeAccordion">
     <div class="accordion-item">
       <h2 class="accordion-header" id="headingIngredients">
-        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseIngredients" aria-expanded="true" aria-controls="collapseIngredients">
+        <button class="accordion-button recipe-detail__accordion" type="button" data-bs-toggle="collapse" data-bs-target="#collapseIngredients" aria-expanded="true" aria-controls="collapseIngredients">
           Ingredients
         </button>
       </h2>

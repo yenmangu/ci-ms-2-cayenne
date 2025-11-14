@@ -590,6 +590,10 @@ main.recipe-detail {
 	width: 100%;
 }
 
+.recipe-detail__accordion:not(.collapsed) {
+	background-color: var(--cayenne-colour-green-light);
+}
+
 /* Media Queries */
 
 @media (max-width: 480px) {
