@@ -18,13 +18,13 @@ const env = {
 };
 
 const isProd = PROD_HOSTNAMES.includes(window.location.hostname);
-// export const ENV = isProd ? env.prod : env.dev;
-// export const ENV = env.prod;
-// export const ENV = env.prod;
 
+/**
+ * Comments left intionally for fast switching
+ */
 export const ENV = {
-	// API_URL: env.prod.API_URL,
-	API_URL: env.dev.API_URL,
+	API_URL: env.prod.API_URL,
+	// API_URL: env.dev.API_URL,
 	HOME_URL: isProd ? env.prod.HOME_URL : env.dev.HOME_URL
 };
 
