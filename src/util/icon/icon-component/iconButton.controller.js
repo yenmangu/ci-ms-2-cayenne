@@ -201,8 +201,6 @@ export class IconButton {
 			el.style.setProperty('font-size', size.trim());
 			return;
 		}
-
-		console.warn('IconButton Invalid size value: ', size);
 	}
 
 	getCurrentButtonAttrs() {

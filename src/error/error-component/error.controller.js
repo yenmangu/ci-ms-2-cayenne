@@ -177,9 +177,6 @@ export class ErrorController {
 	init() {
 		this.#_sub = this.store
 			.subscribe(({ errors }) => {
-				// Dev
-				// console.log('Err: ', errors);
-
 				this.#_render(errors);
 			}, 'errors')
 			.immediate();

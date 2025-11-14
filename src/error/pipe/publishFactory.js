@@ -1,4 +1,8 @@
 /**
+ * Note - console statements left intentionally
+ */
+
+/**
  * @typedef {import("../../types/stateTypes.js").AppStore} AppStore
  * @typedef {import("../../types/errorTypes.js").NormalisedError} NormalisedError
  * @typedef {import("../../types/stateTypes.js").ErrorMeta} ErrorMeta
@@ -66,14 +70,14 @@ export function createErrorPublishing() {
 
 			if (appStore.getState().devMode) {
 				// Uncomment for dev logging
-				console.trace(
-					'Logging for brevity: ',
-					source,
-					' 	response: ',
-					response,
-					'  meta: ',
-					meta
-				);
+				// console.trace(
+				// 	'Logging for brevity: ',
+				// 	source,
+				// 	' 	response: ',
+				// 	response,
+				// 	'  meta: ',
+				// 	meta
+				// );
 			}
 			// Build hints once: include transport/meta and serialised stack/cause.
 			const hints = {

@@ -36,7 +36,6 @@ function resolveRoute(path, rawParams = {}) {
 	// Does validate exist and is type 'function'
 	if (entry && typeof entry.validate === 'function') {
 		const ok = entry.validate(params);
-		// console.log('[resolveRoute]: ', 'okay: ', ok);
 
 		if (!ok)
 			return {
@@ -115,7 +114,6 @@ export const AppRouter = {
 		}
 
 		const last = this.currentInstances[this.lastActivePath];
-		console.log('Checking last instance: ', last);
 
 		if (last?.destroy) {
 			last.destroy();
@@ -142,30 +140,19 @@ export const AppRouter = {
 				/** @param {ComponentLike} instance */ instance => {
 					if (instance && typeof instance.destroy === 'function')
 						AppRouter.currentInstances[path] = instance || null;
-					console.log(
-						'checking current instance: ',
-						AppRouter.currentInstances[path]
-					);
 				}
 			)
 			.catch(err => {
 				pubs.reportError(appStore, err, scope);
 			});
 
-		console.log(
-			'checking current instance: ',
-			AppRouter.currentInstances[path]
-		);
 		// entry.handler(appRoot, path, { ...params, dev: isDev });
 		if (entry.title) {
 			document.title = entry.title;
 		}
 
 		// Assign new path to last active path for next navigation
-		console.log('Path before setting last Active: ', path);
-
 		AppRouter.lastActivePath = path;
-		// routerService.setActiveRouteKey(path); WAS HERE
 	},
 
 	init(appRoot) {
@@ -213,13 +200,11 @@ export function withComponent(ComponentClass) {
 
 export function armRetry(appRoot) {
 	if (cleanupRetryListener) {
-		console.log('[router] retry listener already armed');
 		return;
 	}
 	/** @param {CustomEvent<{scope?: string, data?:any}>} e */
 	const onRetrySuccess = e => {
 		appStore.setState({ useLive: false });
-		// console.log('[router] RETRY SUCCESS handler fired', e?.detail);
 
 		// Derive explicit scope
 		const { path, params } = parseHashRoute(window.location.hash);
@@ -228,7 +213,6 @@ export function armRetry(appRoot) {
 
 		// const scopeForPath = `${path || '/'}`;
 		const scopeForPath = getCurrentRouteScope();
-		// console.log('Scope required by router: ', scopeForPath);
 
 		if (e.detail?.scope && e.detail?.scope !== scopeForPath) return;
 
@@ -245,6 +229,5 @@ export function armRetry(appRoot) {
 	window.addEventListener(EVENTS.refetchSuccess, onRetrySuccess);
 	cleanupRetryListener = () => {
 		window.removeEventListener(EVENTS.refetchSuccess, onRetrySuccess);
-		// console.log('[router] retry listener installed for', EVENTS.refetchSuccess);
 	};
 }

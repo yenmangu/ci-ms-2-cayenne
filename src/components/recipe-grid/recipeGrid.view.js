@@ -54,15 +54,17 @@ export function getCardWrapperClass() {
 export function renderNotFound(searchQ) {
 	let htmlStringArr = [];
 
-	console.groupCollapsed('recipe grid view');
+	// Console group left commented intentionally
+
+	// console.groupCollapsed('recipe grid view');
 	if (Array.isArray(searchQ)) {
 		for (const s of searchQ) {
-			console.trace(s);
-			console.count(`el in query: ${s}`);
+			// console.trace(s);
+			// console.count(`el in query: ${s}`);
 
 			htmlStringArr.push(`<span class="cayenne-green--dark">${s}</span>`);
 		}
-		console.groupEnd();
+		// console.groupEnd();
 	} else {
 		htmlStringArr.push(searchQ);
 	}

@@ -82,16 +82,6 @@ export class AppHeader {
 		if (!this.iconButtons) return;
 
 		this.iconButtons.forEach(btn => {
-			// Dev logging
-			// console.log(
-			// 	'Button:',
-			// 	btn.routeKey,
-			// 	'Active:',
-			// 	routerService.activeRouteKey,
-			// 	'IsActive:',
-			// 	routerService.isActiveRoute(btn.routeKey)
-			// );
-
 			btn.setToggled(routerService.isActiveRoute(btn.routeKey));
 			btn.setRouteActive(routerService.isActiveRoute(btn.routeKey));
 		});

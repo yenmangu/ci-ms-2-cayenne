@@ -123,12 +123,6 @@ export class SpoonacularClient {
 	 * @returns {Promise<FetchResult>}
 	 */
 	async findByIngredients(ingredients, number) {
-		// const reqId = ++this.__reqId;
-		// console.trace('[client.findByIngredients] start', {
-		// 	reqId,
-		// 	params: { ingredients, number }
-		// });
-
 		const searchString = this._buildSearchString(ingredients);
 		const queryParams = {
 			ingredients: searchString,
@@ -335,15 +329,6 @@ export class SpoonacularClient {
 		fromRefetch = false,
 		forcedRefetch = false
 	) {
-		// Dev
-		// console.log(
-		// 	'Type of request: ',
-		// 	'from refetch: ',
-		// 	fromRefetch,
-		// 	' 	forcedRefetch: ',
-		// 	forcedRefetch
-		// );
-
 		const dev = appStore.getState().devMode ?? false;
 
 		const useLive = appStore.getState().useLive ?? true;
@@ -351,9 +336,6 @@ export class SpoonacularClient {
 
 		const pubs = createErrorPublishing();
 		const scope = getCurrentRouteScope();
-
-		// Dev
-		// console.count('[client.#_fetchFromApi]');
 
 		const fetchUrl = new URL(fullyResolvedUrl, this.apiUrl);
 		const { params } = metaBase;

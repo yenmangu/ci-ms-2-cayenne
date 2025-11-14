@@ -11,8 +11,6 @@ import { createErrorPublishing } from '../error/pipe/publishFactory.js';
 import { getCurrentRouteScope } from '../error/util/errorScope.js';
 
 export async function recipes(appRoot, path, params) {
-	console.log('Recipe.js');
-
 	const grid = await loadRecipes(appRoot, path, params);
 	if (grid) return grid;
 }
@@ -25,7 +23,6 @@ export async function recipes(appRoot, path, params) {
 export async function loadRecipes(appRoot, path, params) {
 	const pubs = createErrorPublishing();
 	const scope = getCurrentRouteScope();
-	console.trace('loadRecipes params: ', params);
 	const client = getClient();
 
 	const array =
@@ -34,18 +31,14 @@ export async function loadRecipes(appRoot, path, params) {
 			: Array.isArray(params.search)
 			? params.search
 			: [];
-	console.log('Array: ', array);
 	/** @type {RecipeCard[]} */
 	let recipeCards;
 
 	if (params?.__preload) {
-		console.log('Preloaded - using cached:  ', params.__preload.data);
-
 		const raw = params.__preload.data;
 		const recipeCards = Array.isArray(raw)
 			? raw
 			: toRecipeCardsFromResults(raw);
-		console.log('RecipeCards');
 
 		const grid = new RecipeGrid(appRoot, recipeCards, { search: array });
 		grid.render();
@@ -55,7 +48,6 @@ export async function loadRecipes(appRoot, path, params) {
 	try {
 		/** @type {FetchResult} */
 		const resp = await client.findByIngredients(array, 10);
-		console.log('Response: ', resp);
 
 		if (!resp) return null;
 		if (!resp.meta) {

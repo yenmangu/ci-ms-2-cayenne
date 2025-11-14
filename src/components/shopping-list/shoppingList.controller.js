@@ -109,10 +109,7 @@ export class ShoppingList {
 
 	/** @param {number} id  */
 	#_handleRemoveIntent(id) {
-		console.log('Handling remove intent');
-
 		if (!id || this.pendingExit.has(id)) {
-			console.log('returning early');
 			return;
 		}
 		const card = this.cardsById.get(id);
@@ -142,8 +139,6 @@ export class ShoppingList {
 			this.removeSub = null;
 		}
 		this.cardsById.forEach(i => {
-			console.log(`Destroying instance: ${i.id}`);
-
 			i.destroy();
 		});
 		this.container.innerHTML = '';

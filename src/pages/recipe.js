@@ -31,6 +31,6 @@ export async function loadRecipeDetail(container, pathName, params = {}) {
 		}
 		return recipeDetail || null;
 	} catch (error) {
-		console.error('[Recipe Domain Error: ]', error);
+		throw error;
 	}
 }

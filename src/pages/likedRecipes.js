@@ -27,10 +27,6 @@ function loadRecipesFromStorage() {
 
 	toCheck = JSON.parse(toCheck);
 
-	// Dev logging
-	// console.log('toCheck string: ', toCheck);
-	// console.log('toCheck JSON: ', toCheck);
-
 	if (toCheck)
 		if (Array.isArray(toCheck) && toCheck.length) {
 			const savedLiked = /** @type {RecipeCard[]} */ (toCheck);

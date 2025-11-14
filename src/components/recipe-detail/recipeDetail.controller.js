@@ -118,9 +118,6 @@ export class RecipeDetail {
 				this.ingredientCardInstances.push(card);
 				ingredientsContainer.appendChild(card.el);
 			});
-		} else {
-			// handle no ingredients
-			console.log('No ingredients in recipe');
 		}
 	}
 

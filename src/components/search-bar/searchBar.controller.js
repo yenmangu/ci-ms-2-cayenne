@@ -75,6 +75,6 @@ export class SearchBar {
 	}
 
 	destroy() {
-		console.warn('Function destroy() not yet implemented.');
+		this.container.innerHTML = '';
 	}
 }

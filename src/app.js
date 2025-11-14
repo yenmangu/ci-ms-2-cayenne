@@ -35,9 +35,6 @@ async function initCayenne() {
 	}
 	devMode = appStore.getState().devMode;
 
-	// Dev logging
-	// console.log('isProd? ', !!isProd);
-
 	initNavbar();
 	// Main injection site
 	const appRoot = document.getElementById('app-root');

@@ -204,7 +204,6 @@ export class RecipeGrid {
 	 * @returns {void}
 	 */
 	render() {
-		console.log('Rendering grid');
 		if (!this.recipes.length || !this.recipes) {
 			const notFound = /** @type {HTMLElement} */ (
 				this.appRoot.querySelector('[data-not-found')

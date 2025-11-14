@@ -33,7 +33,6 @@ import { ensureDev, getDevWindow } from './devWindow.js';
  */
 export function startPaddingProbe(el, label = 'main#cayenne-main') {
 	if (!el) {
-		console.warn('[probe] missing element');
 		return () => {};
 	}
 

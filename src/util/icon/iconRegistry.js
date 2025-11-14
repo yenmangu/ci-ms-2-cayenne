@@ -63,11 +63,7 @@ export class IconRegistry {
 		/** @type {string} */
 		this.baseDir = baseDir.replace(/\/+$/, '');
 	}
-	/**
-	 *
-	 * @param {string[]} names
-	 * @param {{sanitise?: boolean}} [options]
-	 */
+
 	#buildUrl(name) {
 		const base = this.baseDir.endsWith('/') ? this.baseDir : this.baseDir + '/';
 		return new URL(`${name}.svg`, base).toString();
@@ -158,6 +154,11 @@ export class IconRegistry {
 		return this.#icons.has(name);
 	}
 
+	/**
+	 *
+	 * @param {string[]} names
+	 * @param {{sanitise?: boolean}} [options]
+	 */
 	async preload(names, options = {}) {
 		await Promise.all(
 			names.map(n =>

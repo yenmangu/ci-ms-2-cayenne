@@ -4,6 +4,10 @@
  * @typedef {import("../../types/stateTypes.js").ErrorMeta} ErrorMeta
  */
 
+/**
+ * Note: console statements and groups left intentionally
+ */
+
 import { createErrorPublishing } from '../pipe/publishFactory.js';
 import { getCurrentRouteScope } from './errorScope.js';
 
@@ -20,15 +24,15 @@ export function installGlobalErrorHooks(store) {
 	const pubs = createErrorPublishing();
 	/** @param {any} ev */
 	function onUnhandledRejection(ev) {
-		console.warn('unhandledrejection: ', ev);
+		// console.warn('unhandledrejection: ', ev);
 
 		const scope = getCurrentRouteScope();
 
 		if (devMode) {
 			// debug-only breadcrumb
-			console.groupCollapsed('[unhandledrejection]');
-			console.log('reason:', ev?.reason);
-			console.groupEnd();
+			// console.groupCollapsed('[unhandledrejection]');
+			// console.log('reason:', ev?.reason);
+			// console.groupEnd();
 		}
 		pubs.routeError(store, scope, ev?.reason, {
 			cmd: 'reloadRoute'
@@ -37,15 +41,15 @@ export function installGlobalErrorHooks(store) {
 
 	/** @param {ErrorEvent} ev */
 	function onWindowError(ev) {
-		console.warn('dev reading in global hooks: ', devMode);
-		console.warn('windowerror: ', ev);
+		// console.warn('dev reading in global hooks: ', devMode);
+		// console.warn('windowerror: ', ev);
 
 		const scope = getCurrentRouteScope();
 
 		if (store.getState().devMode) {
-			console.groupCollapsed('[window.error]');
-			console.log('error:', ev?.error ?? ev?.message);
-			console.groupEnd();
+			// console.groupCollapsed('[window.error]');
+			// console.log('error:', ev?.error ?? ev?.message);
+			// console.groupEnd();
 		}
 		const err =
 			ev?.error instanceof Error ? ev.error : new Error(String(ev?.message));
