@@ -21,7 +21,6 @@ export class ShoppingList {
 		this.container = container;
 
 		this.dev = appStore.getState().devMode;
-		this.view = stringToHtml(renderShoppingList());
 
 		/** @type {ShoppingListItem[]} */
 		this.currentList = [];
@@ -44,8 +43,23 @@ export class ShoppingList {
 		this.removeCardEmitter = singleEmitter;
 
 		this.removeSub = null;
+		/** @type {HTMLElement} */
+		this.view = null;
 
+		/** @type {HTMLElement} */
+		this.title = null;
+
+		this.#_renderList();
 		this.#_render();
+	}
+
+	#_renderList() {
+		/** @type {boolean} */
+		const hasItems = appStore.getState().shoppingList.length > 0;
+		this.view = stringToHtml(renderShoppingList(hasItems));
+		this.title = /** @type {HTMLElement} */ (
+			this.view.querySelector('[data-shopping-list-title]')
+		);
 	}
 
 	#_render() {
@@ -90,6 +104,7 @@ export class ShoppingList {
 
 		this.subscription = appStore.subscribe(({ shoppingList }) => {
 			this.currentList = shoppingList;
+			this.#_updateTitle();
 		}, 'shoppingList');
 
 		if (this.dev) {
@@ -105,6 +120,14 @@ export class ShoppingList {
 			this.#_handleRemoveIntent(id);
 		};
 		this.removeSub = this.removeCardEmitter.subscribe('card:remove', handler);
+	}
+
+	#_updateTitle() {
+		this.title.innerHTML = `${
+			this.currentList.length > 0
+				? 'Shopping List'
+				: 'Add items to the shopping list to see them here..'
+		}`;
 	}
 
 	/** @param {number} id  */

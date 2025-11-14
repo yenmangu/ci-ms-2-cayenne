@@ -5,9 +5,19 @@
 
 import { escapeHtml } from '../../util/escapeHtml.js';
 
-export function renderShoppingList() {
+/**
+ *
+ * @param {boolean} hasItems
+ * @returns
+ */
+export function renderShoppingList(hasItems) {
 	return `<section class="shopping-list__section py-5 text-center">
-	<h1 class="shopping-list__title mb-4">Shopping List</h1>
+	<h1 data-shopping-list-title class="shopping-list__title mb-4">
+	${
+		hasItems
+			? 'Shopping List'
+			: 'Add items to the shopping list to see them here..'
+	}</h1>
 	<div id="shopping-list-container"></div>
 	</section>`;
 }
