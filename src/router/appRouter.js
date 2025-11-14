@@ -83,6 +83,7 @@ export const AppRouter = {
 	 * @param {HTMLElement} appRoot
 	 */
 	handleRouteChange(appRoot) {
+		appStore.setState({ errors: [] });
 		const pubs = createErrorPublishing();
 		const hash = window.location.hash;
 		/** @type {{path: string, params: Record<string,string> | {}}} */
